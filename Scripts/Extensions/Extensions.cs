@@ -37,22 +37,34 @@ namespace System
             return default(T);
         }
 
-        public static float? ToFloat(this string s, float? def = (float?)null)
+        public static float? ToNullableFloat(this string s, float? def = (float?)null)
         {
-            float i;
-            return float.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out i) ? i : def;
+            return float.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out var i) ? i : def;
         }
 
-        public static bool? ToBool(this string s, bool? def = (bool?)null)
+        public static bool? ToNullableBool(this string s, bool? def = (bool?)null)
         {
-            bool i;
-            return bool.TryParse(s, out i) ? i : def;
+            return bool.TryParse(s, out var i) ? i : def;
         }
 
-        public static int? ToInt(this string s, int? def = (int?)null)
+        public static int? ToNullableInt(this string s, int? def = (int?)null)
         {
-            int i;
-            return int.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out i) ? i : def;
+            return int.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out var i) ? i : def;
+        }
+
+        public static float ToFloat(this string s, float def = 0)
+        {
+            return float.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out var i) ? i : def;
+        }
+
+        public static bool ToBool(this string s, bool def = false)
+        {
+            return bool.TryParse(s, out var i) ? i : def;
+        }
+
+        public static int ToInt(this string s, int def = 0)
+        {
+            return int.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out var i) ? i : def;
         }
 
         public static Color SetAlpha(this Color color, float value)
