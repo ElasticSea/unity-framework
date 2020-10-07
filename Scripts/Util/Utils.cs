@@ -420,5 +420,10 @@ namespace _Framework.Scripts.Util
         {
             return fileName.IndexOfAny(Path.GetInvalidFileNameChars()) < 0;
         }
+
+        public static void OpenInExplorer(string path)
+        {
+            Application.OpenURL($"file://{new DirectoryInfo(path).FullName}");
+        }
     }
 }
