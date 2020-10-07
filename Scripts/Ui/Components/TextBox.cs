@@ -37,12 +37,12 @@ namespace _Framework.Scripts.Ui.Components
         
         public TextBox<float> AsFloat()
         {
-            return As(s => s.ToFloat().Value, f => f.ToString(CultureInfo.InvariantCulture));
+            return As(s => s.ToFloat(), f => f.ToString(CultureInfo.InvariantCulture));
         }
 
         public TextBox<int> AsInt()
         {
-            return As(s => s.ToInt().Value, f => f.ToString(CultureInfo.InvariantCulture));
+            return As(s => s.ToInt(), f => f.ToString(CultureInfo.InvariantCulture));
         }
     }
     

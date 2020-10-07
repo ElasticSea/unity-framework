@@ -87,14 +87,14 @@ namespace _Framework.Scripts.Ui.Components
         
         public InputBox<float> AsFloat()
         {
-            var uiBinding = As(s => s.ToFloat(0).Value, f => f.ToString(CultureInfo.InvariantCulture));
+            var uiBinding = As(s => s.ToFloat(), f => f.ToString(CultureInfo.InvariantCulture));
             uiBinding.BackingField.AddValidator(new IsNumValidator());
             return uiBinding;
         }
 
         public InputBox<int> AsInt()
         {
-            var uiBinding = As(s => s.ToInt(0).Value, f => f.ToString(CultureInfo.InvariantCulture));
+            var uiBinding = As(s => s.ToInt(), f => f.ToString(CultureInfo.InvariantCulture));
             uiBinding.BackingField.AddValidator(new IsNumValidator());
             return uiBinding;
         }
