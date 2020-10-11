@@ -116,5 +116,38 @@ namespace Core.Extensions
         {
             transform.anchoredPosition = new Vector2(transform.anchoredPosition.x, y);
         }
+
+        public static Rect GetWorldRect(this RectTransform rectTransform)
+        {
+            var rect = rectTransform.rect;
+            var worldMin = rectTransform.TransformPoint(new Vector3(rect.xMin, rect.yMin, 0));
+            var worldMax = rectTransform.TransformPoint(new Vector3(rect.xMax, rect.yMax, 0));
+            return Rect.MinMaxRect(
+                worldMin.x,
+                worldMin.y,
+                worldMax.x,
+                worldMax.y
+            );
+        }
+        
+        public static Vector2 FitIntoCanvas(this RectTransform rt)
+        {
+            var worldRect = rt.GetWorldRect();
+            var canvas = rt.GetComponentInParent<Canvas>();
+            var canvasScale = canvas.transform.localScale;
+            var canvasRect = canvas.pixelRect;
+            var rightOffset = worldRect.xMax - canvasRect.width;
+            var leftOffset = canvasRect.x - worldRect.xMin;
+            var upOffset = worldRect.yMax - canvasRect.height;
+            var bottomOffset = canvasRect.y - worldRect.yMin;
+
+            var offset = new Vector2();
+            if (rightOffset > 0) offset -= new Vector2(rightOffset / canvasScale.x, 0);
+            if (leftOffset > 0) offset += new Vector2(leftOffset / canvasScale.x, 0);
+            if (upOffset > 0) offset -= new Vector2(0, upOffset / canvasScale.y);
+            if (bottomOffset > 0) offset += new Vector2(0, bottomOffset / canvasScale.y);
+
+            return offset;
+        }
     }
 }
