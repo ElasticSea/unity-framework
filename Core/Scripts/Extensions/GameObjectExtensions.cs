@@ -12,18 +12,25 @@ namespace Core.Extensions
 {
 	public static class GameObjectExtensions
 	{
-		public static void DestroyChildren(this Transform transform)
+		public static void DestroyChildren(this Transform transform, bool immediate = false)
 		{
-			DestroyChildren(transform.gameObject);
+			DestroyChildren(transform.gameObject, immediate);
 		}
 
-		public static void DestroyChildren(this GameObject gameObject)
+		public static void DestroyChildren(this GameObject gameObject, bool immediate = false)
 		{
 			var children = gameObject.GetChildren().ToList();
 			for(int i = 0, cnt = children.Count; i < cnt; i++)
 			{
 				var child = children[i];
-				UnityObject.Destroy(child);
+				if (immediate)
+				{
+					UnityObject.DestroyImmediate(child, true);
+				}
+				else
+				{
+					UnityObject.Destroy(child);
+				}
 			}
 		}
 

@@ -280,9 +280,29 @@ namespace Core.Extensions
 			return Vector3.Min(vectorA, vectorB);
 		}
 
+		public static Vector2 Min(this Vector2 vectorA, Vector2 vectorB)
+		{
+			return Vector2.Min(vectorA, vectorB);
+		}
+
+		public static float Min(this Vector3 vector)
+		{
+			return Mathf.Min(vector.x, Mathf.Min(vector.y, vector.z));
+		}
+
+		public static float Min(this Vector2 vector)
+		{
+			return Mathf.Min(vector.x, vector.y);
+		}
+
 		public static Vector3 Max(this Vector3 vectorA, Vector3 vectorB)
 		{
 			return Vector3.Max(vectorA, vectorB);
+		}
+
+		public static Vector2 Max(this Vector2 vectorA, Vector2 vectorB)
+		{
+			return Vector2.Max(vectorA, vectorB);
 		}
 
 		public static float Max(this Vector3 vector)
@@ -290,14 +310,9 @@ namespace Core.Extensions
 			return Mathf.Max(vector.x, Mathf.Max(vector.y, vector.z));
 		}
 
-		public static Vector2 Min(this Vector2 vectorA, Vector2 vectorB)
+		public static float Max(this Vector2 vector)
 		{
-			return Vector2.Min(vectorA, vectorB);
-		}
-
-		public static Vector2 Max(this Vector2 vectorA, Vector2 vectorB)
-		{
-			return Vector2.Max(vectorA, vectorB);
+			return Mathf.Max(vector.x, vector.y);
 		}
 
 		public static Vector2 FromXY(this Vector3 vector)

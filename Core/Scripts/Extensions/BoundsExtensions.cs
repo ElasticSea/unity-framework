@@ -77,10 +77,12 @@ namespace Core.Extensions
 					return a;
 				});
 		}
-
-		public static Bounds GetCompositeRendererBounds(this GameObject go)
+	    
+		public static Bounds GetCompositeRendererBounds(this GameObject go, Predicate<Renderer> filter = null,
+			bool includeInactive = true)
 		{
-			var boundsInObject = go.GetComponentsInChildren<Renderer>(true)
+			var boundsInObject = go.GetComponentsInChildren<Renderer>(includeInactive)
+				.Where(r => filter == null || filter(r))
 				.Select(r => r.bounds)
 				.Where(bounds => bounds.min != bounds.max)
 				.ToArray();
@@ -121,25 +123,27 @@ namespace Core.Extensions
 			return mask == (mask | (1 << layer));
 		}
 
-	    public static Bounds GetCompositeColliderBounds(this GameObject go)
+	    public static Bounds GetCompositeColliderBounds(this GameObject go, Predicate<Collider> filter = null,
+		    bool includeInactive = true)
 	    {
-	        var boundsInObject = go.GetComponentsInChildren<Collider>(true)
-	            .Select(r => r.bounds)
-	            .Where(bounds => bounds.min != bounds.max)
-	            .ToArray();
+		    var boundsInObject = go.GetComponentsInChildren<Collider>(includeInactive)
+			    .Where(r => filter == null || filter(r))
+			    .Select(r => r.bounds)
+			    .Where(bounds => bounds.min != bounds.max)
+			    .ToArray();
 
-	        if (boundsInObject.Length == 0)
-	            return new Bounds();
+		    if (boundsInObject.Length == 0)
+			    return new Bounds();
 
-	        if (boundsInObject.Length == 1)
-	            return boundsInObject[0];
+		    if (boundsInObject.Length == 1)
+			    return boundsInObject[0];
 
-	        return boundsInObject
-	            .Aggregate((a, b) =>
-	            {
-	                a.Encapsulate(b);
-	                return a;
-	            });
+		    return boundsInObject
+			    .Aggregate((a, b) =>
+			    {
+				    a.Encapsulate(b);
+				    return a;
+			    });
 	    }
 
 	    public static Bounds GetCompositeColliderBounds(this GameObject[] go)
@@ -187,6 +191,12 @@ namespace Core.Extensions
 				    a.Encapsulate(b);
 				    return a;
 			    });
+	    }
+
+	    public static Bounds MoveToBottom(this Bounds from, Bounds to)
+	    {
+		    var newCenter = from.center.SetY(to.min.y + from.extents.y);
+		    return new Bounds(newCenter, from.size);
 	    }
     }
 }

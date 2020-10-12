@@ -309,5 +309,21 @@ namespace Core.Extensions
 		{
 			return string.Equals(str, other, StringComparison.InvariantCultureIgnoreCase);
 		}
+		
+		public static string Repeat(this string str, int count)
+		{
+			if (count <= 0)
+			{
+				return string.Empty;
+			}
+			
+			var output = new StringBuilder(count);
+			for (var i = 0; i < count; i++)
+			{
+				output.Append(str);
+			}
+
+			return output.ToString();
+		}
     }
 }
