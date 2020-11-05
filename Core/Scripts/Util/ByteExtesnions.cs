@@ -6,6 +6,28 @@ namespace Core.Util
 {
     public static class ByteExtesnions
     {
+        public static byte[] GetBytes(this int[] ints)
+        {
+            var length = ints.Length;
+            var bytes = new byte[length * 4];
+            var read = 0;
+            
+            for (var i = 0; i < length; i++)
+            {
+                read = bytes.Append(Little.GetBytes(ints[i]), read);
+            }
+
+            return bytes;
+        }
+
+        public static int Append(this byte[] destination, byte[] source, int pos)
+        {
+            var len = source.Length;
+            Array.Copy(source, 0, destination, pos, len);
+            pos += len;
+            return pos;
+        }
+        
         public static int WriteBytes(this int[] ints, byte[] bytes, int offset)
         {
             var read = 0;
@@ -181,6 +203,60 @@ namespace Core.Util
                 bytes[offset + 2] / 256f,
                 bytes[offset + 3] / 256f
             );
+        }
+        
+        public static byte[] GetBytes(this bool b)
+        {
+            return Little.GetBytes(b);
+        }
+        
+        public static byte[] GetBytes(this float f)
+        {
+            return Little.GetBytes(f);
+        }
+
+        public static byte[] GetBytes(this int i)
+        {
+            return Little.GetBytes(i);
+        }
+
+        public static byte[] GetBytes(this Vector2 vector2)
+        {
+            var bytes = new byte[2 * 4];
+            
+            var x = Little.GetBytes(vector2.x);
+            var y = Little.GetBytes(vector2.y);
+            Array.Copy(x, 0, bytes, 0, 4);
+            Array.Copy(y, 0, bytes, 4, 4);
+            return bytes;
+        }
+        
+        public static byte[] GetBytes(this Vector3 vector3)
+        {
+            var bytes = new byte[3 * 4];
+            
+            var x = Little.GetBytes(vector3.x);
+            var y = Little.GetBytes(vector3.y);
+            var z = Little.GetBytes(vector3.z);
+            Array.Copy(x, 0, bytes, 0, 4);
+            Array.Copy(y, 0, bytes, 4, 4);
+            Array.Copy(z, 0, bytes, 8, 4);
+            return bytes;
+        }
+        
+        public static byte[] GetBytes(this Vector4 vector4)
+        {
+            var bytes = new byte[4 * 4];
+            
+            var x = Little.GetBytes(vector4.x);
+            var y = Little.GetBytes(vector4.y);
+            var z = Little.GetBytes(vector4.z);
+            var w = Little.GetBytes(vector4.w);
+            Array.Copy(x, 0, bytes, 0, 4);
+            Array.Copy(y, 0, bytes, 4, 4);
+            Array.Copy(z, 0, bytes, 8, 4);
+            Array.Copy(w, 0, bytes, 12, 4);
+            return bytes;
         }
     }
 }
