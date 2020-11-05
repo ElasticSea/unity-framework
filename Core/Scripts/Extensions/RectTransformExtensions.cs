@@ -149,5 +149,19 @@ namespace Core.Extensions
 
             return offset;
         }
+
+        public static RectTransform CopyFrom(this RectTransform destination, RectTransform source)
+        {
+            destination.localPosition = source.localPosition;
+            destination.localRotation = source.localRotation;
+            destination.localScale = source.localScale;
+            destination.sizeDelta = source.sizeDelta;
+            destination.anchorMin = source.anchorMin;
+            destination.anchorMax = source.anchorMax;
+            destination.offsetMin = source.offsetMin;
+            destination.offsetMax = source.offsetMax;
+            destination.pivot = source.pivot;
+            return destination;
+        }
     }
 }
