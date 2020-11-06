@@ -425,5 +425,35 @@ namespace Core.Util
         {
             Application.OpenURL($"file://{new DirectoryInfo(path).FullName}");
         }
+
+        public static Texture2D CreateColorWheelTexture(int width, int height, Color? outsideColor = null, TextureFormat textureFormat = TextureFormat.RGBA32, int mipCount = -1, bool linear = false)
+        {
+            var texture = new Texture2D(width, height, textureFormat, mipCount, linear);
+            
+            var center = new Vector2(width / 2f, height / 2f);
+
+            var outside = outsideColor ?? Color.black;
+            
+            for (var x = 0; x < width; x++)
+            {
+                for (var y = 0; y < height; y++)
+                {
+                    var ang = Mathf.Atan2(center.y - y, center.x - x);
+                    var angNormalized = (ang / (Mathf.PI * 2) + 1) % 1;
+
+                    var normalizedX = (x - center.x) / width * 2;
+                    var normalizedY = (y - center.y) / height * 2;
+                    var distNormalized = new Vector2(normalizedX, normalizedY).magnitude;
+                    
+                    var wheelColor = Color.HSVToRGB(angNormalized , distNormalized, 1);
+                    var pixelColor = distNormalized < 1 ? wheelColor : outside;
+                    texture.SetPixel(x, y, pixelColor);
+                }
+            }
+            
+            texture.Apply();
+
+            return texture;
+        }
     }
 }
