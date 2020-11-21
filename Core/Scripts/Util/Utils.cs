@@ -180,7 +180,7 @@ namespace Core.Util
             
             var existingNames = new DirectoryInfo(fileInfo.DirectoryName)
                 .EnumerateFiles()
-                .Select(d => d.Name)
+                .Select(d => d.Name.ToLower())
                 .ToSet();
             
             return Path.Combine(fileInfo.DirectoryName, AlternativeName(existingNames, newFileName));
@@ -194,15 +194,27 @@ namespace Core.Util
             
             var existingNamesWithoutExtension = new DirectoryInfo(directory)
                 .EnumerateFiles()
-                .Select(d =>  Path.GetFileNameWithoutExtension(d.Name))
+                .Select(d =>  Path.GetFileNameWithoutExtension(d.Name).ToLower())
                 .ToSet();
 
             return Path.Combine(directory, AlternativeName(existingNamesWithoutExtension, fileWithoutExtension) + extension);
         }
 
+        public static string AlternativeDirectoryName(string directoryPath, string name)
+        {
+            var directory = new DirectoryInfo(directoryPath);
+            
+            var existingNames = directory
+                .EnumerateDirectories()
+                .Select(d => d.Name.ToLower())
+                .ToSet();
+
+            return AlternativeName(existingNames, name);
+        }
+
         public static string AlternativeName(IEnumerable<string> takenNames, string name)
         {
-            var nameSet = takenNames.Select(n => n.ToLower()).ToSet();
+            var nameSet = takenNames.ToSet();
             return AlternativeName(s => nameSet.Contains(s), name);
         }
         
@@ -454,6 +466,21 @@ namespace Core.Util
             texture.Apply();
 
             return texture;
+        }
+        
+        public static void EnsureDirectory(string path, bool clear = false)
+        {
+            if (Directory.Exists(path))
+            {
+                if (clear)
+                {
+                    Directory.Delete(path, true);
+                }
+            }
+            else
+            {
+                Directory.CreateDirectory(path);
+            }
         }
     }
 }
