@@ -203,6 +203,10 @@ namespace Core.Util
         public static string AlternativeDirectoryName(string directoryPath, string name)
         {
             var directory = new DirectoryInfo(directoryPath);
+            if (directory.Exists == false)
+            {
+                return name;
+            }
             
             var existingNames = directory
                 .EnumerateDirectories()
