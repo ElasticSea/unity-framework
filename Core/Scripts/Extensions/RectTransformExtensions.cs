@@ -117,6 +117,26 @@ namespace Core.Extensions
             transform.anchoredPosition = new Vector2(transform.anchoredPosition.x, y);
         }
 
+        public static void SetAnchorMinX(this RectTransform transform, float x)
+        {
+            transform.anchorMin = new Vector2(x, transform.anchorMin.y);
+        }
+
+        public static void SetAnchorMinY(this RectTransform transform, float y)
+        {
+            transform.anchorMin = new Vector2(transform.anchorMin.x, y);
+        }
+
+        public static void SetAnchorMaxX(this RectTransform transform, float x)
+        {
+            transform.anchorMax = new Vector2(x, transform.anchorMax.y);
+        }
+
+        public static void SetAnchorMaxY(this RectTransform transform, float y)
+        {
+            transform.anchorMax = new Vector2(transform.anchorMax.x, y);
+        }
+
         public static Rect GetWorldRect(this RectTransform rectTransform)
         {
             var rect = rectTransform.rect;
