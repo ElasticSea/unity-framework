@@ -1,3 +1,4 @@
+using System.IO;
 using Core.Extensions;
 using Core.Util;
 using UnityEditor;
@@ -15,6 +16,11 @@ namespace Core.Util
             if (GUILayout.Button("Show Persistent Folder"))
             {
                 Utils.OpenInExplorer(Application.persistentDataPath);
+            }
+            
+            if (GUILayout.Button("Clear Persistent Folder"))
+            {
+                Directory.Delete(Application.persistentDataPath, true);
             }
         }
     }
