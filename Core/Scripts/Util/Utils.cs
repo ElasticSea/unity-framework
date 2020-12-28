@@ -479,6 +479,7 @@ namespace Core.Util
                 if (clear)
                 {
                     Directory.Delete(path, true);
+                    Directory.CreateDirectory(path);
                 }
             }
             else
