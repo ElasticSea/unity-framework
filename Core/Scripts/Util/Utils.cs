@@ -487,5 +487,59 @@ namespace Core.Util
                 Directory.CreateDirectory(path);
             }
         }
+        
+        public static Vector3[] PointsOnSphere(int count)
+        {
+            Vector3[] upts = new Vector3[count];
+            float inc = Mathf.PI * (3 - Mathf.Sqrt(5));
+            float off = 2.0f / count;
+            float x = 0;
+            float y = 0;
+            float z = 0;
+            float r = 0;
+            float phi = 0;
+       
+            for (var k = 0; k < count; k++){
+                y = k * off - 1 + (off /2);
+                r = Mathf.Sqrt(1 - y * y);
+                phi = k * inc;
+                x = Mathf.Cos(phi) * r;
+                z = Mathf.Sin(phi) * r;
+           
+                upts[k] = new Vector3(x, y, z);
+            }
+            
+            return upts;
+        }
+        
+        public static Vector3[] PointsOnSphereSegment(int count, float angle, Vector3 direction)
+        {
+            var rotation = Quaternion.FromToRotation(Vector3.up, direction);
+            
+            var cnt = count;
+            var ll = (1-Mathf.Sin((90-angle) * Mathf.Deg2Rad)) / 2;
+
+            count = (int) (count / ll);
+            Vector3[] upts = new Vector3[cnt];
+            float inc = Mathf.PI * (3 - Mathf.Sqrt(5));
+            float off = 2.0f / count;
+            float x = 0;
+            float y = 0;
+            float z = 0;
+            float r = 0;
+            float phi = 0;
+       
+            for (var k = 0; k < cnt; k++){
+                y = k * off - 1 + (off /2);
+                r = Mathf.Sqrt(1 - y * y);
+                phi = k * inc;
+                x = Mathf.Cos(phi) * r;
+                z = Mathf.Sin(phi) * r;
+                
+                upts[k] = rotation * new Vector3(x, -y, z);
+            }
+            
+            return upts;
+        }
     }
 }
