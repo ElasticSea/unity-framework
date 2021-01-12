@@ -59,24 +59,6 @@ namespace Core.Extensions
 				.Select(bv => from.transform.TransformPoint(bv, to.transform))
 				.ToBounds();
 		}
-
-		public static Bounds GetCompositeMeshBounds(this GameObject go)
-		{
-			var boundsInObject = go.GetComponentsInChildren<MeshFilter>(true)
-				.Select(r => (r.mesh ?? r.sharedMesh).bounds)
-				.Where(bounds => bounds.min != bounds.max)
-				.ToArray();
-
-			if (boundsInObject.Length == 0)
-				return new Bounds();
-
-			return boundsInObject
-				.Aggregate((a, b) =>
-				{
-					a.Encapsulate(b);
-					return a;
-				});
-		}
 	    
 		public static Bounds GetCompositeRendererBounds(this GameObject go, Predicate<Renderer> filter = null,
 			bool includeInactive = true)
@@ -167,30 +149,32 @@ namespace Core.Extensions
 	            });
 	    }
 		
-	    public static Bounds? GetLocalCompositeMeshBounds(this GameObject go)
+	    public static Bounds GetCompositeMeshBounds(this GameObject go, bool isSharedMesh = false)
 	    {
-		    var boundsInObject = go.GetComponentsInChildren<MeshFilter>(true)
+		    var bounds = go.GetComponentsInChildren<MeshFilter>(true)
 			    .Select(mf =>
 			    {
-				    var bounds = (mf.mesh ?? mf.sharedMesh).bounds;
-				    var localBound = mf.transform.TransformBounds(go.transform, bounds);
+				    var mesh = isSharedMesh ? mf.sharedMesh : mf.mesh;
+				    var localBound = mf.transform.TransformBounds(go.transform, mesh.bounds);
 				    return localBound;
 			    })
-			    .Where(bounds => bounds.min != bounds.max)
+			    .Where(b => b.size != Vector3.zero)
 			    .ToArray();
 
-		    if (boundsInObject.Length == 0)
-			    return null;
+		    if (bounds.Length == 0)
+			    return new Bounds();
 
-		    if (boundsInObject.Length == 1)
-			    return boundsInObject.First();
+		    if (bounds.Length == 1)
+			    return bounds[0];
 
-		    return boundsInObject
-			    .Aggregate((a, b) =>
-			    {
-				    a.Encapsulate(b);
-				    return a;
-			    });
+		    var compositeBounds = bounds[0];
+
+		    for (var i = 1; i < bounds.Length; i++)
+		    {
+			    compositeBounds.Encapsulate(bounds[i]);
+		    }
+
+		    return compositeBounds;
 	    }
 
 	    public static Bounds MoveToBottom(this Bounds from, Bounds to)
