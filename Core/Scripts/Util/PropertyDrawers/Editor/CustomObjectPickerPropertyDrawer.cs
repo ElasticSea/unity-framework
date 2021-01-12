@@ -23,7 +23,7 @@ namespace Core.Util.PropertyDrawers
             get
             {
                 if (_unityObjectPickerType == null)
-                    _unityObjectPickerType = Assembly.GetAssembly(typeof(Editor)).GetType("ObjectSelector");
+                    _unityObjectPickerType = Assembly.GetAssembly(typeof(UnityEditor.Editor)).GetType("ObjectSelector");
 
                 return _unityObjectPickerType;
             }
