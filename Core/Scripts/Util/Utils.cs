@@ -218,7 +218,7 @@ namespace Core.Util
 
         public static string AlternativeName(IEnumerable<string> takenNames, string name)
         {
-            var nameSet = takenNames.ToSet();
+            var nameSet = takenNames.Select(n => n.ToLower()).ToSet();
             return AlternativeName(s => nameSet.Contains(s), name);
         }
         
