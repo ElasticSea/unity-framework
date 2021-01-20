@@ -417,6 +417,17 @@ namespace Core.Util
             );
         }
         
+        public static string GetUniqueHexNumber(ISet<string> taken, int digits)
+        {
+            string candidate;
+            do
+            {
+                candidate = GetRandomHexNumber(digits);
+            } while (taken.Contains(candidate));
+
+            return candidate;
+        }
+        
         public static string GetRandomHexNumber(int digits)
         {
             var buffer = new byte[digits / 2];
