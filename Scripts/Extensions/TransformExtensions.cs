@@ -1,10 +1,12 @@
-﻿﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
+using UnityObject = UnityEngine.Object;
 
- namespace ElasticSea.Framework.Extensions
+namespace ElasticSea.Framework.Extensions
 {
     public static class TransformExtensions
     {
-
         /// <summary>
         /// Sets localPosition to Vector3.zero, localRotation to Quaternion.identity, and localScale to Vector3.one
         /// </summary>
@@ -17,7 +19,7 @@
 
         public static void MoveHierarchyLeft(this Transform t)
         {
-            if(t.parent?.parent != null)
+            if (t.parent?.parent != null)
                 t.SetParent(t.parent.parent);
         }
 
@@ -39,19 +41,158 @@
             return dest.InverseTransformPoint(world);
         }
 
-        public static void SetLocalScaleX(this Transform t, float x)
+        public static void SetLocalX(this Transform transform, float x)
         {
-            t.localScale = t.localScale.SetX(x);
+            transform.localPosition = new Vector3(x, transform.localPosition.y, transform.localPosition.z);
         }
 
-        public static void SetLocalScaleY(this Transform t, float y)
+        public static void SetLocalY(this Transform transform, float y)
         {
-            t.localScale = t.localScale.SetY(y);
+            transform.localPosition = new Vector3(transform.localPosition.x, y, transform.localPosition.z);
         }
 
-        public static void SetLocalScaleZ(this Transform t, float z)
+        public static void SetLocalZ(this Transform transform, float z)
         {
-            t.localScale = t.localScale.SetZ(z);
+            transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, z);
+        }
+
+        public static void SetLocalScaleX(this Transform transform, float x)
+        {
+            transform.localScale = new Vector3(x, transform.localScale.y, transform.localScale.z);
+        }
+
+        public static void SetLocalScaleY(this Transform transform, float y)
+        {
+            transform.localScale = new Vector3(transform.localScale.x, y, transform.localScale.z);
+        }
+
+        public static void SetLocalScaleZ(this Transform transform, float z)
+        {
+            transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, z);
+        }
+
+        public static void SetLocalRotationX(this Transform transform, float x)
+        {
+            transform.localRotation = Quaternion.Euler(x, transform.localRotation.y, transform.localRotation.z);
+        }
+
+        public static void SetLocalRotationY(this Transform transform, float y)
+        {
+            transform.localRotation = Quaternion.Euler(transform.localRotation.x, y, transform.localRotation.z);
+        }
+
+        public static void SetLocalRotationZ(this Transform transform, float z)
+        {
+            transform.localRotation = Quaternion.Euler(transform.localRotation.x, transform.localRotation.y, z);
+        }
+
+        public static void SetX(this Transform transform, float x)
+        {
+            transform.position = new Vector3(x, transform.position.y, transform.position.z);
+        }
+
+        public static void SetY(this Transform transform, float y)
+        {
+            transform.position = new Vector3(transform.position.x, y, transform.position.z);
+        }
+
+        public static void SetZ(this Transform transform, float z)
+        {
+            transform.position = new Vector3(transform.position.x, transform.position.y, z);
+        }
+
+        public static void AddX(this Transform transform, float x)
+        {
+            transform.position += new Vector3(x, 0, 0);
+        }
+
+        public static void AddY(this Transform transform, float y)
+        {
+            transform.position += new Vector3(0, y, 0);
+        }
+
+        public static void AddZ(this Transform transform, float z)
+        {
+            transform.position += new Vector3(0, 0, z);
+        }
+
+        public static Transform CopyLocalFrom(this Transform destination, Transform source)
+        {
+            destination.localPosition = source.localPosition;
+            destination.localRotation = source.localRotation;
+            destination.localScale = source.localScale;
+            return destination;
+        }
+
+        public static Transform CopyWorldFrom(this Transform destination, Transform source)
+        {
+            destination.position = source.position;
+            destination.rotation = source.rotation;
+            destination.localScale = source.localScale;
+            return destination;
+        }
+
+        public static GameObject Instantiate(this GameObject gameObject)
+        {
+            return UnityObject.Instantiate(gameObject, Vector3.zero, Quaternion.identity);
+        }
+
+        public static T InstantiateChild<T>(this Transform parent, T source) where T : Component
+        {
+            var instance = UnityObject.Instantiate(source, Vector3.zero, Quaternion.identity);
+            instance.transform.SetParent(parent, false);
+            instance.transform.localScale = Vector3.one;
+            return instance;
+        }
+
+        public static T Instantiate<T>(this Transform parent, T source, bool worldPositionStays = false) where T : Component
+        {
+            var instance = UnityObject.Instantiate(source, parent, worldPositionStays);
+            instance.transform.localScale = Vector3.one;
+            return instance;
+        }
+
+        public static void RemoveAllChildren(this Transform transform)
+        {
+#if UNITY_EDITOR
+            while (transform.childCount > 0)
+                UnityObject.DestroyImmediate(transform.GetChild(0).gameObject);
+#else
+            foreach (Transform child in transform) UnityObject.Destroy(child.gameObject);
+#endif
+        }
+
+        public static List<Transform> Children(this Transform transform, bool includeItself = false)
+        {
+            return transform.ChildrenEnumerable(includeItself).ToList();
+        }
+
+        public static IEnumerable<Transform> ChildrenEnumerable(this Transform transform, bool includeItself = false)
+        {
+            if (includeItself) yield return transform;
+
+            for (var i = 0; i < transform.childCount; i++)
+            {
+                yield return transform.GetChild(i);
+            }
+        }
+
+        public static List<Transform> AllChildren(this Transform transform, bool includeItself = false)
+        {
+            return transform.allChildrenEnumerable(includeItself).ToList();
+        }
+
+        private static IEnumerable<Transform> allChildrenEnumerable(this Transform transform, bool includeItself = false)
+        {
+            if (includeItself) yield return transform;
+
+            for (var i = 0; i < transform.childCount; i++)
+            {
+                foreach (var v in transform.GetChild(i).AllChildren(true))
+                {
+                    yield return v;
+                }
+            }
         }
     }
 }
