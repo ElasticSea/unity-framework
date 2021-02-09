@@ -552,5 +552,32 @@ namespace ElasticSea.Framework.Util
             
             return upts;
         }
+        
+        public static string ToRoman(int number)
+        {
+            var romanNumerals = new[]
+            {
+                new[] {"", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"}, // ones
+                new[] {"", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC"}, // tens
+                new[] {"", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM"}, // hundreds
+                new[] {"", "M", "MM", "MMM"} // thousands
+            };
+
+            // split integer string into array and reverse array
+            var intArr = number.ToString().Reverse().ToArray();
+            var len = intArr.Length;
+            var romanNumeral = "";
+            var i = len;
+
+            // starting with the highest place (for 3046, it would be the thousands
+            // place, or 3), get the roman numeral representation for that place
+            // and add it to the final roman numeral string
+            while (i-- > 0)
+            {
+                romanNumeral += romanNumerals[i][int.Parse(intArr[i].ToString())];
+            }
+
+            return romanNumeral;
+        }
     }
 }
