@@ -300,6 +300,11 @@ namespace ElasticSea.Framework.Extensions
 			return Vector3.Max(vectorA, vectorB);
 		}
 
+		public static Vector3Int Max(this Vector3Int vectorA, Vector3Int vectorB)
+		{
+			return Vector3Int.Max(vectorA, vectorB);
+		}
+
 		public static Vector2 Max(this Vector2 vectorA, Vector2 vectorB)
 		{
 			return Vector2.Max(vectorA, vectorB);
