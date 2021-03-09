@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 namespace ElasticSea.Framework.Util
@@ -17,6 +18,11 @@ namespace ElasticSea.Framework.Util
                     Gizmos.DrawLine(path[i], path[i + 1]);
                 }
             }
+        }
+
+        public static void DrawLine(Vector3 from, Vector3 to, float thickness = 1)
+        {
+            Handles.DrawBezier(from, to, from, to, Gizmos.color, null, thickness);
         }
     }
 }
