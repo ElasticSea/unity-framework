@@ -456,9 +456,9 @@ namespace ElasticSea.Framework.Extensions
 			return intersect ? hit : (RaycastHit?) null;
 		}
 
-		public static Vector3 ProjectOnPlane(this Vector3 vector3, Vector3 plane)
+		public static Vector3 ProjectOnPlane(this Vector3 vector3, Vector3 planeNormal)
 		{
-			return Vector3.ProjectOnPlane(vector3, plane);
+			return Vector3.ProjectOnPlane(vector3, planeNormal);
 		}
 
 		public static Vector3 ClampMagnitude(this Vector3 vector3, float max)
