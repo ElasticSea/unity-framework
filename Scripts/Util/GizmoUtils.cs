@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using UnityEngine;
 
 namespace ElasticSea.Framework.Util
@@ -22,7 +24,9 @@ namespace ElasticSea.Framework.Util
 
         public static void DrawLine(Vector3 from, Vector3 to, float thickness = 1)
         {
+#if UNITY_EDITOR
             Handles.DrawBezier(from, to, from, to, Gizmos.color, null, thickness);
+#endif
         }
     }
 }
