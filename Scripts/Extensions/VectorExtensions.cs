@@ -176,6 +176,20 @@ namespace ElasticSea.Framework.Extensions
 			var rounded = (float)(Mathf.RoundToInt((value + offset) / roundTo) * (decimal)roundTo) - offset;
 			return Mathf.Abs(rounded - value) < precision ? rounded : value;
 		}
+		
+		public static Vector3 RoundTo(this Vector3 vector, float x, float y, float z)
+		{
+			return vector.RoundTo(new Vector3(x, y, z));
+		}
+		
+		public static Vector3 RoundTo(this Vector3 vector, Vector3 roundTo)
+		{
+			var x = vector.x.RoundTo(roundTo.x);
+			var y = vector.y.RoundTo(roundTo.y);
+			var z = vector.z.RoundTo(roundTo.z);
+			
+			return new Vector3(x, y, z);
+		}
 
 		public static Vector3 GetClosestPointOnLine(this Vector3 point, Vector3 a, Vector3 b)
 		{
