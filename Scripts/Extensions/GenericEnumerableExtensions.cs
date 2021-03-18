@@ -1021,5 +1021,28 @@ namespace ElasticSea.Framework.Extensions
 		    for( ; i < length; i++)
 			    yield return default;
 	    }
+	    
+	    public static T MaxBy<T, R>(this IEnumerable<T> source, Func<T, R> comparator) where R : IComparable
+	    {
+		    var enumerator = source.GetEnumerator();
+		    if (!enumerator.MoveNext())
+			    throw new ArgumentException("Container is empty!");
+
+		    var maxElem = enumerator.Current;
+		    var maxVal = comparator(maxElem);
+
+		    while (enumerator.MoveNext())
+		    {
+			    var currVal = comparator(enumerator.Current);
+
+			    if (currVal.CompareTo(maxVal) > 0)
+			    {
+				    maxVal = currVal;
+				    maxElem = enumerator.Current;
+			    }
+		    }
+
+		    return maxElem;
+	    }
     }
 }
