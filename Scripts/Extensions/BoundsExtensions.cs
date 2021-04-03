@@ -202,5 +202,12 @@ namespace ElasticSea.Framework.Extensions
 
 		    return Rect.MinMaxRect(min.x, min.y, max.x, max.y);
 	    }
+
+	    public static Bounds SetMinMaxX(this Bounds bounds, float min, float max)
+	    {
+		    var newBounds = new Bounds();
+		    newBounds.SetMinMax(bounds.min.SetX(min), bounds.max.SetX(max));
+		    return newBounds;
+	    }
     }
 }

@@ -369,6 +369,16 @@ namespace ElasticSea.Framework.Extensions
 			return new Vector3(0, vector.x, vector.y);
 		}
 
+		public static Vector3Int ToInt(this Vector3 vector)
+		{
+			return new Vector3Int((int) vector.x, (int) vector.y, (int) vector.z);
+		}
+
+		public static Vector2Int ToInt(this Vector2 vector)
+		{
+			return new Vector2Int((int) vector.x, (int) vector.y);
+		}
+
 		public static Vector2 Normal(this Vector2 vector)
 		{
 			return new Vector2(-vector.y, vector.x);
