@@ -1,10 +1,11 @@
+using System.Linq;
 using UnityEngine;
 
 namespace ElasticSea.Framework.Extensions
 {
     public static class CameraExtensions
     {
-        public static Texture2D RenderToTexture(this UnityEngine.Camera camera, TextureFormat textureFormat = TextureFormat.RGBA32, bool mipChain = false)
+        public static Texture2D RenderToTexture(this Camera camera, TextureFormat textureFormat = TextureFormat.RGBA32, bool mipChain = false)
         {
             var currentRT = RenderTexture.active;
             RenderTexture.active = camera.targetTexture;
@@ -16,38 +17,41 @@ namespace ElasticSea.Framework.Extensions
             return image;
         }
 
-        public static Vector3 FocusSphere(this UnityEngine.Camera camera, GameObject go)
+        /// <summary>
+        /// Focuses orthographic camera so that gameobject fills viewrect
+        /// </summary>
+        public static void FocusCamera(this Camera camera, GameObject gameObject)
         {
-            var bounds = go.GetCompositeRendererBounds();
-            var position = bounds.center;
+            var vertices = gameObject.GetWorldVertexPositions();
+            var center = vertices.Average();
+            var radius = vertices.Select(v => (center - v).magnitude).Max();
 
-            // Get the radius of a sphere circumscribing the bounds
-            var radius = bounds.size.magnitude / 2;
-
-            return camera.FocusSphere(position, radius);
+            camera.FocusCamera(center, radius);
         }
         
-        public static Vector3 FocusSphere(this UnityEngine.Camera camera, Vector3 position, float radius)
+        /// <summary>
+        /// Focuses orthographic camera on target position so that target with radius fills viewrect
+        /// </summary>
+        public static void FocusCamera(this Camera camera, Vector3 targetPosition, float targetRadius)
         {
-            var distance = camera.FocusDistance(radius);
-            return position - camera.transform.forward * distance;
-        }
-        
-        public static float FocusDistance(this UnityEngine.Camera camera, float radius)
-        {
-            // Get the horizontal FOV, since it may be the limiting of the two FOVs to properly encapsulate the objects
-            var horizontalFov = 2f * Mathf.Atan(Mathf.Tan(camera.fieldOfView * Mathf.Deg2Rad / 2f) * camera.aspect) * Mathf.Rad2Deg;
-            // Use the smaller FOV as it limits what would get cut off by the frustum        
-            var fov = Mathf.Min(camera.fieldOfView, horizontalFov);
-
-            // var distance = radius / Mathf.Tan((camera.fieldOfView * Mathf.Deg2Rad) / 2f);
-            // Take sin so the whole sphere is in the view
-            var distance = radius / Mathf.Sin((fov * Mathf.Deg2Rad) / 2f);
-
             if (camera.orthographic)
-                camera.orthographicSize = radius / Mathf.Min(camera.aspect, 1);
+            {
+                camera.transform.position = targetPosition - camera.transform.forward * (targetRadius + camera.nearClipPlane);
+                camera.orthographicSize = targetRadius / Mathf.Min(camera.aspect, 1);
+            }
+            else
+            {
+                // Get the horizontal FOV, since it may be the limiting of the two FOVs to properly encapsulate the objects
+                var horizontalFov = 2f * Mathf.Atan(Mathf.Tan(camera.fieldOfView * Mathf.Deg2Rad / 2f) * camera.aspect) * Mathf.Rad2Deg;
+                // Use the smaller FOV as it limits what would get cut off by the frustum        
+                var fov = Mathf.Min(camera.fieldOfView, horizontalFov);
 
-            return distance;
+                // var distance = radius / Mathf.Tan((camera.fieldOfView * Mathf.Deg2Rad) / 2f);
+                // Take sin so the whole sphere is in the view
+                var distance = targetRadius / Mathf.Sin((fov * Mathf.Deg2Rad) / 2f);
+
+                camera.transform.position = targetPosition - camera.transform.forward * distance;
+            }
         }
     }
 }
