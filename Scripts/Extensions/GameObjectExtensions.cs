@@ -573,5 +573,15 @@ namespace ElasticSea.Framework.Extensions
 			mesh.CombineMeshes(combine, mergeSubMeshes);
 			return mesh;
 		}
+		
+		public static void SetLayerRecursive(this GameObject gameObject, int layer)
+		{
+			gameObject.layer = layer;
+			for (var i = 0; i < gameObject.transform.childCount; i++)
+			{
+				var childGameObject = gameObject.transform.GetChild(i).gameObject;
+				SetLayerRecursive(childGameObject, layer);
+			}
+		}
     }
 }
