@@ -18,21 +18,21 @@ namespace ElasticSea.Framework.Extensions
         }
 
         /// <summary>
-        /// Focuses orthographic camera so that gameobject fills viewrect
+        /// Fill camera viewrect with gameobject
         /// </summary>
-        public static void FocusCamera(this Camera camera, GameObject gameObject)
+        public static void FillCameraView(this Camera camera, GameObject gameObject)
         {
             var vertices = gameObject.GetWorldVertexPositions();
             var center = vertices.Average();
             var radius = vertices.Select(v => (center - v).magnitude).Max();
 
-            camera.FocusCamera(center, radius);
+            camera.FillCameraView(center, radius);
         }
         
         /// <summary>
-        /// Focuses orthographic camera on target position so that target with radius fills viewrect
+        /// Fill camera viewrect with object at position with radius
         /// </summary>
-        public static void FocusCamera(this Camera camera, Vector3 targetPosition, float targetRadius)
+        public static void FillCameraView(this Camera camera, Vector3 targetPosition, float targetRadius)
         {
             if (camera.orthographic)
             {
