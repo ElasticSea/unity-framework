@@ -176,6 +176,41 @@ namespace ElasticSea.Framework.Extensions
 
 		    return compositeBounds;
 	    }
+	    
+	    /// <summary>
+	    /// Returns world positions for all vertices in mesh filter meshes
+	    /// </summary>
+	    public static Vector3[] GetWorldVertexPositions(this GameObject go, bool isSharedMesh = false)
+	    {
+		    var meshFilters = go.GetComponentsInChildren<MeshFilter>(true)
+			    .Select(mf =>
+			    {
+				    var mesh = isSharedMesh ? mf.sharedMesh : mf.mesh;
+				    return (mf, mesh);
+			    })
+			    .ToArray();
+
+		    var verticesCount = 0;
+		    for (var i = 0; i < meshFilters.Length; i++)
+		    {
+			    var (mf, mesh) = meshFilters[i];
+			    verticesCount += mesh.vertices.Length;
+		    }
+		    
+		    var vertices = new Vector3[verticesCount];
+		    var index = 0;
+		    for (var i = 0; i < meshFilters.Length; i++)
+		    {
+			    var (mf, mesh) = meshFilters[i];
+			    var verts = mesh.vertices;
+			    for (var j = 0; j < verts.Length; j++)
+			    {
+				    vertices[index++] = mf.transform.TransformPoint(verts[j]);
+			    }
+		    }
+
+		    return vertices;
+	    }
 
 	    public static Bounds MoveToBottom(this Bounds from, Bounds to)
 	    {
