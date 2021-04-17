@@ -41,17 +41,24 @@ namespace ElasticSea.Framework.Extensions
             }
             else
             {
-                // Get the horizontal FOV, since it may be the limiting of the two FOVs to properly encapsulate the objects
-                var horizontalFov = 2f * Mathf.Atan(Mathf.Tan(camera.fieldOfView * Mathf.Deg2Rad / 2f) * camera.aspect) * Mathf.Rad2Deg;
-                // Use the smaller FOV as it limits what would get cut off by the frustum        
-                var fov = Mathf.Min(camera.fieldOfView, horizontalFov);
-
-                // var distance = radius / Mathf.Tan((camera.fieldOfView * Mathf.Deg2Rad) / 2f);
-                // Take sin so the whole sphere is in the view
-                var distance = targetRadius / Mathf.Sin((fov * Mathf.Deg2Rad) / 2f);
-
+                var distance = camera.GetFillCameraViewDistance(targetRadius);
                 camera.transform.position = targetPosition - camera.transform.forward * distance;
             }
+        }
+
+        /// <summary>
+        /// Get distance from the camera to the object based on the objects sphere radius and camera fov
+        /// </summary>
+        public static float GetFillCameraViewDistance(this Camera camera, float targetRadius)
+        {
+            // Get the horizontal FOV, since it may be the limiting of the two FOVs to properly encapsulate the objects
+            var horizontalFov = 2f * Mathf.Atan(Mathf.Tan(camera.fieldOfView * Mathf.Deg2Rad / 2f) * camera.aspect) * Mathf.Rad2Deg;
+            // Use the smaller FOV as it limits what would get cut off by the frustum        
+            var fov = Mathf.Min(camera.fieldOfView, horizontalFov);
+
+            // var distance = radius / Mathf.Tan((camera.fieldOfView * Mathf.Deg2Rad) / 2f);
+            // Take sin so the whole sphere is in the view
+            return targetRadius / Mathf.Sin((fov * Mathf.Deg2Rad) / 2f);
         }
     }
 }
