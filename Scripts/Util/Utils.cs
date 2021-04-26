@@ -121,30 +121,6 @@ namespace ElasticSea.Framework.Util
             return source;
         }
 
-        public static Color HSV(
-            float H, // hue shift (0 - 1)
-            float S, // saturation multiplier (0 - 1)
-            float V // value multiplier (0 - 1)
-        )
-        {
-            var VSU = V * S * Math.Cos(H * Mathf.PI * 2);
-            var VSW = V * S * Math.Sin(H * Mathf.PI * 2);
-
-            return new Color
-            {
-                r = (float)((.299 * V + .701 * VSU + .168 * VSW)
-                            + (.587 * V - .587 * VSU + .330 * VSW)
-                            + (.114 * V - .114 * VSU - .497 * VSW)),
-                g = (float)((.299 * V - .299 * VSU - .328 * VSW)
-                            + (.587 * V + .413 * VSU + .035 * VSW)
-                            + (.114 * V - .114 * VSU + .292 * VSW)),
-                b = (float)((.299 * V - .3 * VSU + 1.25 * VSW)
-                            + (.587 * V - .588 * VSU - 1.05 * VSW)
-                            + (.114 * V + .886 * VSU - .203 * VSW)),
-                a = 1
-            };
-        }
-
         public static float Ease(float t, float exponent)
         {
             return Mathf.Pow(Mathf.Abs(t), exponent) / (Mathf.Pow(Mathf.Abs(t), exponent) + Mathf.Pow((1 - Mathf.Abs(t)), exponent)) * Mathf.Sign(t);
