@@ -17,7 +17,7 @@ namespace ElasticSea.Framework.Util
             Mesh mesh = null;
             if (mf)
             {
-                mesh = mf.mesh;
+                mesh = Application.isPlaying ? mf.mesh : mf.sharedMesh;
             }
             else if (smr)
             {
@@ -25,7 +25,7 @@ namespace ElasticSea.Framework.Util
             }
             else if (GetComponent<MeshFilter>())
             {
-                mesh = GetComponent<MeshFilter>().mesh;
+                mesh = Application.isPlaying ? GetComponent<MeshFilter>().mesh : GetComponent<MeshFilter>().sharedMesh;
             }
             else if (GetComponent<SkinnedMeshRenderer>())
             {
