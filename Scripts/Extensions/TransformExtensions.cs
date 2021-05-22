@@ -35,6 +35,9 @@ namespace ElasticSea.Framework.Extensions
                 t.SetSiblingIndex(Mathf.Max(t.GetSiblingIndex() - 1, 0));
         }
 
+        /// <summary>
+        /// Transforms position from local space to local space of another transform.
+        /// </summary>
         public static Vector3 TransformPoint(this Transform t, Vector3 position, Transform dest)
         {
             var world = t.TransformPoint(position);
