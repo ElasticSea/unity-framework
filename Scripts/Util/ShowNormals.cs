@@ -4,7 +4,7 @@ namespace ElasticSea.Framework.Util
 {
     public class ShowNormals : MonoBehaviour
     {
-        [SerializeField] private int length = 1;
+        [SerializeField] private float length = 1;
         [SerializeField] private int limit = -1;
         
         [SerializeField] private MeshFilter mf;
