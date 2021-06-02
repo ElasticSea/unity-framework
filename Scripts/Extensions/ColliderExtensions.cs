@@ -13,5 +13,14 @@ namespace ElasticSea.Framework.Scripts.Extensions
 
             return Physics.OverlapBox(worldCenter, worldExtents, orientation);
         }
+        
+        public static Collider[] Overlap(this SphereCollider sphereCollider)
+        {
+            var scale = sphereCollider.transform.lossyScale.Min();
+            var worldCenter = sphereCollider.transform.TransformPoint(sphereCollider.center);
+            var worldRadius = sphereCollider.radius * scale;
+            
+            return Physics.OverlapSphere(worldCenter, worldRadius);
+        }
     }
 }
