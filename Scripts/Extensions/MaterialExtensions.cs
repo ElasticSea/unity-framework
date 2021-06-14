@@ -55,5 +55,17 @@ namespace ElasticSea.Framework.Extensions
                     break;
             }
         }
+
+        public static void EnableKeyword(this Material material, string keyword, bool enabled)
+        {
+            if (enabled)
+            {
+                material.EnableKeyword(keyword);
+            }
+            else
+            {
+                material.DisableKeyword(keyword);
+            }
+        }
     }
 }
