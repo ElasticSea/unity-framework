@@ -555,5 +555,27 @@ namespace ElasticSea.Framework.Util
 
             return romanNumeral;
         }
+
+        public static string BytesToString(long bytes)
+        {
+            double partial = bytes;
+            if (partial < 1024) return $"{partial:G3}B";
+            partial /= 1024;
+            if (partial < 1024) return $"{partial:G3}KB";
+            partial /= 1024;
+            if (partial < 1024) return $"{partial:G3}MB";
+            partial /= 1024;
+            if (partial < 1024) return $"{partial:G3}GB";
+            partial /= 1024;
+            if (partial < 1024) return $"{partial:G3}TB";
+            partial /= 1024;
+            if (partial < 1024) return $"{partial:G3}PB";
+            partial /= 1024;
+            if (partial < 1024) return $"{partial:G3}EB";
+            partial /= 1024;
+            if (partial < 1024) return $"{partial:G3}ZB";
+            partial /= 1024;
+            return $"{partial:G3}YB";
+        }
     }
 }
