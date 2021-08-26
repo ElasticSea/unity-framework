@@ -577,5 +577,13 @@ namespace ElasticSea.Framework.Util
             partial /= 1024;
             return $"{partial:G3}YB";
         }
+        
+        public static bool IsPrefabModeIsActive()
+        {
+#if UNITY_EDITOR
+            return UnityEditor.Experimental.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage() != null;
+#endif
+            return false;
+        }
     }
 }
