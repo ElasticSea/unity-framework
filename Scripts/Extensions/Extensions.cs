@@ -206,5 +206,15 @@ namespace System
             }
             return null;
         }
+
+        public static byte[] ReadAllBytes(this Stream stream)
+        {
+            if (stream is MemoryStream memoryStream1)
+                return memoryStream1.ToArray();
+
+            using var memoryStream = new MemoryStream();
+            stream.CopyTo(memoryStream);
+            return memoryStream.ToArray();
+        }
     }
 }
