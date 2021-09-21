@@ -495,6 +495,11 @@ namespace ElasticSea.Framework.Extensions
 			return Vector3.Lerp(vector3A, vector3B, t);
 		}
 
+		public static Vector2 Lerp(this Vector2 vector3A, Vector2 vector3B, float t)
+		{
+			return Vector2.Lerp(vector3A, vector3B, t);
+		}
+
 		public static Vector3 Average(this Vector3[] points)
 		{
 			var v = Vector3.zero;
