@@ -229,6 +229,11 @@ namespace ElasticSea.Framework.Extensions
 			return new Vector2(vectorA.x / vectorB.x, vectorA.y / vectorB.y);
 		}
 
+		public static Vector2 Divide(this Vector2 vectorA, float value)
+		{
+			return new Vector2(vectorA.x / value, vectorA.y / value);
+		}
+
 		public static Vector3 Multiply(this Vector3 vectorA, Vector3 vectorB)
 		{
 			return Vector3.Scale(vectorA, vectorB);
