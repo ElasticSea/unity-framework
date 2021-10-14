@@ -514,6 +514,11 @@ namespace ElasticSea.Framework.Extensions
 		{
 			return Vector2.Lerp(vector3A, vector3B, t);
 		}
+		
+		public static Vector3 Average(this IEnumerable<Vector3> points)
+		{
+			return points.ToArray().Average();
+		}
 
 		public static Vector3 Average(this Vector3[] points)
 		{
