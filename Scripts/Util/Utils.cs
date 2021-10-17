@@ -585,5 +585,21 @@ namespace ElasticSea.Framework.Util
 #endif
             return false;
         }
+        
+        public static IEnumerable<T> Find<T>()
+        {
+            for (var i = 0; i < SceneManager.sceneCount; i++)
+            {
+                var scene = SceneManager.GetSceneAt(i);
+
+                foreach (var root in scene.GetRootGameObjects())
+                {
+                    foreach (var childInterface in root.GetComponentsInChildren<T>())
+                    {
+                        yield return childInterface;
+                    }
+                }
+            }
+        }
     }
 }
