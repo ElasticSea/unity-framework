@@ -534,7 +534,8 @@ namespace ElasticSea.Framework.Extensions
 		
 		public static void RunDelayed(this MonoBehaviour behaviour, float delay, Action codeBlock)
 		{
-			behaviour.StartCoroutine(RunDelayed(delay, codeBlock));
+			if (behaviour && behaviour.isActiveAndEnabled)
+				behaviour.StartCoroutine(RunDelayed(delay, codeBlock));
 		}
 
 		private static IEnumerator RunDelayed(float delay, Action codeBlock)

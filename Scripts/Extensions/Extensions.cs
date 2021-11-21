@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using UnityEngine;
 
 // ReSharper disable once CheckNamespace
@@ -8,9 +9,19 @@ namespace System
 {
     public static class Extensions
     {
-        public static string GetString(this byte[] bytes)
+        public static string GetBase64String(this byte[] bytes)
         {
             return Convert.ToBase64String(bytes);
+        }
+        
+        public static string GetUtf8String(this byte[] bytes)
+        {
+            return Encoding.UTF8.GetString(bytes);
+        }
+        
+        public static byte[] GetUtf8Bytes(this string utf8String)
+        {
+            return Encoding.UTF8.GetBytes(utf8String);
         }
         
         public static void Write(this FileStream fs, byte[] bytes)

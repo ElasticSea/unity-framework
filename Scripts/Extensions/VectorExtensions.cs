@@ -339,6 +339,18 @@ namespace ElasticSea.Framework.Extensions
 			return Mathf.Max(vector.x, vector.y);
 		}
 
+		public static Vector3 Smallest(this Vector3 thisVector, Vector3 otherVector)
+		{
+			if (thisVector.magnitude < otherVector.magnitude)
+			{
+				return thisVector;
+			}
+			else
+			{
+				return otherVector;
+			}
+		}
+
 		public static Vector2 FromXY(this Vector3 vector)
 		{
 			return new Vector2(vector.x, vector.y);
