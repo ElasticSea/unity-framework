@@ -148,6 +148,14 @@ namespace ElasticSea.Framework.Extensions
 			return new Vector3(x, y, z);
 		}
 
+		public static Vector3 Round(this Vector3 vector, int multiple)
+		{
+			var x = Mathf.Round(vector.x / multiple) * multiple;
+			var y = Mathf.Round(vector.y / multiple) * multiple;
+			var z = Mathf.Round(vector.z / multiple) * multiple;
+			return new Vector3(x, y, z);
+		}
+
 		public static Vector3 Abs(this Vector3 vector)
 		{
 			var x = Mathf.Abs(vector.x);
