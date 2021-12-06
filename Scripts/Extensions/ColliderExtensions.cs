@@ -6,7 +6,7 @@ namespace ElasticSea.Framework.Scripts.Extensions
 {
     public static class ColliderExtensions
     {
-#if UNITY_2020_PLUS
+#if UNITY_2020_1_OR_NEWER
         public static Collider[] Overlap(this CapsuleCollider capsuleCollider)
         {
             var axis = capsuleCollider.direction switch
