@@ -59,5 +59,29 @@ namespace ElasticSea.Framework.Extensions
             newMesh.RecalculateBounds();
             return newMesh;
         }
+        
+        public static Mesh Scale(this Mesh mesh, Vector3 scale)
+        {
+            var vertices = mesh.vertices;
+            for (var i = 0; i < vertices.Length; i++)
+            {
+                vertices[i] = vertices[i].Multiply(scale);
+            }
+            mesh.vertices = vertices;
+            mesh.RecalculateBounds();
+            return mesh;
+        }
+        
+        public static Mesh Translate(this Mesh mesh, Vector3 translate)
+        {
+            var vertices = mesh.vertices;
+            for (var i = 0; i < vertices.Length; i++)
+            {
+                vertices[i] = vertices[i] + translate;
+            }
+            mesh.vertices = vertices;
+            mesh.RecalculateBounds();
+            return mesh;
+        }
     }
 }
