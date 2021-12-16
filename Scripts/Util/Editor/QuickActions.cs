@@ -20,6 +20,11 @@ namespace ElasticSea.Framework.Util.Editor
             {
                 Directory.Delete(Application.persistentDataPath, true);
             }
+            
+            if (GUILayout.Button("Build Folder"))
+            {
+                Utils.OpenInExplorer(Path.Combine(new DirectoryInfo(Application.dataPath).Parent.FullName, "Build"));
+            }
         }
     }
 }
