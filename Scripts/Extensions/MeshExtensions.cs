@@ -83,5 +83,26 @@ namespace ElasticSea.Framework.Extensions
             mesh.RecalculateBounds();
             return mesh;
         }
+        
+        public static Mesh ClampMesh(this Mesh m, float clampAmount)
+        {
+            var bounds = m.bounds;
+            bounds.Expand(-clampAmount);
+            return ClampMeshToBounds(m, bounds);
+        }
+        
+        public static Mesh ClampMeshToBounds(this Mesh m, Bounds bounds)
+        {
+            var vertices = m.vertices;
+
+            for (var i = 0; i < vertices.Length; i++)
+            {
+                vertices[i] = vertices[i].Clamp(bounds.min, bounds.max);
+            }
+
+            m.vertices = vertices;
+            m.RecalculateBounds();
+            return m;
+        }
     }
 }
