@@ -6,9 +6,9 @@ namespace ElasticSea.Framework.Scripts.Extensions
 {
     public static class ColliderExtensions
     {
-#if UNITY_2020_1_OR_NEWER
         public static Collider[] Overlap(this CapsuleCollider capsuleCollider)
         {
+#if UNITY_2020_1_OR_NEWER
             var axis = capsuleCollider.direction switch
             {
                 0 => Vector3.right,
@@ -22,8 +22,10 @@ namespace ElasticSea.Framework.Scripts.Extensions
             var scale = capsuleCollider.transform.lossyScale.Min();
 
             return Physics.OverlapCapsule(worldTop, worldBottom, capsuleCollider.radius * scale);
-        }
+#else
+            throw new NotSupportedException();
 #endif
+        }
         
         public static Collider[] Overlap(this BoxCollider boxCollider)
         {
@@ -49,9 +51,11 @@ namespace ElasticSea.Framework.Scripts.Extensions
             {
                 case SphereCollider sc: return sc.Overlap(); 
                 case BoxCollider bc: return bc.Overlap(); 
-#if UNITY_2020_PLUS
                 case CapsuleCollider cc: return cc.Overlap(); 
-#endif
+            }
+            
+            throw new ArgumentException($"Collider of type: {collider.GetType().GetSimpleAliasName()} is not supported.");
+        }
 
         public static float Volume(this BoxCollider c)
         {
