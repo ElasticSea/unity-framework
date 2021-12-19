@@ -52,6 +52,29 @@ namespace ElasticSea.Framework.Scripts.Extensions
 #if UNITY_2020_PLUS
                 case CapsuleCollider cc: return cc.Overlap(); 
 #endif
+
+        public static float Volume(this BoxCollider c)
+        {
+            return c.size.x * c.size.y * c.size.z;
+        }
+        
+        public static float Volume(this SphereCollider c)
+        {
+            return 4 / 3f * Mathf.PI * c.radius * c.radius * c.radius;
+        }
+        
+        public static float Volume(this MeshCollider c)
+        {
+            return c.sharedMesh.Volume();
+        }
+        
+        public static float Volume(this Collider collider)
+        {
+            switch (collider)
+            {
+                case SphereCollider sc: return sc.Volume(); 
+                case BoxCollider bc: return bc.Volume(); 
+                case MeshCollider mc: return mc.Volume(); 
             }
             
             throw new ArgumentException($"Collider of type: {collider.GetType().GetSimpleAliasName()} is not supported.");
