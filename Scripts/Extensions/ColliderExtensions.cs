@@ -27,10 +27,11 @@ namespace ElasticSea.Framework.Scripts.Extensions
 #endif
         }
         
-        public static Collider[] Overlap(this BoxCollider boxCollider)
+        public static Collider[] Overlap(this BoxCollider boxCollider, Vector3? offset)
         {
+            var off = offset ?? Vector3.zero;
             var worldCenter = boxCollider.transform.TransformPoint(boxCollider.center);
-            var worldExtents = boxCollider.transform.lossyScale.Multiply(boxCollider.size) / 2;
+            var worldExtents = boxCollider.transform.lossyScale.Multiply(boxCollider.size) / 2 + off;
             var orientation = boxCollider.transform.rotation;
 
             return Physics.OverlapBox(worldCenter, worldExtents, orientation);
