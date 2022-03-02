@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using System.Reflection;
+using ElasticSea.Framework.Extensions;
 using UnityEditor;
 using UnityEngine;
 
@@ -115,7 +116,7 @@ namespace ElasticSea.Framework.Util.PropertyDrawers.Editor
                 position.width -= labelPos.width;
             }
 
-            EditorGUI.LabelField(position, obj ? $"{obj.name} [{obj.GetType().Name}]" : "None", EditorStyles.objectField);
+            EditorGUI.LabelField(position, obj ? $"{obj.name} [{obj.GetType().Name}]" : $"None ({attr.typeRestrictions.JoinString(", ", a => a.GetSimpleAliasName())})", EditorStyles.objectField);
             position.width -= 32;
 
             if (Event.current.type == EventType.MouseDown || Event.current.type == EventType.MouseUp)
