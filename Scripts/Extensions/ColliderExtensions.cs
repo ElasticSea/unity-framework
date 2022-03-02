@@ -6,7 +6,17 @@ namespace ElasticSea.Framework.Scripts.Extensions
 {
     public static class ColliderExtensions
     {
-        public static Collider[] Overlap(this CapsuleCollider capsuleCollider)
+        public static Collider[] OverlapBox(this BoxCollider boxCollider, Vector3? offset)
+        {
+            var off = offset ?? Vector3.zero;
+            var worldCenter = boxCollider.transform.TransformPoint(boxCollider.center);
+            var worldExtents = boxCollider.transform.lossyScale.Multiply(boxCollider.size) / 2 + off;
+            var orientation = boxCollider.transform.rotation;
+
+            return Physics.OverlapBox(worldCenter, worldExtents, orientation);
+        }
+
+        public static Collider[] OverlapCapsule(this CapsuleCollider capsuleCollider)
         {
 #if UNITY_2020_1_OR_NEWER
             var axis = capsuleCollider.direction switch
@@ -26,18 +36,8 @@ namespace ElasticSea.Framework.Scripts.Extensions
             throw new NotSupportedException();
 #endif
         }
-        
-        public static Collider[] Overlap(this BoxCollider boxCollider, Vector3? offset)
-        {
-            var off = offset ?? Vector3.zero;
-            var worldCenter = boxCollider.transform.TransformPoint(boxCollider.center);
-            var worldExtents = boxCollider.transform.lossyScale.Multiply(boxCollider.size) / 2 + off;
-            var orientation = boxCollider.transform.rotation;
 
-            return Physics.OverlapBox(worldCenter, worldExtents, orientation);
-        }
-        
-        public static Collider[] Overlap(this SphereCollider sphereCollider)
+        public static Collider[] OverlapSphere(this SphereCollider sphereCollider)
         {
             var scale = sphereCollider.transform.lossyScale.Min();
             var worldCenter = sphereCollider.transform.TransformPoint(sphereCollider.center);
@@ -50,9 +50,9 @@ namespace ElasticSea.Framework.Scripts.Extensions
         {
             switch (collider)
             {
-                case SphereCollider sc: return sc.Overlap(); 
-                case BoxCollider bc: return bc.Overlap(); 
-                case CapsuleCollider cc: return cc.Overlap(); 
+                case SphereCollider sc: return sc.OverlapSphere(); 
+                case BoxCollider bc: return bc.OverlapBox(null); 
+                case CapsuleCollider cc: return cc.OverlapCapsule(); 
             }
             
             throw new ArgumentException($"Collider of type: {collider.GetType().GetSimpleAliasName()} is not supported.");
