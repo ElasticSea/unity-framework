@@ -106,10 +106,11 @@ namespace ElasticSea.Framework.Extensions
 		}
 
 	    public static Bounds GetCompositeColliderBounds(this GameObject go, Predicate<Collider> filter = null,
-		    bool includeInactive = true)
+		    bool includeInactive = true, bool ignoreTriggers = true)
 	    {
 		    var boundsInObject = go.GetComponentsInChildren<Collider>(includeInactive)
 			    .Where(r => filter == null || filter(r))
+			    .Where(r => r.isTrigger != ignoreTriggers)
 			    .Select(r => r.bounds)
 			    .Where(bounds => bounds.min != bounds.max)
 			    .ToArray();
