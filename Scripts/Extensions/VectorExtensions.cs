@@ -36,6 +36,11 @@ namespace ElasticSea.Framework.Extensions
 			return v - new Vector3(f, f);
 		}
 		
+		public static Vector3 ToVector3(this Vector2 v)
+		{
+			return new Vector3(v.x, v.y, 0);
+		}
+		
 		public static Vector3 ToVector3(this Vector4 v)
 		{
 			return new Vector3(v.x, v.y, v.z);
