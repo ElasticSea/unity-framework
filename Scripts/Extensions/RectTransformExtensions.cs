@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace ElasticSea.Framework.Extensions
 {
@@ -182,6 +183,51 @@ namespace ElasticSea.Framework.Extensions
             destination.offsetMax = source.offsetMax;
             destination.pivot = source.pivot;
             return destination;
+        }
+        
+        public static (int columns, int rows) GetColumnsAndRows(this GridLayoutGroup glg)
+        {
+            var column = 0;
+            var row = 0;
+
+            if (glg.transform.childCount == 0)
+                return (0, 0);
+
+            //Column and row are now 1
+            column = 1;
+            row = 1;
+
+            //Get the first child GameObject of the GridLayoutGroup
+            var firstChildObj = glg.transform.
+                GetChild(0).GetComponent<RectTransform>();
+
+            var firstChildPos = firstChildObj.anchoredPosition;
+            bool stopCountingRow = false;
+
+            //Loop through the rest of the child object
+            for (int i = 1; i < glg.transform.childCount; i++)
+            {
+                //Get the next child
+                var currentChildObj = glg.transform.
+                    GetChild(i).GetComponent<RectTransform>();
+
+                var currentChildPos = currentChildObj.anchoredPosition;
+
+                //if first child.x == otherchild.x, it is a column, ele it's a row
+                if (firstChildPos.x == currentChildPos.x)
+                {
+                    column++;
+                    //Stop couting row once we find column
+                    stopCountingRow = true;
+                }
+                else
+                {
+                    if (!stopCountingRow)
+                        row++;
+                }
+            }
+
+            return (column, row);
         }
     }
 }
