@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using ElasticSea.Framework.Extensions;
+using UnityEngine;
 
 namespace ElasticSea.Framework.Util
 {
@@ -6,7 +7,25 @@ namespace ElasticSea.Framework.Util
     {
         private static T instance;
 
-        public static T Instance => instance ?? (instance = FindObjectOfType<T>());
+        public static T Instance
+        {
+            get
+            {
+                if (instance)
+                {
+                    return instance;
+                }
+
+                instance = FindObjectOfType<T>();
+                if (instance)
+                {
+                    return instance;
+                }
+                
+                instance = new GameObject(typeof(Singleton<T>).GetSimpleAliasName()).AddComponent<T>();
+                return instance;
+            }
+        }
 
         protected bool Awake()
         {
