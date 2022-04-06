@@ -743,6 +743,9 @@ namespace ElasticSea.Framework.Extensions
 
 	    public static bool None<T>(this IEnumerable<T> enumerable)
 	    {
+		    if (enumerable is ICollection<T> collection)
+			    return collection.Count == 0;
+		    
 	        return enumerable.Any() == false;
 	    }
 
