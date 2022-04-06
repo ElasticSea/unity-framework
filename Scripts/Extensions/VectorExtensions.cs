@@ -504,6 +504,12 @@ namespace ElasticSea.Framework.Extensions
 			return vector3 - (vector3 - (-plane.normal * plane.distance)).Dot(plane.normal) * plane.normal;
 		}
 
+		public static float Angle(this Plane plane, Vector3 vector3)
+		{
+			var projected = vector3.ProjectOnPlane(plane);
+			return projected.Angle(vector3);
+		}
+
 		public static bool RaycastPoint(this Plane plane, Ray ray, out Vector3 point)
 		{
 			if (plane.Raycast(ray, out var d))
