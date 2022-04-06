@@ -494,9 +494,28 @@ namespace ElasticSea.Framework.Extensions
 			return Vector2.Dot(vectorA, vectorB);
 		}
 
+		public static Vector3 Project(this Vector3 vector3, Vector3 normal)
+		{
+			return Vector3.Project(vector3, normal);
+		}
+
 		public static Vector3 ProjectOnPlane(this Vector3 vector3, Plane plane)
 		{
 			return vector3 - (vector3 - (-plane.normal * plane.distance)).Dot(plane.normal) * plane.normal;
+		}
+
+		public static bool RaycastPoint(this Plane plane, Ray ray, out Vector3 point)
+		{
+			if (plane.Raycast(ray, out var d))
+			{
+				point =  ray.origin + ray.direction * d;
+				return true;
+			}
+			else
+			{
+				point = Vector3.zero;
+				return false;
+			}
 		}
 
 		public static Vector3? Intersect(this Plane plane, Ray ray)

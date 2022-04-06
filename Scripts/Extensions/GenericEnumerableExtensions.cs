@@ -74,6 +74,23 @@ namespace ElasticSea.Framework.Extensions
 	        return val;
 	    }
 
+	    public static T Largest<T>(this IEnumerable<T> source, Func<T, float> compare)
+	    {
+		    var max = float.MinValue;
+		    var val = default(T);
+		    foreach (var element in source)
+		    {
+			    var res = compare(element);
+			    if (res > max)
+			    {
+				    val = element;
+				    max = res;
+			    }
+		    }
+
+		    return val;
+	    }
+
         public static IEnumerable<T> OfType<T>(this IEnumerable<T> items, Type ofType)
 		{
 			foreach(var item in items)
