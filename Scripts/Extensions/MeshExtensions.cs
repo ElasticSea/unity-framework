@@ -35,29 +35,56 @@ namespace ElasticSea.Framework.Extensions
         /// <summary>
         /// Moves vertices from the center to each direction
         /// </summary>
-        public static Mesh OffsetMeshFromCenter(this Mesh mesh, Vector3 size)
+        public static Mesh ExtendMeshFromCenter(this Mesh source, Vector3 size)
         {
+            var offset = (size - source.bounds.size) / 2;
+            return source.ExtendMesh(offset, offset, new Vector3(0.5f, 0.5f, 0.5f));
+        }
+        
+        /// <summary>
+        /// Moves vertices from the center to each direction
+        /// </summary>
+        public static Mesh ExtendMesh(this Mesh source, Vector3 minExtends, Vector3 maxExtends, Vector3 normalizedCenter)
+        {
+            var mesh = source.Clone();
             var bounds = mesh.bounds;
             var vertices = mesh.vertices;
-            var offset = (size - bounds.size) / 2;
+            var boundsCenter = bounds.min + bounds.size.Multiply(normalizedCenter);
+
             for (var i = 0; i < vertices.Length; i++)
             {
                 var vert = vertices[i];
-                var x = vert.x > bounds.center.x / 2 ? vert.x + offset.x : vert.x - offset.x;
-                var y = vert.y > bounds.center.y / 2 ? vert.y + offset.y : vert.y - offset.y;
-                var z = vert.z > bounds.center.z / 2 ? vert.z + offset.z : vert.z - offset.z;
+                var x = vert.x + (vert.x > boundsCenter.x / 2 ? +minExtends.x : -maxExtends.x);
+                var y = vert.y + (vert.y > boundsCenter.y / 2 ? +minExtends.y : -maxExtends.y);
+                var z = vert.z + (vert.z > boundsCenter.z / 2 ? +minExtends.z : -maxExtends.z);
                 vertices[i] = new Vector3(x, y, z);
             }
+
+            mesh.vertices = vertices;
+            mesh.RecalculateBounds();
+
+            return mesh;
+        }
         
+        public static Mesh Clone(this Mesh mesh)
+        {
             var newMesh = new Mesh
             {
-                vertices = vertices,
-                triangles = mesh.triangles,
+                vertices = mesh.vertices,
                 normals = mesh.normals,
                 uv = mesh.uv,
-                tangents = mesh.tangents
+                uv2 = mesh.uv2,
+                tangents = mesh.tangents,
+                subMeshCount = mesh.subMeshCount,
+                bounds = mesh.bounds
             };
-            newMesh.RecalculateBounds();
+            
+            for (var i = 0; i < mesh.subMeshCount; i++)
+            {
+                var triangles = mesh.GetTriangles(i);
+                newMesh.SetTriangles(triangles, i);
+            }
+
             return newMesh;
         }
         
