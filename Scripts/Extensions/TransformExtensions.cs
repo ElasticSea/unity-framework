@@ -200,18 +200,34 @@ namespace ElasticSea.Framework.Extensions
         
         public static void AlignToCenter(this Transform transform, Bounds thisBounds, Transform other, Bounds otherBounds)
         {
+            var (position, rotation) = transform.GetAlignToCenter(thisBounds, other, otherBounds);
+            transform.position = position;
+            transform.rotation = rotation;
+        }
+        
+        public static (Vector3 position, Quaternion rotation) GetAlignToCenter(this Transform transform, Bounds thisBounds, Transform other, Bounds otherBounds)
+        {
             var c0 = otherBounds.center;
             var c1 = thisBounds.center;
-            transform.position = other.TransformPoint(c0 - c1.Multiply(transform.lossyScale).Divide(other.lossyScale));
-            transform.rotation = other.rotation;
+            var position = other.TransformPoint(c0 - c1.Multiply(transform.lossyScale).Divide(other.lossyScale));
+            var rotation = other.rotation;
+            return (position, rotation);
         }
 
         public static void AlignToBottom(this Transform transform, Bounds thisBounds, Transform other, Bounds otherBounds)
         {
+            var (position, rotation) = transform.GetAlignToBottom(thisBounds, other, otherBounds);
+            transform.position = position;
+            transform.rotation = rotation;
+        }
+
+        public static (Vector3 position, Quaternion rotation) GetAlignToBottom(this Transform transform, Bounds thisBounds, Transform other, Bounds otherBounds)
+        {
             var c0 = otherBounds.center - new Vector3(0, otherBounds.size.y, 0);
             var c1 = thisBounds.center - new Vector3(0, thisBounds.extents.y, 0);
-            transform.position = other.TransformPoint(c0 - c1.Multiply(transform.lossyScale).Divide(other.lossyScale));
-            transform.rotation = other.rotation;
+            var position = other.TransformPoint(c0 - c1.Multiply(transform.lossyScale).Divide(other.lossyScale));
+            var rotation = other.rotation;
+            return (position, rotation);
         }
     }
 }
