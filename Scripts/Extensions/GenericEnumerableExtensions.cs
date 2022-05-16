@@ -1072,5 +1072,13 @@ namespace ElasticSea.Framework.Extensions
 			    yield return enumerator.Current;
 		    }
 	    }
+
+	    public static void AddRange<T>(this ICollection<T> collection, IEnumerable<T> source)
+	    {
+		    foreach (var element in source)
+		    {
+			    collection.Add(element);
+		    }
+	    }
     }
 }
