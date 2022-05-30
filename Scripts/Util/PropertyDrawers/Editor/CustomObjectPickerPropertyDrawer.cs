@@ -72,12 +72,6 @@ namespace ElasticSea.Framework.Util.PropertyDrawers.Editor
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            if (!typeof(Object).IsAssignableFrom(fieldInfo.FieldType) || property.isArray)
-            {
-                EditorGUILayout.LabelField("Field type not supported for CustomObjectPicker.", infoBoxStyle);
-                return;
-            }
-
             EditorGUI.BeginProperty(position, label, property);
             RenderObjectPicker(position, label.text, property, fieldInfo.FieldType, attribute as CustomObjectPickerAttribute);
             EditorGUI.EndProperty();
