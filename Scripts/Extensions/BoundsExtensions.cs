@@ -150,9 +150,10 @@ namespace ElasticSea.Framework.Extensions
 	            });
 	    }
 		
-	    public static Bounds GetCompositeMeshBounds(this GameObject go, bool isSharedMesh = false)
+	    public static Bounds GetCompositeMeshBounds(this GameObject go, bool isSharedMesh = false, Predicate<MeshFilter> filter = null)
 	    {
 		    var bounds = go.GetComponentsInChildren<MeshFilter>(true)
+			    .Where(mf => filter == null || filter(mf))
 			    .Select(mf =>
 			    {
 				    var mesh = isSharedMesh ? mf.sharedMesh : mf.mesh;
