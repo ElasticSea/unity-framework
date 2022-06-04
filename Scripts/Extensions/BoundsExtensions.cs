@@ -7,17 +7,22 @@ namespace ElasticSea.Framework.Extensions
 {
     public static class BoundsExtensions
     {
-        public static Vector3[] GetVertices(this Bounds bounds) => new[]
+        public static Vector3[] GetVertices(this Bounds bounds)
         {
-            new Vector3(bounds.center.x, bounds.center.y, bounds.center.z) + new Vector3(-bounds.extents.x, -bounds.extents.y, -bounds.extents.z),
-            new Vector3(bounds.center.x, bounds.center.y, bounds.center.z) + new Vector3(bounds.extents.x, -bounds.extents.y, -bounds.extents.z),
-            new Vector3(bounds.center.x, bounds.center.y, bounds.center.z) + new Vector3(-bounds.extents.x, -bounds.extents.y, bounds.extents.z),
-            new Vector3(bounds.center.x, bounds.center.y, bounds.center.z) + new Vector3(bounds.extents.x, -bounds.extents.y, bounds.extents.z),
-            new Vector3(bounds.center.x, bounds.center.y, bounds.center.z) + new Vector3(-bounds.extents.x, bounds.extents.y, -bounds.extents.z),
-            new Vector3(bounds.center.x, bounds.center.y, bounds.center.z) + new Vector3(bounds.extents.x, bounds.extents.y, -bounds.extents.z),
-            new Vector3(bounds.center.x, bounds.center.y, bounds.center.z) + new Vector3(-bounds.extents.x, bounds.extents.y, bounds.extents.z),
-            new Vector3(bounds.center.x, bounds.center.y, bounds.center.z) + new Vector3(bounds.extents.x, bounds.extents.y, bounds.extents.z),
-        };
+	        var center = bounds.center;
+	        var extent = bounds.extents;
+	        return new[]
+	        {
+		        center + new Vector3(-extent.x, -extent.y, -extent.z),
+		        center + new Vector3(+extent.x, -extent.y, -extent.z),
+		        center + new Vector3(-extent.x, -extent.y, +extent.z),
+		        center + new Vector3(+extent.x, -extent.y, +extent.z),
+		        center + new Vector3(-extent.x, +extent.y, -extent.z),
+		        center + new Vector3(+extent.x, +extent.y, -extent.z),
+		        center + new Vector3(-extent.x, +extent.y, +extent.z),
+		        center + new Vector3(+extent.x, +extent.y, +extent.z),
+	        };
+        }
 
         public static Bounds ToBounds(this IEnumerable<Vector3> vertices)
         {
@@ -53,11 +58,16 @@ namespace ElasticSea.Framework.Extensions
                     return a;
                 });
         }
+        
         public static Bounds TransformBounds(this Transform from, Transform to, Bounds bounds)
-		{
-			return bounds.GetVertices()
-				.Select(bv => from.transform.TransformPoint(bv, to.transform))
-				.ToBounds();
+        {
+	        var transformedVertices = bounds.GetVertices();
+	        var length = transformedVertices.Length;
+	        for (var i = 0; i < length; i++)
+	        {
+		        transformedVertices[i] = from.transform.TransformPoint(transformedVertices[i], to.transform);
+	        }
+			return transformedVertices.ToBounds();
 		}
 	    
 		public static Bounds GetCompositeRendererBounds(this GameObject go, Predicate<Renderer> filter = null,
