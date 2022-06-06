@@ -8,6 +8,22 @@ namespace ElasticSea.Framework.Scripts.Util.DI
 {
     public static class DependencyInjectionUtils
     {
+        private static Dictionary<Type, List<(Type fieldType, Action<MonoBehaviour, object> action)>> dict = new Dictionary<Type, List<(Type fieldType, Action<MonoBehaviour, object> action)>>();
+        private static List<(Type fieldType, Action<MonoBehaviour, object> action)> GetSetters(MonoBehaviour mb)
+        {
+            var fields = mb.GetType()
+                .GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                .Where(f => f.GetCustomAttribute<DependencyInjectionAttribute>() != null)
+                .Select(f => (f.FieldType, (Action<MonoBehaviour, object>) ((m, value) => f.SetValue(m, value))));
+                
+            var properties = mb.GetType()
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                .Where(f => f.GetCustomAttribute<DependencyInjectionAttribute>() != null)
+                .Select(f => (f.PropertyType, (Action<MonoBehaviour, object>) ((m, value) => f.SetValue(m, value))));
+
+            return fields.Concat(properties).ToList();
+        } 
+        
         public static void Inject(GameObject target, Dictionary<Type, object> map)
         {
             var monoBehaviours = target
@@ -16,27 +32,18 @@ namespace ElasticSea.Framework.Scripts.Util.DI
             
             foreach (var mb in monoBehaviours)
             {
-                var fields = mb.GetType()
-                    .GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                    .Where(f => f.GetCustomAttribute<DependencyInjectionAttribute>() != null);
-                
-                foreach (var f in fields)
+                if (dict.ContainsKey(mb.GetType()) == false)
                 {
-                    if (map.ContainsKey(f.FieldType))
-                    {
-                        f.SetValue(mb, map[f.FieldType]);
-                    }
+                    dict[mb.GetType()] = GetSetters(mb);
                 }
-                
-                var properties = mb.GetType()
-                    .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                    .Where(f => f.GetCustomAttribute<DependencyInjectionAttribute>() != null);
-                
-                foreach (var p in properties)
+
+                var list = dict[mb.GetType()];
+                for (var i = 0; i < list.Count; i++)
                 {
-                    if (map.ContainsKey(p.PropertyType))
+                    var (fieldType, action) = list[i]; 
+                    if (map.ContainsKey(fieldType))
                     {
-                        p.SetValue(mb, map[p.PropertyType]);
+                        action(mb, map[fieldType]);
                     }
                 }
             }
