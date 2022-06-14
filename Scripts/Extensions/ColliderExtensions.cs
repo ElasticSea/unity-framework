@@ -6,14 +6,14 @@ namespace ElasticSea.Framework.Scripts.Extensions
 {
     public static class ColliderExtensions
     {
-        public static Collider[] OverlapBox(this BoxCollider boxCollider, Vector3? offset)
+        public static Collider[] OverlapBox(this BoxCollider boxCollider, Vector3? offset, int layermask = -1)
         {
             var off = offset ?? Vector3.zero;
             var worldCenter = boxCollider.transform.TransformPoint(boxCollider.center);
             var worldExtents = boxCollider.transform.lossyScale.Multiply(boxCollider.size) / 2 + off;
             var orientation = boxCollider.transform.rotation;
 
-            return Physics.OverlapBox(worldCenter, worldExtents, orientation);
+            return Physics.OverlapBox(worldCenter, worldExtents, orientation, layermask);
         }
 
         public static Collider[] OverlapCapsule(this CapsuleCollider capsuleCollider)
