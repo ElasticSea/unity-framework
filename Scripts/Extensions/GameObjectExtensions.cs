@@ -17,15 +17,16 @@ namespace ElasticSea.Framework.Extensions
 			DestroyChildren(transform.gameObject, immediate);
 		}
 
-		public static void DestroyChildren(this GameObject gameObject, bool immediate = false)
+		public static void DestroyChildren(this GameObject gameObject, bool immediate = false, bool allowDestroyingAssets = false)
 		{
-			var children = gameObject.GetChildren().ToList();
-			for(int i = 0, cnt = children.Count; i < cnt; i++)
+			var transform = gameObject.transform;
+			int childCount = transform.childCount;
+			for (int i = 0; i < childCount; i++)
 			{
-				var child = children[i];
+				var child = transform.GetChild(i).gameObject;
 				if (immediate)
 				{
-					UnityObject.DestroyImmediate(child, true);
+					UnityObject.DestroyImmediate(child, allowDestroyingAssets);
 				}
 				else
 				{
