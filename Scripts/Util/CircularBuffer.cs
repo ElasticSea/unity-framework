@@ -8,29 +8,33 @@ namespace ElasticSea.Framework.Util
     {
         private readonly T[] buffer;
         private int nextIndex;
-        private int slotsFilled;
 
         public CircularBuffer(int capacity)
         {
             buffer = new T[capacity];
+            Capacity = capacity;
         }
 
-        public int Count => buffer.Length;
+        public int Capacity { get; }
+
+        public int Count { get; private set; }
 
         public IEnumerator<T> GetEnumerator()
         {
-            if (buffer.Length == slotsFilled)
+            var isHalfFilled = Count < Capacity;
+            if (isHalfFilled)
             {
-                for (var i = 0; i < buffer.Length; i++)
+                for (var index = 0; index < nextIndex; index++)
                 {
-                    yield return buffer[(i + nextIndex) % buffer.Length];
+                    yield return buffer[index];
                 }
             }
             else
             {
-                for (var i = 0; i < nextIndex; i++)
+                for (var i = 0; i < Capacity; i++)
                 {
-                    yield return buffer[i];
+                    var index = (i + nextIndex) % Capacity;
+                    yield return buffer[index];
                 }
             }
         }
@@ -43,8 +47,8 @@ namespace ElasticSea.Framework.Util
         public void Add(T element)
         {
             buffer[nextIndex] = element;
-            slotsFilled = Mathf.Min(slotsFilled + 1, buffer.Length);
-            nextIndex = (nextIndex + 1) % buffer.Length;
+            Count = Mathf.Min(Count + 1, Capacity);
+            nextIndex = (nextIndex + 1) % Capacity;
         }
     }
 }
