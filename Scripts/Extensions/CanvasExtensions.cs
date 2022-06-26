@@ -14,7 +14,7 @@ namespace ElasticSea.Framework.Scripts.Extensions
             // Enabling HDR makes the background black
             cam.allowHDR = false;
             cam.cullingMask = LayerMask.GetMask(renderLayerName);
-            cam.clearFlags = CameraClearFlags.Nothing;
+            cam.clearFlags = CameraClearFlags.Color;
             cam.targetTexture = new RenderTexture(width, height, 32, RenderTextureFormat.ARGB32);
             canvas.worldCamera = cam;
             cam.Render();
