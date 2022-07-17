@@ -23,13 +23,15 @@ namespace ElasticSea.Framework.Extensions
 			int childCount = transform.childCount;
 			for (int i = 0; i < childCount; i++)
 			{
-				var child = transform.GetChild(i).gameObject;
 				if (immediate)
 				{
+					// Child is already destroyed, grab the first one
+					var child = transform.GetChild(0).gameObject;
 					UnityObject.DestroyImmediate(child, allowDestroyingAssets);
 				}
 				else
 				{
+					var child = transform.GetChild(i).gameObject;
 					UnityObject.Destroy(child);
 				}
 			}
