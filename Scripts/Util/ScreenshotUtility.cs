@@ -23,6 +23,10 @@ namespace ElasticSea.Framework.Util
             var pngBytes = tex.EncodeToPNG();
             var path = Path.Combine(Application.persistentDataPath, "output.png");
             File.WriteAllBytes(path, pngBytes);
+
+            cam.targetTexture = null;
+            Destroy(rt);
+            Destroy(tex);
         }
     }
 }
