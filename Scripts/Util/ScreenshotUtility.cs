@@ -9,10 +9,14 @@ namespace ElasticSea.Framework.Util
     {
         [SerializeField] private int width = 1920;
         [SerializeField] private int height = 1080;
+        [SerializeField] private float fieldOfView = 60;
         
         public void Render()
         {
             var cam = GetComponent<Camera>();
+
+            var prevFov = cam.fieldOfView;
+            cam.fieldOfView = fieldOfView;
             
             var rt = new RenderTexture(width, height, 32, RenderTextureFormat.ARGB32);
             cam.targetTexture = rt;
@@ -24,6 +28,7 @@ namespace ElasticSea.Framework.Util
             var path = Path.Combine(Application.persistentDataPath, "output.png");
             File.WriteAllBytes(path, pngBytes);
 
+            cam.fieldOfView = prevFov;
             cam.targetTexture = null;
             Destroy(rt);
             Destroy(tex);
