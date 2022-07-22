@@ -70,10 +70,17 @@ namespace ElasticSea.Framework.Extensions
         {
             var newMesh = new Mesh
             {
+                name = mesh.name,
                 vertices = mesh.vertices,
                 normals = mesh.normals,
                 uv = mesh.uv,
                 uv2 = mesh.uv2,
+                uv3 = mesh.uv3,
+                uv4 = mesh.uv4,
+                uv5 = mesh.uv5,
+                uv6 = mesh.uv6,
+                uv7 = mesh.uv7,
+                uv8 = mesh.uv8,
                 tangents = mesh.tangents,
                 subMeshCount = mesh.subMeshCount,
                 bounds = mesh.bounds
