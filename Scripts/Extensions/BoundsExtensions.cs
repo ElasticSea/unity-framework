@@ -160,6 +160,7 @@ namespace ElasticSea.Framework.Extensions
 	            });
 	    }
 		
+	    [Obsolete]
 	    public static Bounds GetCompositeMeshBounds(this GameObject go, bool isSharedMesh = false, Predicate<MeshFilter> filter = null)
 	    {
 		    var bounds = go.GetComponentsInChildren<MeshFilter>(true)
@@ -172,6 +173,45 @@ namespace ElasticSea.Framework.Extensions
 			    })
 			    .Where(b => b.size != Vector3.zero)
 			    .ToArray();
+
+		    if (bounds.Length == 0)
+			    return new Bounds();
+
+		    if (bounds.Length == 1)
+			    return bounds[0];
+
+		    var compositeBounds = bounds[0];
+
+		    for (var i = 1; i < bounds.Length; i++)
+		    {
+			    compositeBounds.Encapsulate(bounds[i]);
+		    }
+
+		    return compositeBounds;
+	    }
+		
+	    public static Bounds GetMeshBounds(this GameObject go, bool includeInactive = false, bool isSharedMesh = false, bool skipEmptyBounds = false, Predicate<MeshFilter> filter = null)
+	    {
+		    IEnumerable<MeshFilter> meshFilters = go.GetComponentsInChildren<MeshFilter>(includeInactive);
+
+		    if (filter != null)
+		    {
+			    meshFilters = meshFilters.Where(mf => filter(mf));
+		    }
+		    
+		    var transformedBounds = meshFilters.Select(mf =>
+		    {
+			    var mesh = isSharedMesh ? mf.sharedMesh : mf.mesh;
+			    var localBound = mf.transform.TransformBounds(go.transform, mesh.bounds);
+			    return localBound;
+		    });
+
+		    if (skipEmptyBounds)
+		    {
+			    transformedBounds = transformedBounds.Where(b => b.size != Vector3.zero);
+		    }
+
+		    var bounds = transformedBounds.ToArray();
 
 		    if (bounds.Length == 0)
 			    return new Bounds();
