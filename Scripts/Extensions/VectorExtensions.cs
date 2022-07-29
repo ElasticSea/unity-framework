@@ -50,6 +50,21 @@ namespace ElasticSea.Framework.Extensions
 		{
 			return new Vector2(v.x, v.y);
 		}
+		
+		public static Vector3 FlipXy(this Vector3 v)
+		{
+			return new Vector3(v.y, v.x, v.z);
+		}
+
+		public static Vector3 FlipXz(this Vector3 v)
+		{
+			return new Vector3(v.z, v.y, v.x);
+		}
+
+		public static Vector3 FlipYz(this Vector3 v)
+		{
+			return new Vector3(v.x, v.z, v.y);
+		}
 
 		public static bool ApproxEqual(this Vector2 a, Vector2 b)
 		{
