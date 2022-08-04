@@ -7,10 +7,13 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
 {
     public class GoogleIconPack : IconPack
     {
+        [System.Serializable]
         private class Config
         {
+            [System.Serializable]
             internal class Category
             {
+                [System.Serializable]
                 internal class Icon
                 {
                     public string name;
