@@ -1,20 +1,34 @@
 using System.Linq;
+using ElasticSea.Framework.Scripts.Extensions;
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
 
 namespace ElasticSea.Framework.Extensions
 {
     public static class CameraExtensions
     {
-        public static Texture2D RenderToTexture(this Camera camera, TextureFormat textureFormat = TextureFormat.RGBA32, bool mipChain = false)
+        public static Texture2D RenderToTexture(this Camera camera, TextureCreationFlags textureCreationFlags = TextureCreationFlags.None)
         {
             var currentRT = RenderTexture.active;
             RenderTexture.active = camera.targetTexture;
             camera.Render();
-            var image = new Texture2D(camera.targetTexture.width, camera.targetTexture.height, textureFormat, mipChain);
+            var image = new Texture2D(camera.targetTexture.width, camera.targetTexture.height, camera.targetTexture.graphicsFormat, TextureCreationFlags.MipChain);
             image.ReadPixels(new Rect(0, 0, image.width, image.height), 0, 0);
             image.Apply();
             RenderTexture.active = currentRT;
             return image;
+        }
+        
+        public static Texture2D RenderToTexture(this Camera camera, RenderTexture renderTexture)
+        {
+            var currentRT = RenderTexture.active;
+            camera.targetTexture = renderTexture;
+            camera.Render();
+
+            var tex = renderTexture.ToTexture2D();
+            RenderTexture.active = currentRT;
+            
+            return tex;
         }
 
         /// <summary>
