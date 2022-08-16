@@ -582,7 +582,14 @@ namespace ElasticSea.Framework.Extensions
 		
 		public static Vector3 Average(this IEnumerable<Vector3> points)
 		{
-			return points.ToArray().Average();
+			var v = Vector3.zero;
+			var count = 0;
+			foreach (var point in points)
+			{
+				v += point;
+				count++;
+			}
+			return v / count;
 		}
 
 		public static Vector3 Average(this Vector3[] points)
