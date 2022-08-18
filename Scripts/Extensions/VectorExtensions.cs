@@ -579,6 +579,14 @@ namespace ElasticSea.Framework.Extensions
 		{
 			return Vector2.Lerp(vector3A, vector3B, t);
 		}
+
+		public static float InverseLerp(this Vector3 from, Vector3 to, Vector3 point)
+		{
+			var mainVec = to - from;
+			var toProject = point - from;
+			var projected = toProject.Project(mainVec);
+			return projected.magnitude / mainVec.magnitude * Mathf.Sign(mainVec.Dot(projected));
+		}
 		
 		public static Vector3 Average(this IEnumerable<Vector3> points)
 		{
