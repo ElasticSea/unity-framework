@@ -104,18 +104,18 @@ namespace ElasticSea.Framework.Extensions
                 name = mesh.name,
                 vertices = mesh.vertices,
                 normals = mesh.normals,
-                uv = mesh.uv,
-                uv2 = mesh.uv2,
-                uv3 = mesh.uv3,
-                uv4 = mesh.uv4,
-                uv5 = mesh.uv5,
-                uv6 = mesh.uv6,
-                uv7 = mesh.uv7,
-                uv8 = mesh.uv8,
                 tangents = mesh.tangents,
                 subMeshCount = mesh.subMeshCount,
                 bounds = mesh.bounds
             };
+
+            // Copy uvs this way, otherwise the uvs are implicitly converted to Vector2
+            for (var i = 0; i < 8; i++)
+            {
+                var uvs = new List<Vector4>();
+                mesh.GetUVs(i, uvs);
+                newMesh.SetUVs(i, uvs);
+            }
             
             for (var i = 0; i < mesh.subMeshCount; i++)
             {
