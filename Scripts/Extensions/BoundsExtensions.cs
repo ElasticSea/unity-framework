@@ -42,6 +42,14 @@ namespace ElasticSea.Framework.Extensions
 
             return new Bounds((max - min) / 2 + min, max - min);
         }
+        
+        public static (Vector3 center, float radius) ToSphereBounds(this IEnumerable<Vector3> points)
+        {
+	        var pts = points.ToArray();
+	        var center = pts.ToBounds().center;
+	        var radius = pts.Select(v => (center - v).magnitude).Max();
+	        return (center, radius);
+        }
 
         public static Bounds Encapsulate(this List<Bounds> bounds)
         {
@@ -67,8 +75,19 @@ namespace ElasticSea.Framework.Extensions
 	        {
 		        transformedVertices[i] = from.transform.TransformPoint(transformedVertices[i], to.transform);
 	        }
-			return transformedVertices.ToBounds();
-		}
+	        return transformedVertices.ToBounds();
+        }
+        
+        public static Vector3[] TransformVertices(this Transform from, Transform to, Bounds bounds)
+        {
+	        var transformedVertices = bounds.GetVertices();
+	        var length = transformedVertices.Length;
+	        for (var i = 0; i < length; i++)
+	        {
+		        transformedVertices[i] = from.transform.TransformPoint(transformedVertices[i], to.transform);
+	        }
+	        return transformedVertices;
+        }
 	    
 		public static Bounds GetCompositeRendererBounds(this GameObject go, Predicate<Renderer> filter = null,
 			bool includeInactive = true)
@@ -227,6 +246,31 @@ namespace ElasticSea.Framework.Extensions
 		    }
 
 		    return compositeBounds;
+	    }
+		
+	    public static Vector3[] GetMeshPoints(this GameObject go, bool includeInactive = false, bool isSharedMesh = false, Predicate<MeshFilter> filter = null)
+	    {
+		    IEnumerable<MeshFilter> meshFilters = go.GetComponentsInChildren<MeshFilter>(includeInactive);
+
+		    if (filter != null)
+		    {
+			    meshFilters = meshFilters.Where(mf => filter(mf));
+		    }
+		    
+		    var localVertices = new List<Vector3>();
+		    foreach (var mf in meshFilters)
+		    {
+			    var mesh = isSharedMesh ? mf.sharedMesh : mf.mesh;
+			    var vertices = mesh.vertices;
+			    for (var index = 0; index < vertices.Length; index++)
+			    {
+				    vertices[index] =  mf.transform.TransformPoint(vertices[index], go.transform);
+			    }
+			    
+			    localVertices.AddRange(vertices);
+		    }
+		    
+		    return localVertices.ToArray();
 	    }
 	    
 	    /// <summary>
