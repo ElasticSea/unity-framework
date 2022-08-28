@@ -1080,5 +1080,17 @@ namespace ElasticSea.Framework.Extensions
 			    collection.Add(element);
 		    }
 	    }
-    }
+	    
+	    public static float FastAverage(this float[] source)
+	    {
+		    var total = 0f;
+		    var count = source.Length;
+		    for (var i = 0; i < count; i++)
+		    {
+			    total += source[i];
+		    }
+
+		    return total / count;
+	    }
+	}
 }
