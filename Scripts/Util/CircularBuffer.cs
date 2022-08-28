@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace ElasticSea.Framework.Util
 {
-    public class CircularBuffer<T>: IEnumerable<T>
+    public class CircularBuffer<T> : IEnumerable<T>
     {
         private readonly T[] buffer;
         private int nextIndex;
@@ -21,21 +21,24 @@ namespace ElasticSea.Framework.Util
 
         public IEnumerator<T> GetEnumerator()
         {
-            var isHalfFilled = Count < Capacity;
-            if (isHalfFilled)
+            int start;
+            int count;
+
+            var underFilled = Count < Capacity;
+            if (underFilled)
             {
-                for (var index = 0; index < nextIndex; index++)
-                {
-                    yield return buffer[index];
-                }
+                start = 0;
+                count = nextIndex;
             }
             else
             {
-                for (var i = 0; i < Capacity; i++)
-                {
-                    var index = (i + nextIndex) % Capacity;
-                    yield return buffer[index];
-                }
+                start = nextIndex;
+                count = start + Capacity;
+            }
+
+            for (var i = start; i < count; i++)
+            {
+                yield return buffer[i % Capacity];
             }
         }
 
