@@ -6,7 +6,7 @@ namespace ElasticSea.Framework.Util
 {
     public class CircularBuffer<T> : IEnumerable<T>
     {
-        private readonly T[] buffer;
+        protected readonly T[] buffer;
         private int nextIndex;
 
         public CircularBuffer(int capacity)
