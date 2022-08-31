@@ -16,9 +16,11 @@ namespace ElasticSea.Framework.Util
             var cam = GetComponent<Camera>();
 
             var prevFov = cam.fieldOfView;
-            cam.fieldOfView = fieldOfView;
+            var prevStereoTargetEye = cam.stereoTargetEye;
             
-            var rt = new RenderTexture(width, height, 32, RenderTextureFormat.ARGB32);
+            cam.stereoTargetEye = StereoTargetEyeMask.None;
+            
+            var rt = new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32);
             cam.targetTexture = rt;
             cam.Render();
 
@@ -30,6 +32,7 @@ namespace ElasticSea.Framework.Util
 
             cam.fieldOfView = prevFov;
             cam.targetTexture = null;
+            cam.stereoTargetEye = prevStereoTargetEye;
             Destroy(rt);
             Destroy(tex);
         }
