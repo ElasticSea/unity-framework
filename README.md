@@ -1,3 +1,3 @@
 # Unity Framework
 
-Collection of utility methods
+Collection of utility methods.
