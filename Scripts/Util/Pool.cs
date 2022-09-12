@@ -5,24 +5,24 @@ namespace ElasticSea.Framework.Util
 {
     public class Pool<T>
     {
-        private readonly Func<T> creator;
+        private readonly Func<Pool<T>, T> creator;
         private readonly Stack<T> stack = new Stack<T>();
         private readonly Action<T> activate;
         private readonly Action<T> deactivate;
 
-        public Pool(int initialCapacity, Func<T> creator, Action<T> activate, Action<T> deactivate)
+        public Pool(int initialCapacity, Func<Pool<T>, T> creator, Action<T> activate, Action<T> deactivate)
         {
             this.creator = creator;
             this.activate = activate;
             this.deactivate = deactivate;
-            for (var i = 0; i < initialCapacity; i++) Put(creator());
+            for (var i = 0; i < initialCapacity; i++) Put(creator(this));
         }
 
         public T Get()
         {
             if (stack.Count == 0)
             {
-                Put(creator());
+                Put(creator(this));
             }
 
             var element = stack.Pop();
