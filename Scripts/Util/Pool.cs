@@ -10,7 +10,7 @@ namespace ElasticSea.Framework.Util
         private readonly Action<T> activate;
         private readonly Action<T> deactivate;
 
-        public Pool(int initialCapacity, Func<Pool<T>, T> creator, Action<T> activate, Action<T> deactivate)
+        public Pool(int initialCapacity, Func<Pool<T>, T> creator, Action<T> activate = null, Action<T> deactivate = null)
         {
             this.creator = creator;
             this.activate = activate;
@@ -26,14 +26,14 @@ namespace ElasticSea.Framework.Util
             }
 
             var element = stack.Pop();
-            activate(element);
+            activate?.Invoke(element);
             return element;
         }
 
         public void Put(T element)
         {
             stack.Push(element);
-            deactivate(element);
+            deactivate?.Invoke(element);
         }
     }
 }
