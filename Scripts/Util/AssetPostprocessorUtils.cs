@@ -29,15 +29,28 @@ namespace ElasticSea.Framework.Scripts.Util
                 return;
             }
 
-            var ff = aa.ToDictionary(a => a.modelname.ToLowerInvariant(), a => a.action);
+            var dict = new Dictionary<string, List<Action<MeshFilter>>>();
+            foreach (var (fname, modelname, action) in aa)
+            {
+                var mname = modelname.ToLowerInvariant();
+                if (dict.ContainsKey(mname) == false)
+                {
+                    dict[mname] = new List<Action<MeshFilter>>();
+                }
+                
+                dict[mname].Add(action);
+            }
             
             foreach (var mf in gameObject.GetComponentsInChildren<MeshFilter>())
             {
                 var mesh = mf.sharedMesh;
 
-                if (ff.TryGetValue(mesh.name.ToLowerInvariant(), out var action))
+                if (dict.TryGetValue(mesh.name.ToLowerInvariant(), out var actions))
                 {
-                    action(mf);
+                    foreach (var action in actions)
+                    {
+                        action(mf);
+                    }
                 }
             }
         }
