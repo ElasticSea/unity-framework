@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace ElasticSea.Framework.Extensions
@@ -244,6 +246,117 @@ namespace ElasticSea.Framework.Extensions
             }
 
             m.vertices = vertices;
+        }
+
+        public static void RemoveVertices(this Mesh mesh, Predicate<(Vector3 vextex, int index)> predicate)
+        {
+            var verticesIndexesToDelete = mesh.vertices
+                .Select((vertex, index) => (vertex, index))
+                .Where(p => predicate((p.vertex, p.index)))
+                .Select(p => p.index)
+                .ToSet();
+            
+            mesh.RemoveVertices(verticesIndexesToDelete);
+        }
+        
+        public static void RemoveVertices(this Mesh mesh, ISet<int> vertexIndexes)
+        {
+            if (mesh.subMeshCount > 1)
+            {
+                throw new Exception("Only meshes with one submesh are supported.");
+            }
+
+            var orderedVertexIndexes = vertexIndexes.OrderBy(i => i).ToArray();
+            var correctionOffsets = new List<((int from, int to) range, int offset)>();
+            var o = 0;
+            for (var i = 0; i < orderedVertexIndexes.Length; i++)
+            {
+                var vertexIndex = orderedVertexIndexes[i];
+                
+                if (i > 0)
+                {
+                    var lastRange = correctionOffsets[i - 1];
+                    lastRange.range.to = vertexIndex;
+                    correctionOffsets[i - 1] = lastRange;
+                }
+
+                var range = (i: vertexIndex, mesh.vertices.Length);
+                correctionOffsets.Add((range, --o));
+            }
+
+            T[] stripByIndex<T>(T[] array, ISet<int> skip)
+            {
+                if (array == null)
+                    return null;
+
+                var newArray = new List<T>();
+                var length = array.Length;
+                for (var i = 0; i < length; i++)
+                {
+                    if (skip.Contains(i) == false)
+                    {
+                        newArray.Add(array[i]);
+                    }
+                }
+
+                return newArray.ToArray();
+            }
+
+            var newTrianges = new List<int>();
+            var oldTriangels = mesh.triangles;
+            for (var i = 0; i < oldTriangels.Length; i += 3)
+            {
+                var t0 = oldTriangels[i + 0];
+                var t1 = oldTriangels[i + 1];
+                var t2 = oldTriangels[i + 2];
+                if (vertexIndexes.Contains(t0) == false &&
+                    vertexIndexes.Contains(t1) == false &&
+                    vertexIndexes.Contains(t2) == false)
+                {
+                    newTrianges.Add(t0);
+                    newTrianges.Add(t1);
+                    newTrianges.Add(t2);
+                }
+            }
+            
+            for (var i = 0; i < newTrianges.Count; i++)
+            {
+                var t = newTrianges[i];
+                foreach (var (range, offset) in correctionOffsets)
+                {
+                    if (t >= range.from && t < range.to)
+                    {
+                        newTrianges[i] = t + offset;
+                    }
+                }
+            }
+
+            var stripedVertices = stripByIndex(mesh.vertices, vertexIndexes);
+            var stripedNormals = stripByIndex(mesh.normals, vertexIndexes);
+            
+            mesh.triangles = newTrianges.ToArray();
+            mesh.vertices = stripedVertices;
+            for (var i = 0; i < 8; i++)
+            {
+                var list = new List<Vector4>();
+                mesh.GetUVs(i, list);
+                var strippedUvsVector4 = stripByIndex(list.ToArray(), vertexIndexes);
+                if (strippedUvsVector4.Length == stripedVertices.Length)
+                {
+                    mesh.SetUVs(i, strippedUvsVector4);
+                }
+            }
+            mesh.normals = stripedNormals;
+        }
+        
+        public static void TransformVertices(this Mesh mesh, Func<(Vector3 vextex, int index), Vector3> transform)
+        {
+            mesh.vertices = mesh.vertices.Select((v, i) => transform((v, i))).ToArray();
+        }
+        
+        public static void TransformNormals(this Mesh mesh, Func<(Vector3 normal, int index), Vector3> transform)
+        {
+            mesh.normals = mesh.normals.Select((v, i) => transform((v, i))).ToArray();
         }
     }
 }
