@@ -140,5 +140,31 @@ namespace ElasticSea.Framework.Scripts.Extensions
             
             throw new ArgumentException($"Collider of type: {collider.GetType().GetSimpleAliasName()} is not supported.");
         }
+        
+        public static bool IsColliding(this Collider thisCollider, Collider[] otherColliders)
+        {
+            var length = otherColliders.Length;
+            for (var i = 0; i < length; i++)
+            {
+                var otherCollider = otherColliders[i];
+                var otherTransform = otherCollider.transform;
+                var thisTransform = thisCollider.transform;
+                if (Physics.ComputePenetration(
+                    otherCollider,
+                    otherTransform.position,
+                    otherTransform.rotation,
+                    thisCollider,
+                    thisTransform.position,
+                    thisTransform.rotation,
+                    out var direction,
+                    out var distance
+                ))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }
