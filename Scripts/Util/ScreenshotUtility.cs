@@ -18,6 +18,7 @@ namespace ElasticSea.Framework.Util
             var prevFov = cam.fieldOfView;
             var prevStereoTargetEye = cam.stereoTargetEye;
             
+            cam.fieldOfView = fieldOfView;
             cam.stereoTargetEye = StereoTargetEyeMask.None;
             
             var rt = new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32);
