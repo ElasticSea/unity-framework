@@ -605,5 +605,40 @@ namespace ElasticSea.Framework.Util
                 }
             }
         }
+
+        public static Vector3 AverageRotation(Vector3[] rotations)
+        {
+            float Clamp(float previous, float current)
+            {
+                if (previous - current > 180)
+                {
+                    return current + 360;
+                }
+            
+                if (previous - current < -180)
+                {
+                    return current - 360;
+                }
+
+                return current;
+            }
+            
+            var initial = rotations[0];
+            var last = initial;
+            for (var i = 1; i < rotations.Length; i++)
+            {
+                var rr = rotations[i];
+
+                var x = Clamp(last.x, rr.x);
+                var y = Clamp(last.y, rr.y);
+                var z = Clamp(last.z, rr.z);
+                var newRot = new Vector3(x, y, z);
+                initial +=  newRot;
+                last = newRot;
+            }
+            initial /= rotations.Length;
+
+            return initial;
+        }
     }
 }
