@@ -1,4 +1,3 @@
-using ElasticSea.Framework.Extensions;
 using UnityEngine;
 
 namespace ElasticSea.Framework.Scripts.Extensions
@@ -7,6 +6,10 @@ namespace ElasticSea.Framework.Scripts.Extensions
     {
         public static Texture2D Render(this Canvas canvas, TextureFormat format, string renderLayerName, int width, int height)
         {
+            var previousLayer = canvas.gameObject.layer;
+            var previousRenderMode = canvas.renderMode;
+            var previousWorldCamera = canvas.worldCamera;
+            
             canvas.gameObject.layer = LayerMask.NameToLayer(renderLayerName);
             canvas.renderMode = RenderMode.ScreenSpaceCamera;
             var cam = new GameObject().AddComponent<Camera>();
@@ -21,6 +24,10 @@ namespace ElasticSea.Framework.Scripts.Extensions
             var texture = cam.targetTexture.ToTexture2D(format);
             GameObject.DestroyImmediate(cam.targetTexture);
             GameObject.DestroyImmediate(cam.gameObject);
+
+            canvas.gameObject.layer = previousLayer;
+            canvas.renderMode = previousRenderMode;
+            canvas.worldCamera = previousWorldCamera;
             return texture;
         }
     }
