@@ -34,13 +34,13 @@ namespace ElasticSea.Framework.Extensions
         /// <summary>
         /// Fill camera viewrect with gameobject
         /// </summary>
-        public static void FillCameraView(this Camera camera, GameObject gameObject)
+        public static void FillCameraView(this Camera camera, GameObject gameObject, float boundsMultiplier = 1)
         {
             var vertices = gameObject.GetWorldVertexPositions();
             var center = vertices.Average();
             var radius = vertices.Select(v => (center - v).magnitude).Max();
 
-            camera.FillCameraView(center, radius);
+            camera.FillCameraView(center, radius * boundsMultiplier);
         }
         
         /// <summary>
