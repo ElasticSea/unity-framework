@@ -221,6 +221,64 @@ namespace ElasticSea.Framework.Util
 
             return name;
         }
+
+        public static string AlternativeNameNoBrackets(IEnumerable<string> takenNames, string name)
+        {
+            var nameSet = takenNames.ToSet();
+            return AlternativeNameNoBrackets(s => nameSet.Contains(s, StringComparer.InvariantCultureIgnoreCase), name);
+        }
+        
+        public static string AlternativeNameNoBrackets(Predicate<string> isTaken, string name)
+        {
+            while (isTaken(name))
+            {
+                var replace = false;
+                var lastIndex = -1;
+                var firstIndex = -1;
+                for (var i = name.Length - 1; i >= 0; i--)
+                {
+                    var ch = name[i];
+                    var isDigit = char.IsDigit(ch);
+                    if (lastIndex == -1)
+                    {
+                        if (isDigit)
+                        {
+                            lastIndex = i + 1;
+                        }
+                    }
+                    else
+                    {
+                        if (firstIndex == -1)
+                        {
+                            if (isDigit == false)
+                            {
+                                firstIndex = i + 1;
+                                if (char.IsWhiteSpace(ch))
+                                {
+                                    replace = true;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (replace)
+                {
+                    var prefix = name.Substring(0, firstIndex);
+                    var number = name.Substring(firstIndex, lastIndex - firstIndex);
+                    var suffix = name.Substring(lastIndex, name.Length - lastIndex);
+
+                    name = prefix + (number.ToInt() + 1) + suffix;
+                }
+                else
+                {
+                    name = $"{name} 1";
+                }
+            }
+
+            return name;
+        }
         
         public static void CopyDirectory(string sourceDirectory, string targetDirectory, Predicate<FileSystemInfo> filter = null)
         {
