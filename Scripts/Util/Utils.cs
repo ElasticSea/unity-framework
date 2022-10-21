@@ -698,5 +698,39 @@ namespace ElasticSea.Framework.Util
 
             return initial;
         }
+
+        public static (bool found, string[] values) CommandLineArgValues(string key)
+        {
+            return CommandLineArgValues(System.Environment.GetCommandLineArgs(), key);
+        }
+
+        // format: application.exe -key1 arg1 arg2 -key2 arg1
+        public static (bool found, string[] values) CommandLineArgValues(string[] args, string key)
+        {
+            for (var i = 1; i < args.Length; i++)
+            {
+                var arg = args[i];
+                if (arg.Equals("-" + key, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    var listValues = new List<string>();
+                    for (var j = i + 1; j < args.Length; j++)
+                    {
+                        var value = args[j];
+                        if (value.StartsWith("-") == false)
+                        {
+                            listValues.Add(value);
+                        }
+                        else
+                        {
+                            break;
+                        }
+                    }
+
+                    return (true, listValues.ToArray());
+                }
+            }
+
+            return (false, new string[0]);
+        }
     }
 }
