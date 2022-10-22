@@ -72,6 +72,11 @@ namespace System
             return int.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out var i) ? i : def;
         }
 
+        public static T? ToEnum<T>(this string s, T? def) where T : struct
+        {
+            return Enum.TryParse<T>(s, out var i) ? i : def;
+        }
+
         public static Color SetAlpha(this Color color, float value)
         {
             return new Color(color.r, color.g, color.b, value);
