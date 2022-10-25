@@ -74,7 +74,7 @@ namespace System
 
         public static T? ToEnum<T>(this string s, T? def) where T : struct
         {
-            return Enum.TryParse<T>(s, out var i) ? i : def;
+            return Enum.TryParse<T>(s, true, out var i) ? i : def;
         }
 
         public static Color SetAlpha(this Color color, float value)
