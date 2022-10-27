@@ -79,7 +79,7 @@ namespace ElasticSea.Framework.Tests.Extensions
         [Test]
         public void CommandLineArgValues_NotFound()
         {
-            var (found, values) = Utils.CommandLineArgValues("application.exe -key1 a b -key2 a".Split(" "), "missingKey");
+            var (found, values) = Utils.CommandLineArgValues("application.exe -key1 a b -key2 a".Split(' '), "missingKey");
             Assert.AreEqual(false, found);
             CollectionAssert.AreEqual(new string[0], values);
         }
@@ -87,7 +87,7 @@ namespace ElasticSea.Framework.Tests.Extensions
         [Test]
         public void CommandLineArgValues_Found()
         {
-            var (found, values) = Utils.CommandLineArgValues("application.exe -key1 a b -key2 c".Split(" "), "key2");
+            var (found, values) = Utils.CommandLineArgValues("application.exe -key1 a b -key2 c".Split(' '), "key2");
             Assert.AreEqual(true, found);
             CollectionAssert.AreEqual(new []{"c"}, values);
         }
