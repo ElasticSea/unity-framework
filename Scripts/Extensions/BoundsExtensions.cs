@@ -78,6 +78,23 @@ namespace ElasticSea.Framework.Extensions
 	        return transformedVertices.ToBounds();
         }
         
+        public static Bounds LocalToWorldBounds(this Bounds localBounds, Transform transform)
+        {
+	        var vertices = localBounds.GetVertices();
+	        var worldMin = new Vector3(float.PositiveInfinity, float.PositiveInfinity, float.PositiveInfinity);
+	        var worldMax = new Vector3(float.NegativeInfinity, float.NegativeInfinity, float.NegativeInfinity);
+	        for (var i = 0; i < vertices.Length; i++)
+	        {
+		       var worldVertex = transform.TransformPoint(vertices[i]);
+		       worldMin = Vector3.Min(worldVertex, worldMin);
+		       worldMax = Vector3.Max(worldVertex, worldMax);
+	        }
+
+	        var b = new Bounds();
+	        b.SetMinMax(worldMin, worldMax);
+	        return b;
+        }
+        
         public static Vector3[] TransformVertices(this Transform from, Transform to, Bounds bounds)
         {
 	        var transformedVertices = bounds.GetVertices();

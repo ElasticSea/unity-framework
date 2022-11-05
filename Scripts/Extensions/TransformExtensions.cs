@@ -76,17 +76,17 @@ namespace ElasticSea.Framework.Extensions
 
         public static void SetLocalRotationX(this Transform transform, float x)
         {
-            transform.localRotation = Quaternion.Euler(x, transform.localRotation.y, transform.localRotation.z);
+            transform.localRotation = Quaternion.Euler(x, transform.localRotation.eulerAngles.y, transform.localRotation.eulerAngles.z);
         }
 
         public static void SetLocalRotationY(this Transform transform, float y)
         {
-            transform.localRotation = Quaternion.Euler(transform.localRotation.x, y, transform.localRotation.z);
+            transform.localRotation = Quaternion.Euler(transform.localRotation.eulerAngles.x, y, transform.localRotation.eulerAngles.z);
         }
 
         public static void SetLocalRotationZ(this Transform transform, float z)
         {
-            transform.localRotation = Quaternion.Euler(transform.localRotation.x, transform.localRotation.y, z);
+            transform.localRotation = Quaternion.Euler(transform.localRotation.eulerAngles.x, transform.localRotation.eulerAngles.y, z);
         }
 
         public static void SetX(this Transform transform, float x)

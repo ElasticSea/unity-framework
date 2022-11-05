@@ -161,16 +161,31 @@ namespace ElasticSea.Framework.Extensions
         
         public static Mesh ClampMeshToBounds(this Mesh m, Bounds bounds)
         {
-            var vertices = m.vertices;
-
+            m.vertices = ClampMeshToBounds(m.vertices, bounds);
+            m.RecalculateBounds();
+            return m;
+        }
+        
+        public static Vector3[] ClampMeshToBounds(this Vector3[] vertices, Bounds bounds)
+        {
             for (var i = 0; i < vertices.Length; i++)
             {
                 vertices[i] = vertices[i].Clamp(bounds.min, bounds.max);
             }
-
-            m.vertices = vertices;
-            m.RecalculateBounds();
-            return m;
+            return vertices;
+        }
+        
+        public static Vector3[] ClampMeshToOtherLocalBounds(this Vector3[] vertices, Transform transform, Transform otherTransform, Bounds otherLocalBounds)
+        {
+            for (var i = 0; i < vertices.Length; i++)
+            {
+                var thisLocalVertex = vertices[i];
+                var otherLocalVertex = transform.TransformPoint(thisLocalVertex, otherTransform);
+                var clampedOtherLocalVertex = otherLocalVertex.Clamp(otherLocalBounds.min, otherLocalBounds.max);
+                var clampedThisLocalVertex = otherTransform.TransformPoint(clampedOtherLocalVertex, transform);
+                vertices[i] = clampedThisLocalVertex;
+            }
+            return vertices;
         }
         
         public static void Inflate(this Mesh m, float amount)

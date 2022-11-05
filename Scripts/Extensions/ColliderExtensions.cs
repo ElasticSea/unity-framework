@@ -16,16 +16,16 @@ namespace ElasticSea.Framework.Scripts.Extensions
             return Physics.OverlapBox(worldCenter, worldExtents, orientation, layermask);
         }
         
-        public static void OverlapBoxNonAlloc(this BoxCollider boxCollider, Collider[] results, int layermask = -1, float offset = 0, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        public static int OverlapBoxNonAlloc(this BoxCollider boxCollider, Collider[] results, int layermask = -1, float offset = 0, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
         {
             var worldCenter = boxCollider.transform.TransformPoint(boxCollider.center);
             var worldExtents = boxCollider.transform.lossyScale.Multiply(boxCollider.size) / 2 + new Vector3(offset, offset, offset);
             var orientation = boxCollider.transform.rotation;
 
-            Physics.OverlapBoxNonAlloc(worldCenter, worldExtents, results, orientation, layermask, queryTriggerInteraction);
+            return Physics.OverlapBoxNonAlloc(worldCenter, worldExtents, results, orientation, layermask, queryTriggerInteraction);
         }
 
-        public static Collider[] OverlapCapsule(this CapsuleCollider capsuleCollider)
+        public static Collider[] OverlapCapsule(this CapsuleCollider capsuleCollider, int layermask = -1)
         {
             var (start, end) = capsuleCollider.GetCapsulePoints();
 
@@ -33,7 +33,7 @@ namespace ElasticSea.Framework.Scripts.Extensions
             var worldTop = capsuleCollider.transform.TransformPoint(end);
             var scale = capsuleCollider.transform.lossyScale.Min();
 
-            return Physics.OverlapCapsule(worldTop, worldBottom, capsuleCollider.radius * scale);
+            return Physics.OverlapCapsule(worldTop, worldBottom, capsuleCollider.radius * scale, layermask);
         }
 
         public static (Vector3 start, Vector3 end) GetCapsulePoints(this CapsuleCollider capsuleCollider)
@@ -61,7 +61,7 @@ namespace ElasticSea.Framework.Scripts.Extensions
             return (start, end);
         }
 
-        public static void OverlapCapsuleNonAlloc(this CapsuleCollider capsuleCollider, Collider[] results, int layermask = -1, float offset = 0, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        public static int OverlapCapsuleNonAlloc(this CapsuleCollider capsuleCollider, Collider[] results, int layermask = -1, float offset = 0, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
         {
             var (start, end) = capsuleCollider.GetCapsulePoints();
 
@@ -69,46 +69,46 @@ namespace ElasticSea.Framework.Scripts.Extensions
             var worldTop = capsuleCollider.transform.TransformPoint(end);
             var scale = capsuleCollider.transform.lossyScale.Min();
 
-            Physics.OverlapCapsuleNonAlloc(worldTop, worldBottom, capsuleCollider.radius * scale + offset, results, layermask, queryTriggerInteraction);
+            return Physics.OverlapCapsuleNonAlloc(worldTop, worldBottom, capsuleCollider.radius * scale + offset, results, layermask, queryTriggerInteraction);
         }
 
-        public static Collider[] OverlapSphere(this SphereCollider sphereCollider)
+        public static Collider[] OverlapSphere(this SphereCollider sphereCollider, int layermask = -1)
         {
             var scale = sphereCollider.transform.lossyScale.Min();
             var worldCenter = sphereCollider.transform.TransformPoint(sphereCollider.center);
             var worldRadius = sphereCollider.radius * scale;
             
-            return Physics.OverlapSphere(worldCenter, worldRadius);
+            return Physics.OverlapSphere(worldCenter, worldRadius, layermask);
         }
 
-        public static void OverlapSphereNonAlloc(this SphereCollider sphereCollider, Collider[] results, int layermask = -1, float offset = 0, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        public static int OverlapSphereNonAlloc(this SphereCollider sphereCollider, Collider[] results, int layermask = -1, float offset = 0, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
         {
             var scale = sphereCollider.transform.lossyScale.Min();
             var worldCenter = sphereCollider.transform.TransformPoint(sphereCollider.center);
             var worldRadius = sphereCollider.radius * scale;
             
-            Physics.OverlapSphereNonAlloc(worldCenter, worldRadius + offset, results, layermask, queryTriggerInteraction);
+            return Physics.OverlapSphereNonAlloc(worldCenter, worldRadius + offset, results, layermask, queryTriggerInteraction);
         }
         
-        public static Collider[] Overlap(this Collider collider)
+        public static Collider[] Overlap(this Collider collider, int layermask = -1)
         {
             switch (collider)
             {
-                case SphereCollider sc: return sc.OverlapSphere(); 
-                case BoxCollider bc: return bc.OverlapBox(null); 
-                case CapsuleCollider cc: return cc.OverlapCapsule(); 
+                case SphereCollider sc: return sc.OverlapSphere(layermask); 
+                case BoxCollider bc: return bc.OverlapBox(null, layermask); 
+                case CapsuleCollider cc: return cc.OverlapCapsule(layermask); 
             }
             
             throw new ArgumentException($"Collider of type: {collider.GetType().GetSimpleAliasName()} is not supported.");
         }
         
-        public static void OverlapNonAlloc(this Collider collider, Collider[] results, int layermask = -1, float offset = 0, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        public static int OverlapNonAlloc(this Collider collider, Collider[] results, int layermask = -1, float offset = 0, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
         {
             switch (collider)
             {
-                case SphereCollider sc: sc.OverlapSphereNonAlloc(results, layermask, offset, queryTriggerInteraction); return;
-                case BoxCollider bc: bc.OverlapBoxNonAlloc(results, layermask, offset, queryTriggerInteraction); return; 
-                case CapsuleCollider cc: cc.OverlapCapsuleNonAlloc(results, layermask, offset, queryTriggerInteraction); return;
+                case SphereCollider sc: return sc.OverlapSphereNonAlloc(results, layermask, offset, queryTriggerInteraction);
+                case BoxCollider bc: return bc.OverlapBoxNonAlloc(results, layermask, offset, queryTriggerInteraction); 
+                case CapsuleCollider cc: return cc.OverlapCapsuleNonAlloc(results, layermask, offset, queryTriggerInteraction);
             }
             
             throw new ArgumentException($"Collider of type: {collider.GetType().GetSimpleAliasName()} is not supported.");
