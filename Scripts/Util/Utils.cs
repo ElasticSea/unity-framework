@@ -732,5 +732,17 @@ namespace ElasticSea.Framework.Util
 
             return (false, new string[0]);
         }
+        
+        public static Vector3 GetBezierCurve(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 p4, float t)
+        {
+            t = Mathf.Clamp01(t);
+
+            var part1 = Mathf.Pow(1 - t, 3) * p1;
+            var part2 = 3 * Mathf.Pow(1 - t, 2) * t * p2;
+            var part3 = 3 * (1 - t) * Mathf.Pow(t, 2) * p3;
+            var part4 = Mathf.Pow(t, 3) * p4;
+
+            return part1 + part2 + part3 + part4;
+        }
     }
 }
