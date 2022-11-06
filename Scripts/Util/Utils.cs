@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
@@ -743,6 +744,11 @@ namespace ElasticSea.Framework.Util
             var part4 = Mathf.Pow(t, 3) * p4;
 
             return part1 + part2 + part3 + part4;
+        }
+
+        public static object CallPrivateMethod(object instance, string methodName, params object[] parameters)
+        {
+            return instance.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance).Invoke(instance, parameters);
         }
     }
 }
