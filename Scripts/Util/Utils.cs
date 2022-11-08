@@ -750,5 +750,11 @@ namespace ElasticSea.Framework.Util
         {
             return instance.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Instance).Invoke(instance, parameters);
         }
+
+        public static float Remap(float sourceStart, float sourceEnd, float destinationStart, float destinationEnd, float sourceValue)
+        {
+            var t = Mathf.InverseLerp(sourceStart, sourceEnd, sourceValue);
+            return Mathf.Lerp(destinationStart, destinationEnd, t);
+        }
     }
 }
