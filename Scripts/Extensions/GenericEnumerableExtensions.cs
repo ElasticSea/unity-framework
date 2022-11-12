@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -1091,6 +1092,69 @@ namespace ElasticSea.Framework.Extensions
 		    }
 
 		    return total / count;
+	    }
+
+	    public static IDictionary<K, V> ReturnsDefaultOnMissingKey<K, V>(this IDictionary<K, V> dictionary)
+	    {
+		    return new ReturnsDefaultOnMissingKeyDictionary<K, V>(dictionary);
+	    }
+
+	    private class ReturnsDefaultOnMissingKeyDictionary<K, V> : IDictionary<K, V>
+	    {
+		    private IDictionary<K, V> dictionary;
+
+		    public ReturnsDefaultOnMissingKeyDictionary(IDictionary<K, V> dictionary)
+		    {
+			    this.dictionary = dictionary;
+		    }
+		    
+		    public IEnumerator<KeyValuePair<K, V>> GetEnumerator() => dictionary.GetEnumerator();
+
+		    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+		    public void Add(KeyValuePair<K, V> item) => dictionary.Add(item);
+
+		    public void Clear() => dictionary.Clear();
+
+		    public bool Contains(KeyValuePair<K, V> item) => dictionary.Contains(item);
+
+		    public void CopyTo(KeyValuePair<K, V>[] array, int arrayIndex) => dictionary.CopyTo(array, arrayIndex);
+
+		    public bool Remove(KeyValuePair<K, V> item) => dictionary.Remove(item);
+
+		    public int Count => dictionary.Count;
+		    public bool IsReadOnly => dictionary.IsReadOnly;
+		    public void Add(K key, V value) => dictionary.Add(key, value);
+
+		    public bool ContainsKey(K key) => dictionary.ContainsKey(key);
+
+		    public bool Remove(K key) => dictionary.Remove(key);
+
+		    public bool TryGetValue(K key, out V value)
+		    {
+			    if (ContainsKey(key) == false)
+			    {
+				    value = default;
+				    return true;
+			    }
+
+			    return dictionary.TryGetValue(key, out value);
+		    }
+
+		    public V this[K key]
+		    {
+			    get
+			    {
+				    if (ContainsKey(key) == false)
+					    return default;
+				    
+				    return dictionary[key];
+			    }
+			    set => dictionary[key] = value;
+		    }
+
+		    public ICollection<K> Keys => dictionary.Keys;
+		    public ICollection<V> Values => dictionary.Values;
 	    }
 	}
 }
