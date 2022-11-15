@@ -373,5 +373,54 @@ namespace ElasticSea.Framework.Extensions
         {
             mesh.normals = mesh.normals.Select((v, i) => transform((v, i))).ToArray();
         }
+
+        public static Vector3 Centroid(this List<Mesh> meshes, out float volume)
+        {
+            Vector3 centroid = new Vector3();
+            volume = 0;
+
+            foreach (var mesh in meshes)
+            {
+                var (c, v) = mesh.Centroid();
+                volume += v;
+                centroid += v * c;
+            }
+
+            return centroid / volume;
+        }
+
+        public static (Vector3 centroid, float volume) Centroid(this Mesh mesh)
+        {
+            var centroid = new Vector3();
+            float totalArea = 0;
+            var volume = 0f;
+
+            var tris = mesh.triangles;
+            var verts = mesh.vertices;
+            
+            for (int i = 0; i < tris.Length; i += 3)
+            {
+                var a = verts[tris[i + 0]];
+                var b = verts[tris[i + 1]];
+                var c = verts[tris[i + 2]];
+                var triangleArea = AreaOfTriangle(a, b, c);
+                totalArea += triangleArea;
+                centroid += triangleArea * (a + b + c) / 3;
+
+                volume += SignedVolumeOfTetrahedron(a, b, c);
+            }
+
+            return (centroid / totalArea, volume);
+        }
+
+        private static float SignedVolumeOfTetrahedron(Vector3 a, Vector3 b, Vector3 c)
+        {
+            return (float) (Vector3.Dot(a, Vector3.Cross(b, c)) / 6.0d);
+        }
+
+        private static float AreaOfTriangle(Vector3 a, Vector3 b, Vector3 c)
+        {
+            return (float) (0.5d * Vector3.Cross(b - a, c - a).magnitude);
+        }
     }
 }
