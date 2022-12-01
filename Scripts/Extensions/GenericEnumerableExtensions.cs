@@ -913,16 +913,6 @@ namespace ElasticSea.Framework.Extensions
 	        }
 	    }
 
-	    public static IEnumerable<T> TakeLast<T>(this IEnumerable<T> source, int N)
-	    {
-	        return source.Skip(Math.Max(0, source.Count() - N));
-	    }
-	    
-	    public static IEnumerable<T> SkipLast<T>(this IEnumerable<T> source, int N)
-	    {
-		    return source.Take(Math.Max(0, source.Count() - N));
-	    }
-
 	    private static IEnumerable<T> concatIterator<T>(T extraElement,
 	        IEnumerable<T> source, bool insertAtStart)
 	    {
