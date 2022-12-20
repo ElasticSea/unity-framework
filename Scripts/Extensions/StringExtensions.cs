@@ -221,8 +221,30 @@ namespace ElasticSea.Framework.Extensions
 
 	    public static IEnumerable<IEnumerable<T>> SplitToChunks<T>(this List<T> str, int maxChunkSize)
 	    {
-	        for (int i = 0; i < str.Count; i += maxChunkSize)
-	            yield return str.GetRange(i, Math.Min(maxChunkSize, str.Count - i));
+		    for (int i = 0; i < str.Count; i += maxChunkSize)
+			    yield return str.GetRange(i, Math.Min(maxChunkSize, str.Count - i));
+	    }
+
+	    public static IEnumerable<IEnumerable<T>> SplitToChunks<T>(this IEnumerable<T> str, int maxChunkSize)
+	    {
+		    var i = 0;
+		    var allLists = new List<List<T>>();
+		    var list = new List<T>(maxChunkSize);
+		    allLists.Add(list);
+		    foreach (var element in str)
+		    {
+			    list.Add(element);
+			    i++;
+
+			    if (i == maxChunkSize)
+			    {
+				    i = 0;
+				    list = new List<T>();
+				    allLists.Add(list);
+			    }
+		    }
+
+		    return allLists;
 	    }
 	     /// <summary>
     /// Returns true if <paramref name="path"/> starts with the path <paramref name="baseDirPath"/>.
