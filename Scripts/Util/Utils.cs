@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
@@ -755,6 +756,14 @@ namespace ElasticSea.Framework.Util
         {
             var t = Mathf.InverseLerp(sourceStart, sourceEnd, sourceValue);
             return Mathf.Lerp(destinationStart, destinationEnd, t);
+        }
+        
+        public static async Task<byte[]> HttpDownloadFileAsync(string url) {
+            ServicePointManager.DefaultConnectionLimit = 20;
+            using var httpClient = new HttpClient();
+            using var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+            using var streamToReadFrom = await response.Content.ReadAsStreamAsync(); 
+            return streamToReadFrom.ReadAllBytes();
         }
     }
 }
