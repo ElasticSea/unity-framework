@@ -178,20 +178,21 @@ namespace ElasticSea.Framework.Util
             return Path.Combine(directory, AlternativeName(existingNamesWithoutExtension, fileWithoutExtension) + extension);
         }
 
-        public static string AlternativeDirectoryName(string directoryPath, string name)
+        public static string AlternativeDirectoryName(string directoryPath)
         {
             var directory = new DirectoryInfo(directoryPath);
             if (directory.Exists == false)
             {
-                return name;
+                return directory.FullName;
             }
-            
+
             var existingNames = directory
                 .EnumerateDirectories()
                 .Select(d => d.Name.ToLower())
                 .ToSet();
 
-            return AlternativeName(existingNames, name);
+            var alternativeDirectoryName = AlternativeName(existingNames, directory.Name);
+            return Path.Combine(directory.Parent.FullName, alternativeDirectoryName);
         }
 
         public static string AlternativeName(IEnumerable<string> takenNames, string name)
