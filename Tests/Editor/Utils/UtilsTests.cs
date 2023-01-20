@@ -1,6 +1,10 @@
+using System;
+using System.Diagnostics;
 using ElasticSea.Framework.Util;
 using NUnit.Framework;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
+using Random = System.Random;
 
 namespace ElasticSea.Framework.Tests.Extensions
 {
@@ -90,6 +94,14 @@ namespace ElasticSea.Framework.Tests.Extensions
             var (found, values) = Utils.CommandLineArgValues("application.exe -key1 a b -key2 c".Split(' '), "key2");
             Assert.AreEqual(true, found);
             CollectionAssert.AreEqual(new []{"c"}, values);
+        }
+        
+        [Test]
+        public void HexNumber()
+        {
+            var rng = new Random(249047250);
+            var hex = Utils.GetRandomHexNumber(rng, 20);
+            Assert.AreEqual("0c9e010455fdeb6fd3d6", hex);
         }
     }
 }

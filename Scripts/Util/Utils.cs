@@ -467,12 +467,37 @@ namespace ElasticSea.Framework.Util
         
         public static string GetRandomHexNumber(int digits)
         {
-            var buffer = new byte[digits / 2];
-            Rng.NextBytes(buffer);
-            var result = string.Concat(buffer.Select(x => x.ToString("X2")).ToArray());
-            if (digits % 2 == 0)
-                return result.ToLower();
-            return (result + Rng.Next(16).ToString("X")).ToLower();
+            return GetRandomHexNumber(Rng, digits);
+        }
+
+        public static string GetRandomHexNumber(Random rng, int digits)
+        {
+            var bytes = new byte[digits / 2];
+            rng.NextBytes(bytes);
+
+            var buffer = new char[bytes.Length * 2];
+
+            int startingIndex = 0;
+            var bytesLength = bytes.Length;
+            for (int index = 0; index < bytesLength; ++index)
+            {
+                ToCharsBuffer(bytes[index], buffer, startingIndex, 8224);
+                startingIndex += 2;
+            }
+
+            return new string(buffer);
+        }
+        
+        private static void ToCharsBuffer(
+            byte value,
+            char[] buffer,
+            int startingIndex = 0,
+            int casing = 0)
+        {
+            uint num1 = (uint) ((((int) value & 240) << 4) + ((int) value & 15) - 35209);
+            uint num2 = (uint) ((int) ((int) ((uint) (-(int) num1 & 28784) >> 4) + (int) num1 + 47545) | casing);
+            buffer[startingIndex + 1] = (char) (num2 & (uint) byte.MaxValue);
+            buffer[startingIndex] = (char) (num2 >> 8);
         }
 
         public static void ReloadScene()
