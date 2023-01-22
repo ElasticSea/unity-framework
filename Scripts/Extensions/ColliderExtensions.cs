@@ -129,6 +129,15 @@ namespace ElasticSea.Framework.Scripts.Extensions
             return c.sharedMesh.Volume();
         }
         
+        public static float Volume(this CapsuleCollider c)
+        {
+            // πr2((4/3)r + a);
+            var r = c.radius;
+            var a = c.height - r * 2;
+            var pi = Mathf.PI;
+            return pi * r * r * ((4f / 3f) * r + a);
+        }
+        
         public static float Volume(this Collider collider)
         {
             switch (collider)
@@ -136,6 +145,7 @@ namespace ElasticSea.Framework.Scripts.Extensions
                 case SphereCollider sc: return sc.Volume(); 
                 case BoxCollider bc: return bc.Volume(); 
                 case MeshCollider mc: return mc.Volume(); 
+                case CapsuleCollider cc: return cc.Volume(); 
             }
             
             throw new ArgumentException($"Collider of type: {collider.GetType().GetSimpleAliasName()} is not supported.");
