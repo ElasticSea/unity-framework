@@ -791,5 +791,71 @@ namespace ElasticSea.Framework.Util
             using var streamToReadFrom = await response.Content.ReadAsStreamAsync(); 
             return streamToReadFrom.ReadAllBytes();
         }
+        
+        public static (byte[] bytes, int width, int height) NearestNeighbourScaleDown(byte[] bytes, int bytesPerPixel, int width, int height, int skip)
+        {
+            var newWidth = width / (1 + skip);
+            var newHeight = height / (1 + skip);
+
+            var output = new byte[newWidth * newHeight * bytesPerPixel];
+
+            for (var y = 0; y < newHeight; y++)
+            {
+                for (var x = 0; x < newWidth; x++)
+                {
+                    var prevX = (x * (1 + skip));
+                    var prevY = (y * (1 + skip));
+                    var prevPos = (prevX + prevY * width) * bytesPerPixel;
+                    var newPos = (x + y * newWidth) * bytesPerPixel;
+
+                    for (var k = 0; k < bytesPerPixel; k++)
+                    {
+                        output[newPos + k] = bytes[prevPos + k];
+                    }
+                }
+            }
+
+            return (output, newWidth, newHeight);
+        }
+        
+        public static (byte[] bytes, int width, int height) NearestNeighbourScaleDownMT(byte[] bytes, int bytesPerPixel, int width, int height, int skip)
+        {
+            var newWidth = width / (1 + skip);
+            var newHeight = height / (1 + skip);
+
+            var output = new byte[newWidth * newHeight * bytesPerPixel];
+
+            var chunks = System.Environment.ProcessorCount * 4;
+            var jobs =
+                Enumerable.Range(0, chunks).Select(i =>
+                {
+                    var step = Mathf.CeilToInt(newHeight / (float) chunks);
+                    return (i * step, Mathf.Min((i + 1) * step, newHeight));
+                });
+
+            Parallel.ForEach(jobs, tuple =>
+            {
+                var start = tuple.Item1;
+                var end = tuple.Item2;
+
+                for (var y = start; y < end; y++)
+                {
+                    for (var x = 0; x < newWidth; x++)
+                    {
+                        var prevX = (x * (1 + skip));
+                        var prevY = (y * (1 + skip));
+                        var prevPos = (prevX + prevY * width) * bytesPerPixel;
+                        var newPos = (x + y * newWidth) * bytesPerPixel;
+
+                        for (var k = 0; k < bytesPerPixel; k++)
+                        {
+                            output[newPos + k] = bytes[prevPos + k];
+                        }
+                    }
+                }
+            });
+            
+            return (output, newWidth, newHeight);
+        }
     }
 }

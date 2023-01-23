@@ -103,5 +103,93 @@ namespace ElasticSea.Framework.Tests.Extensions
             var hex = Utils.GetRandomHexNumber(rng, 20);
             Assert.AreEqual("0c9e010455fdeb6fd3d6", hex);
         }
+        
+        [Test]
+        public void NearestNeighbourScaleDown()
+        {
+            var original = new byte[]
+            {
+                1, 0, 1, 0,
+                0, 0, 0, 0,
+                1, 0, 1, 0,
+                0, 0, 0, 0,
+            };
+            
+            var expected = new byte[]
+            {
+                1, 1,
+                1, 1,
+            };
+
+            var actual = Utils.NearestNeighbourScaleDown(original, 1, 4, 4, 1);
+            
+            CollectionAssert.AreEqual(expected, actual.bytes);
+        }
+        
+        [Test]
+        public void NearestNeighbour24BitScaleDown()
+        {
+            var original = new byte[]
+            {
+                1,2,3, 0,0,0, 1,2,3, 0,0,0,
+                0,0,0, 0,0,0, 0,0,0, 0,0,0,
+                1,2,3, 0,0,0, 1,2,3, 0,0,0,
+                0,0,0, 0,0,0, 0,0,0, 0,0,0,
+            };
+            
+            var expected = new byte[]
+            {
+                1,2,3, 1,2,3,
+                1,2,3, 1,2,3,
+            };
+
+            var actual = Utils.NearestNeighbourScaleDown(original, 3, 4, 4, 1);
+            
+            CollectionAssert.AreEqual(expected, actual.bytes);
+        }
+        
+        [Test]
+        public void NearestNeighbourScaleDown_MT()
+        {
+            var original = new byte[]
+            {
+                1, 0, 1, 0,
+                0, 0, 0, 0,
+                1, 0, 1, 0,
+                0, 0, 0, 0,
+            };
+            
+            var expected = new byte[]
+            {
+                1, 1,
+                1, 1,
+            };
+
+            var actual = Utils.NearestNeighbourScaleDownMT(original, 1, 4, 4, 1);
+            
+            CollectionAssert.AreEqual(expected, actual.bytes);
+        }
+        
+        [Test]
+        public void NearestNeighbour24BitScaleDown_MT()
+        {
+            var original = new byte[]
+            {
+                1,2,3, 0,0,0, 1,2,3, 0,0,0,
+                0,0,0, 0,0,0, 0,0,0, 0,0,0,
+                1,2,3, 0,0,0, 1,2,3, 0,0,0,
+                0,0,0, 0,0,0, 0,0,0, 0,0,0,
+            };
+            
+            var expected = new byte[]
+            {
+                1,2,3, 1,2,3,
+                1,2,3, 1,2,3,
+            };
+
+            var actual = Utils.NearestNeighbourScaleDownMT(original, 3, 4, 4, 1);
+            
+            CollectionAssert.AreEqual(expected, actual.bytes);
+        }
     }
 }
