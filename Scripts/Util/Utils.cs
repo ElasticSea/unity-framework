@@ -857,5 +857,19 @@ namespace ElasticSea.Framework.Util
             
             return (output, newWidth, newHeight);
         }
+
+        public static Texture2D ResizeActual(this Texture2D texture2D, int width, int height)
+        {
+            var rt = new RenderTexture(width, height, 24);
+            var prev = RenderTexture.active;
+            RenderTexture.active = rt;
+            Graphics.Blit(texture2D, rt);
+            var result = new Texture2D(width, height);
+            result.ReadPixels(new Rect(0, 0, width, height), 0, 0);
+            result.Apply();
+            RenderTexture.active = prev;
+            Object.Destroy(rt);
+            return result;
+        }
     }
 }
