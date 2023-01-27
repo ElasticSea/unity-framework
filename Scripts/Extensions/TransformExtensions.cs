@@ -229,5 +229,11 @@ namespace ElasticSea.Framework.Extensions
             var rotation = other.rotation;
             return (position, rotation);
         }
+
+        public static Vector3 TransformVector(this Transform t, Vector3 vector, Transform dest)
+        {
+            var world = t.TransformVector(vector);
+            return dest.InverseTransformVector(world);
+        }
     }
 }
