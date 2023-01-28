@@ -67,5 +67,11 @@ namespace ElasticSea.Framework.Extensions
                 material.DisableKeyword(keyword);
             }
         }
+
+        public static void SetNormal(this Material material, Texture2D normal)
+        {
+            material.EnableKeyword("_NORMALMAP");
+            material.SetTexture("_BumpMap", normal);
+        }
     }
 }
