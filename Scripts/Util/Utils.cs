@@ -186,7 +186,7 @@ namespace ElasticSea.Framework.Util
                 return directory.FullName;
             }
 
-            var existingNames = directory
+            var existingNames = directory.Parent
                 .EnumerateDirectories()
                 .Select(d => d.Name.ToLower())
                 .ToSet();
