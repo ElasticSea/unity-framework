@@ -871,5 +871,17 @@ namespace ElasticSea.Framework.Util
             Object.Destroy(rt);
             return result;
         }
+
+        public static void CatchException(string message, Action action)
+        {
+            try
+            {
+                action();
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(new Exception(message, e));
+            }
+        }
     }
 }
