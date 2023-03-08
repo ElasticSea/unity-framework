@@ -422,5 +422,30 @@ namespace ElasticSea.Framework.Extensions
         {
             return (float) (0.5d * Vector3.Cross(b - a, c - a).magnitude);
         }
+
+        public static Mesh OffsetSimpleMesh(this Mesh mesh, Vector3 size, float center = 0.5f)
+        {
+            return mesh.OffsetSimpleMesh(size, Vector3.one * center);
+        }
+
+        public static Mesh OffsetSimpleMesh(this Mesh mesh, Vector3 size, Vector3 center)
+        {
+            var newMesh = mesh.Clone();
+            var bounds = newMesh.bounds;
+            var vertices = newMesh.vertices;
+            var threshold = bounds.min.Lerp( bounds.max, center);
+            for (var i = 0; i < vertices.Length; i++)
+            {
+                var vert = vertices[i];
+                var x = vert.x > threshold.x ? vert.x + size.x : vert.x;
+                var y = vert.y > threshold.y ? vert.y + size.y : vert.y;
+                var z = vert.z > threshold.z ? vert.z + size.z : vert.z;
+                vertices[i] = new Vector3(x, y, z);
+            }
+
+            newMesh.vertices = vertices;
+            newMesh.RecalculateBounds();
+            return newMesh;
+        }
     }
 }

@@ -643,5 +643,13 @@ namespace ElasticSea.Framework.Extensions
 		{
 			return Vector3.Cross(ray.direction, point - ray.origin).magnitude;
 		}
+		
+		public static Vector3 Lerp(this Vector3 a, Vector3 b, Vector3 t)
+		{
+			var x = a.x + (b.x - a.x) * Mathf.Clamp01(t.x);
+			var y = a.y + (b.y - a.y) * Mathf.Clamp01(t.y);
+			var z = a.z + (b.z - a.z) * Mathf.Clamp01(t.z);
+			return new Vector3(x, y, z);
+		}
 	}
 }
