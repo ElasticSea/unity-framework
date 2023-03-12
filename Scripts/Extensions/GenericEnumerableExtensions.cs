@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using UnityEngine;
+using Random = System.Random;
 
 namespace ElasticSea.Framework.Extensions
 {
@@ -1071,11 +1073,16 @@ namespace ElasticSea.Framework.Extensions
 			    collection.Add(element);
 		    }
 	    }
-	    
+	     
 	    public static float FastAverage(this float[] source)
 	    {
+		    return source.FastAverage(source.Length);
+	    }
+	    
+	    public static float FastAverage(this float[] source, int count)
+	    {
 		    var total = 0f;
-		    var count = source.Length;
+		    count = Mathf.Min(count, source.Length);
 		    for (var i = 0; i < count; i++)
 		    {
 			    total += source[i];
