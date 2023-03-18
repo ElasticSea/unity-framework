@@ -651,5 +651,13 @@ namespace ElasticSea.Framework.Extensions
 			var z = a.z + (b.z - a.z) * Mathf.Clamp01(t.z);
 			return new Vector3(x, y, z);
 		}
+
+		public static Vector3Int CeilToInt(this Vector3 vec)
+		{
+			var x = Mathf.CeilToInt(vec.x);
+			var y = Mathf.CeilToInt(vec.y);
+			var z = Mathf.CeilToInt(vec.z);
+			return new Vector3Int(x, y, z);
+		}
 	}
 }
