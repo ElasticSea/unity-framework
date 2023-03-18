@@ -883,5 +883,12 @@ namespace ElasticSea.Framework.Util
                 Debug.LogException(new Exception(message, e));
             }
         }
+
+        public static Bounds Bounds(Vector3 min, Vector3 max)
+        {
+            var bounds = new Bounds();
+            bounds.SetMinMax(min, max);
+            return bounds;
+        }
     }
 }
