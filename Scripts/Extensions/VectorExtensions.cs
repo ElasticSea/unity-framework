@@ -439,7 +439,7 @@ namespace ElasticSea.Framework.Extensions
 
 		public static Vector3 ToFloat(this Vector3Int intVec)
 		{
-			return new Vector3(intVec.x, intVec.y);
+			return new Vector3(intVec.x, intVec.y, intVec.z);
 		}
 
 		public static Vector3Int ToInt(this Vector3 vector)
