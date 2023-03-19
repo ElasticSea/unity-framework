@@ -45,9 +45,20 @@ namespace ElasticSea.Framework.Extensions
         
         public static (Vector3 center, float radius) ToSphereBounds(this IEnumerable<Vector3> points)
         {
-	        var pts = points.ToArray();
-	        var center = pts.ToBounds().center;
-	        var radius = pts.Select(v => (center - v).magnitude).Max();
+	        return points.ToArray().ToSphereBounds();
+        }
+        
+        public static (Vector3 center, float radius) ToSphereBounds(this Vector3[] points)
+        {
+	        var center = points.ToBounds().center;
+	        var length = points.Length;
+	        var radius = 0f;
+	        for (int i = 0; i < length; i++)
+	        {
+		        var point = points[i];
+		        var currentRadius = (center - point).magnitude;
+		        radius = Mathf.Max(currentRadius, radius);
+	        }
 	        return (center, radius);
         }
 
