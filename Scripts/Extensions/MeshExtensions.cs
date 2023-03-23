@@ -139,6 +139,18 @@ namespace ElasticSea.Framework.Extensions
             mesh.RecalculateBounds();
             return mesh;
         }
+
+        public static Mesh UpdateUvs(this Mesh mesh, Vector2 offset, Vector2 scale)
+        {
+            var uvs = mesh.uv;
+            for (var i = 0; i < uvs.Length; i++)
+            {
+                uvs[i] = uvs[i] * scale + offset;
+            }
+            mesh.uv = uvs;
+            
+            return mesh;
+        }
         
         public static Mesh Translate(this Mesh mesh, Vector3 translate)
         {
