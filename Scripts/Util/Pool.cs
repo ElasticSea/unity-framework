@@ -22,7 +22,7 @@ namespace ElasticSea.Framework.Util
         {
             if (stack.Count == 0)
             {
-                Put(creator());
+                return creator();
             }
 
             var element = stack.Pop();
