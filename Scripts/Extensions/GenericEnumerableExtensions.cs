@@ -1022,7 +1022,7 @@ namespace ElasticSea.Framework.Extensions
 		    return current;
 	    }
 	    
-	    public static IEnumerable<T> PadRight<T>(this IEnumerable<T> source, int length)
+	    public static IEnumerable<T> PadRight<T>(this IEnumerable<T> source, int length, T value = default)
 	    {
 		    int i = 0;
 		    // use "Take" in case "length" is smaller than the source's length.
@@ -1032,7 +1032,7 @@ namespace ElasticSea.Framework.Extensions
 			    i++;
 		    }
 		    for( ; i < length; i++)
-			    yield return default;
+			    yield return value;
 	    }
 	    
 	    public static T MaxBy<T, R>(this IEnumerable<T> source, Func<T, R> comparator) where R : IComparable
