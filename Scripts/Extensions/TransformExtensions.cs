@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityObject = UnityEngine.Object;
@@ -183,6 +184,27 @@ namespace ElasticSea.Framework.Extensions
         public static List<Transform> AllChildren(this Transform transform, bool includeItself = false)
         {
             return transform.allChildrenEnumerable(includeItself).ToList();
+        }
+        
+        public static List<Transform> GetAllChildren(this Transform transform, Predicate<Transform> filter)
+        {
+            var output = new List<Transform>();
+            transform.GetAllChildren(output, filter);
+            return output;
+        }
+        
+        private static void GetAllChildren(this Transform transform, List<Transform> output, Predicate<Transform> filter)
+        {
+            for (var i = 0; i < transform.childCount; i++)
+            {
+                var child = transform.GetChild(i);
+
+                if (filter(child))
+                {
+                    output.Add(child);
+                    child.GetAllChildren(output, filter);
+                }
+            }
         }
 
         private static IEnumerable<Transform> allChildrenEnumerable(this Transform transform, bool includeItself = false)
