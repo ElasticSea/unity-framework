@@ -229,19 +229,17 @@ namespace ElasticSea.Framework.Extensions
 	    {
 		    var i = 0;
 		    var allLists = new List<List<T>>();
-		    var list = new List<T>(maxChunkSize);
-		    allLists.Add(list);
+		    List<T> list = null;
 		    foreach (var element in str)
 		    {
-			    list.Add(element);
-			    i++;
-
-			    if (i == maxChunkSize)
+			    if (allLists.Count - 1 < (i) / maxChunkSize)
 			    {
-				    i = 0;
-				    list = new List<T>();
+				    list = new List<T>(maxChunkSize);
 				    allLists.Add(list);
 			    }
+			    
+			    list.Add(element);
+			    i++;
 		    }
 
 		    return allLists;
