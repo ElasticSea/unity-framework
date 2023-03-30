@@ -1,23 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
+using UnityEngine;
 
 namespace ElasticSea.Framework.Util
 {
     public class FastPool<T>
     {
-        private readonly Func<FastPool<T>, T> creator;
+        private readonly Func<T> creator;
         
         private T[] pool;
         private int count;
+        private int poolSize;
 
-        public FastPool(int initialCapacity, int maxCapacity, Func<FastPool<T>, T> creator)
+        public FastPool(int initialCapacity, Func<T> creator)
         {
-            pool = new T[maxCapacity];
+            pool = new T[initialCapacity];
+            poolSize = pool.Length;
             this.creator = creator;
             
             for (var i = 0; i < initialCapacity; i++)
             {
-                Put(creator(this));
+                Put(creator());
             }
         }
 
@@ -25,7 +27,7 @@ namespace ElasticSea.Framework.Util
         {
             if (count == 0)
             {
-                Put(creator(this));
+                return creator();
             }
 
             return pool[--count];
@@ -33,6 +35,13 @@ namespace ElasticSea.Framework.Util
 
         public void Put(T element)
         {
+            if (count == poolSize)
+            {
+                var oldPool = pool;
+                pool = new T[Mathf.Max(poolSize, 1) * 2];
+                Array.Copy(oldPool, pool, poolSize);
+                poolSize = pool.Length;
+            }
             pool[count++] = element;
         }
     }
