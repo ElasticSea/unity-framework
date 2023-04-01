@@ -68,5 +68,19 @@ namespace ElasticSea.Framework.Util
             }
 #endif
         }
+
+        public static void DrawLabel(Vector3 position, string text, GUIStyle style = null)
+        {
+#if UNITY_EDITOR
+            if (style == null)
+            {
+                Handles.Label(position, text);
+            }
+            else
+            {
+                Handles.Label(position, text, style);
+            }
+#endif
+        }
     }
 }
