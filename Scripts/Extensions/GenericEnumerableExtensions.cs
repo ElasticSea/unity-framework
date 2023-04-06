@@ -610,7 +610,24 @@ namespace ElasticSea.Framework.Extensions
 				list.Swap(n, k);
 			}
 
-		    return list;
+			return list;
+		}
+		
+		public static T[] ShuffleFast<T>(this T[] array, Random rng = null)
+		{
+			rng = rng ?? new Random();
+			int n = array.Length;
+			while (n > 1)
+			{
+				n--;
+				int k = rng.Next(n + 1);
+				
+				var temp = array[n];
+				array[n] = array[k];
+				array[k] = temp;
+			}
+
+			return array;
 		}
 
 		public static void MoveElementDown<T>(this IList<T> list, int elementIndex)
