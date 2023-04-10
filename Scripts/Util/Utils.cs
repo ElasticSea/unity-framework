@@ -890,5 +890,15 @@ namespace ElasticSea.Framework.Util
             bounds.SetMinMax(min, max);
             return bounds;
         }
+        
+        public static float DistanceToBounds(Bounds bounds, Vector3 point)
+        {
+            var min = bounds.min;
+            var max = bounds.max;
+            var dx = Mathf.Max(min.x - point.x, 0, point.x - max.x);
+            var dy = Mathf.Max(min.y - point.y, 0, point.y - max.y);
+            var dz = Mathf.Max(min.z - point.z, 0, point.z - max.z);
+            return Mathf.Sqrt(dx * dx + dy * dy + dz * dz);
+        }
     }
 }
