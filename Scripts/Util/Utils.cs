@@ -880,8 +880,13 @@ namespace ElasticSea.Framework.Util
             }
             catch (Exception e)
             {
-                Debug.LogException(new Exception(message, e));
+                LogException(message, e);
             }
+        }
+
+        public static void LogException(string message, Exception e)
+        {
+            Debug.LogException(new Exception(message, e));
         }
 
         public static Bounds Bounds(Vector3 min, Vector3 max)
