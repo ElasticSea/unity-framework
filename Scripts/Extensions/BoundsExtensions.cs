@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -205,6 +205,24 @@ namespace ElasticSea.Framework.Extensions
 	                a.Encapsulate(b);
 	                return a;
 	            });
+	    }
+		
+	    public static Bounds Encapsulate(this IEnumerable<Bounds> bounds)
+	    {
+		    var enumerator = bounds.GetEnumerator();
+		    if (enumerator.MoveNext() == false)
+		    {
+			    return default;
+		    }
+
+		    var bound = enumerator.Current;
+
+		    while (enumerator.MoveNext())
+		    {
+			    bound.Encapsulate(enumerator.Current);
+		    }
+
+		    return bound;
 	    }
 		
 	    [Obsolete]
