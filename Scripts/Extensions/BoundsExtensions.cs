@@ -225,6 +225,23 @@ namespace ElasticSea.Framework.Extensions
 		    return bound;
 	    }
 		
+	    public static Bounds Encapsulate(this Bounds[] bounds)
+	    {
+		    var length = bounds.Length;
+
+		    if (length == 0)
+			    return default;
+
+		    var bound = bounds[0];
+
+		    for (var i = 1; i < bounds.Length; i++)
+		    {
+			    bound.Encapsulate(bounds[i]);
+		    }
+
+		    return bound;
+	    }
+		
 	    [Obsolete]
 	    public static Bounds GetCompositeMeshBounds(this GameObject go, bool isSharedMesh = false, Predicate<MeshFilter> filter = null)
 	    {
@@ -257,41 +274,29 @@ namespace ElasticSea.Framework.Extensions
 		
 	    public static Bounds GetMeshBounds(this GameObject go, bool includeInactive = false, bool isSharedMesh = false, bool skipEmptyBounds = false, Predicate<MeshFilter> filter = null)
 	    {
-		    IEnumerable<MeshFilter> meshFilters = go.GetComponentsInChildren<MeshFilter>(includeInactive);
+		    var meshFilters = go.GetComponentsInChildren<MeshFilter>(includeInactive);
 
-		    if (filter != null)
+		    var bounds = new List<Bounds>();
+
+		    for (var i = 0; i < meshFilters.Length; i++)
 		    {
-			    meshFilters = meshFilters.Where(mf => filter(mf));
-		    }
-		    
-		    var transformedBounds = meshFilters.Select(mf =>
-		    {
+			    var mf = meshFilters[i];
+			    if(filter != null && filter(mf) == false)
+				    continue;
+			    
 			    var mesh = isSharedMesh ? mf.sharedMesh : mf.mesh;
+			    if(mesh == null)
+				    continue;
+			    
+			    if(skipEmptyBounds && mesh.bounds.size == default)
+				    continue;
+
 			    var localBound = mf.transform.TransformBounds(go.transform, mesh.bounds);
-			    return localBound;
-		    });
-
-		    if (skipEmptyBounds)
-		    {
-			    transformedBounds = transformedBounds.Where(b => b.size != Vector3.zero);
+			    
+			    bounds.Add(localBound);
 		    }
 
-		    var bounds = transformedBounds.ToArray();
-
-		    if (bounds.Length == 0)
-			    return new Bounds();
-
-		    if (bounds.Length == 1)
-			    return bounds[0];
-
-		    var compositeBounds = bounds[0];
-
-		    for (var i = 1; i < bounds.Length; i++)
-		    {
-			    compositeBounds.Encapsulate(bounds[i]);
-		    }
-
-		    return compositeBounds;
+		    return bounds.ToArray().Encapsulate();
 	    }
 		
 	    public static Vector3[] GetMeshPoints(this GameObject go, bool includeInactive = false, bool isSharedMesh = false, Predicate<MeshFilter> filter = null)
