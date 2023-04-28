@@ -161,7 +161,7 @@ namespace ElasticSea.Framework.Util
                 .Select(d => d.Name.ToLower())
                 .ToSet();
             
-            return Path.Combine(fileInfo.DirectoryName, AlternativeName(existingNames, newFileName));
+            return Path.Combine(fileInfo.DirectoryName, AlternativeNameBraces(existingNames, newFileName));
         }
 
         public static string AlternativeFileName(string filePath)
@@ -175,7 +175,7 @@ namespace ElasticSea.Framework.Util
                 .Select(d =>  Path.GetFileNameWithoutExtension(d.Name).ToLower())
                 .ToSet();
 
-            return Path.Combine(directory, AlternativeName(existingNamesWithoutExtension, fileWithoutExtension) + extension);
+            return Path.Combine(directory, AlternativeNameBraces(existingNamesWithoutExtension, fileWithoutExtension) + extension);
         }
 
         public static string AlternativeDirectoryName(string directoryPath)
@@ -191,17 +191,17 @@ namespace ElasticSea.Framework.Util
                 .Select(d => d.Name.ToLower())
                 .ToSet();
 
-            var alternativeDirectoryName = AlternativeName(existingNames, directory.Name);
+            var alternativeDirectoryName = AlternativeNameBraces(existingNames, directory.Name);
             return Path.Combine(directory.Parent.FullName, alternativeDirectoryName);
         }
 
-        public static string AlternativeName(IEnumerable<string> takenNames, string name)
+        public static string AlternativeNameBraces(IEnumerable<string> takenNames, string name)
         {
             var nameSet = takenNames.Select(n => n.ToLower()).ToSet();
-            return AlternativeName(s => nameSet.Contains(s), name);
+            return AlternativeNameBraces(s => nameSet.Contains(s), name);
         }
         
-        public static string AlternativeName(Predicate<string> isTaken, string name)
+        public static string AlternativeNameBraces(Predicate<string> isTaken, string name)
         {
             while (isTaken(name.ToLower()))
             {
