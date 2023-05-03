@@ -9,11 +9,11 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
 {
     public class IconExplorer : EditorWindow
     {
-        private IconPack pack;
+        private IconFont pack;
         private string filterName;
         private int limit = 10;
         private bool dirty = true;
-        private IEnumerable<KeyValuePair<string, int>> configIcons;
+        private IEnumerable<(string name, int code)> configIcons;
         private Vector2 scrollPos;
 
         [MenuItem("Window/Icon Explorer")]
@@ -25,7 +25,7 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
         private void OnGUI()
         {
             var prevPack = pack;
-            pack = (IconPack) EditorGUILayout.ObjectField(pack, typeof(IconPack), true);
+            pack = (IconFont) EditorGUILayout.ObjectField(pack, typeof(IconFont), true);
             if (pack != prevPack) dirty = true;
             
             if (pack == null) return;
@@ -51,15 +51,15 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
 
             if (configIcons == null || dirty)
             {
-                configIcons = pack.Icons
-                    .Where(pair => filterName.IsNullOrEmpty() || pair.Key.Contains(filterName))
+                configIcons = GenerateConfig(pack)
+                    .Where(pair => filterName.IsNullOrEmpty() || pair.name.Contains(filterName))
                     .Take(limit)
                     .ToList();
             }
 
             EditorGUILayout.BeginHorizontal();
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
-            foreach (var (name, code) in configIcons.Select(x => (x.Key, x.Value)))
+            foreach (var (name, code) in configIcons.Select(x => (x.name, x.code)))
             {
                 EditorGUILayout.BeginHorizontal();
                 if (GUILayout.Button(((char) code).ToString(), fontStyle, GUILayout.MinWidth(50), GUILayout.MinHeight(50),GUILayout.MaxWidth(50), GUILayout.MaxHeight(50)))
@@ -77,6 +77,21 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
             EditorGUILayout.EndHorizontal();
 
             dirty = false;
+        }
+
+        private IEnumerable<(string name, int code)> GenerateConfig(IconFont iconPack)
+        {
+            return iconPack.CodePoints
+                .Replace('\r', '\n')
+                .Split('\n')
+                .Where(s => s.IsNullOrEmpty() == false)
+                .Select(s =>
+                {
+                    var split = s.Split(" ");
+                    var name = split[0];
+                    var code = int.Parse(split[1], System.Globalization.NumberStyles.HexNumber);
+                    return (name, code);
+                });
         }
     }
 }
