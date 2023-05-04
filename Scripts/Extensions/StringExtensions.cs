@@ -214,6 +214,11 @@ namespace ElasticSea.Framework.Extensions
 			return string.IsNullOrEmpty(str);
 		}
 
+		public static bool IsNullOrWhiteSpace(this string str)
+		{
+			return string.IsNullOrWhiteSpace(str);
+		}
+
 	    public static string ReplaceAllWhiteSpace(this string str, string replaceWith)
 	    {
 	        return Regex.Replace(str, @"\s+", replaceWith);
