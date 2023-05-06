@@ -1,9 +1,10 @@
-#if UNITY_EDITOR
 using System.Collections.Generic;
 using System.Linq;
+using DG.DOTweenEditor;
 using ElasticSea.Framework.Extensions;
 using UnityEditor;
 using UnityEngine;
+using EditorUtils = ElasticSea.Framework.Scripts.Util.Editor.EditorUtils;
 
 namespace ElasticSea.Framework.Scripts.Util.Icons
 {
@@ -25,9 +26,21 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
         private void OnGUI()
         {
             var prevPack = pack;
-            pack = (IconFont) EditorGUILayout.ObjectField(pack, typeof(IconFont), true);
+            if (pack == null)
+            {
+                GUILayout.BeginHorizontal();
+                pack = (IconFont) EditorGUILayout.ObjectField(pack, typeof(IconFont), true);
+                if (GUILayout.Button("Find", GUILayout.Width(100)))
+                {
+                    pack = EditorUtils.FindAssetsByType<IconFont>().FirstOrDefault();
+                }
+                GUILayout.EndHorizontal();
+            }
+            else
+            {
+                pack = (IconFont) EditorGUILayout.ObjectField(pack, typeof(IconFont), true);
+            }
             if (pack != prevPack) dirty = true;
-            
             if (pack == null) return;
             var fontStyle = new GUIStyle(GUI.skin.label) {font = pack.Font, fontSize = 32};
 
@@ -95,4 +108,3 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
         }
     }
 }
-#endif
