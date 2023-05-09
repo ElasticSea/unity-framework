@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
@@ -24,6 +25,22 @@ namespace ElasticSea.Framework.Util.Editor
             if (GUILayout.Button("Build Folder"))
             {
                 Utils.OpenInExplorer(Path.Combine(new DirectoryInfo(Application.dataPath).Parent.FullName, "Build"));
+            }
+
+            if (GUILayout.Button("Build Game Version"))
+            {
+                PlayerSettings.Android.bundleVersionCode++;
+                var iosBuildNumber = PlayerSettings.iOS.buildNumber.ToNullableInt();
+                if (iosBuildNumber != null)
+                {
+                    PlayerSettings.iOS.buildNumber = (iosBuildNumber + 1).ToString();
+                }
+
+                var macosBuildNumber = PlayerSettings.macOS.buildNumber.ToNullableInt();
+                if (macosBuildNumber != null)
+                {
+                    PlayerSettings.macOS.buildNumber = (macosBuildNumber + 1).ToString();
+                }
             }
         }
     }
