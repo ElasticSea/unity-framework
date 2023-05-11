@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using ElasticSea.Framework.Extensions;
+using ElasticSea.Framework.Scripts.Extensions;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
@@ -904,6 +905,12 @@ namespace ElasticSea.Framework.Util
             var dy = Mathf.Max(min.y - point.y, 0, point.y - max.y);
             var dz = Mathf.Max(min.z - point.z, 0, point.z - max.z);
             return Mathf.Sqrt(dx * dx + dy * dy + dz * dz);
+        }
+
+        public static void WriteAllText(string path, string contents)
+        {
+            new FileInfo(path).EnsureDirectory();
+            File.WriteAllText(path, contents);
         }
     }
 }
