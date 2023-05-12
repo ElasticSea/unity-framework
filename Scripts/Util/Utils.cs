@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -14,6 +15,7 @@ using ElasticSea.Framework.Scripts.Extensions;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
+using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 using Random = System.Random;
 
@@ -785,12 +787,19 @@ namespace ElasticSea.Framework.Util
             return Mathf.Lerp(destinationStart, destinationEnd, t);
         }
         
+        // public static async Task<byte[]> HttpDownloadFileAsync(string url) {
+        //     using var httpClient = new HttpClient();
+        //     using var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+        //     using var streamToReadFrom = await response.Content.ReadAsStreamAsync(); 
+        //     return streamToReadFrom.ReadAllBytes();
+        // }
+        
         public static async Task<byte[]> HttpDownloadFileAsync(string url) {
-            ServicePointManager.DefaultConnectionLimit = 20;
-            using var httpClient = new HttpClient();
-            using var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
-            using var streamToReadFrom = await response.Content.ReadAsStreamAsync(); 
-            return streamToReadFrom.ReadAllBytes();
+            
+            var myReq = WebRequest.Create(url);
+            myReq.Proxy = null;
+            var responseAsync = await myReq.GetResponseAsync();
+            return responseAsync.GetResponseStream().ReadAllBytes();
         }
         
         public static (byte[] bytes, int width, int height) NearestNeighbourScaleDown(byte[] bytes, int bytesPerPixel, int width, int height, int skip)
@@ -911,6 +920,36 @@ namespace ElasticSea.Framework.Util
         {
             new FileInfo(path).EnsureDirectory();
             File.WriteAllText(path, contents);
+        }
+
+        public static void Time(string message, Action inner)
+        {
+            Debug.Log("Begin " + message);
+            var sw = Stopwatch.StartNew();
+            inner();
+            Time(message, sw);
+        }
+
+        public static async Task Time(string message, Task inner)
+        {
+            Debug.Log("Begin " + message);
+            var sw = Stopwatch.StartNew();
+            await inner;
+            Time(message, sw);
+        }
+
+        public static async Task<T> Time<T>(string message, Task<T> inner)
+        {
+            Debug.Log("Begin " + message);
+            var sw = Stopwatch.StartNew();
+            var result = await inner;
+            Time(message, sw);
+            return result;
+        }
+
+        public static void Time(string message, Stopwatch sw)
+        {
+            Debug.Log($"{message} took {sw.Elapsed}");
         }
     }
 }
