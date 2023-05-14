@@ -17,7 +17,7 @@ namespace ElasticSea.Framework.Scripts.Util
             }
         }
 
-        private void Update()
+        public void Update()
         {
             transform.rotation = Quaternion.LookRotation(target.forward, target.up);
         }

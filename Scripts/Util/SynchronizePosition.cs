@@ -30,7 +30,7 @@ namespace ElasticSea.Framework.Scripts.Util
             }
         }
 
-        private void Update()
+        public void Update()
         {
             transform.position = target.position + offset;
         }
