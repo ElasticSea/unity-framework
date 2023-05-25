@@ -27,7 +27,7 @@ namespace ElasticSea.Framework.Util.Editor
                 Utils.OpenInExplorer(Path.Combine(new DirectoryInfo(Application.dataPath).Parent.FullName, "Build"));
             }
 
-            if (GUILayout.Button("Build Game Version"))
+            if (GUILayout.Button("Bump Build Version"))
             {
                 PlayerSettings.Android.bundleVersionCode++;
                 var iosBuildNumber = PlayerSettings.iOS.buildNumber.ToNullableInt();
@@ -42,6 +42,34 @@ namespace ElasticSea.Framework.Util.Editor
                     PlayerSettings.macOS.buildNumber = (macosBuildNumber + 1).ToString();
                 }
             }
+
+            if (GUILayout.Button("Bump Minor Version"))
+            {
+                var version = new Version(Application.version);
+
+                var main = version.Minor;
+                var patch = version.Build+ 1;
+                var build = 0;
+                UpdateVersion(main, patch, build);
+            }
+
+            if (GUILayout.Button("Bump Major Version"))
+            {
+                var version = new Version(Application.version);
+
+                var main = version.Minor + 1;
+                var patch = version.Build;
+                var build = 0;
+                UpdateVersion(main, patch, build);
+            }
+        }
+
+        private void UpdateVersion(int main, int patch, int build)
+        {
+            PlayerSettings.iOS.buildNumber = build.ToString();
+            PlayerSettings.macOS.buildNumber = build.ToString();
+            PlayerSettings.Android.bundleVersionCode = Convert.ToInt32($"{main}{patch}{build}");
+            PlayerSettings.bundleVersion = $"0.{main}.{patch}";
         }
     }
 }
