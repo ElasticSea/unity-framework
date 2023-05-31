@@ -951,5 +951,21 @@ namespace ElasticSea.Framework.Util
         {
             Debug.Log($"{message} took {sw.Elapsed}");
         }
+
+        public static byte[] ReadAllBytes(string filePath)
+        {
+            try
+            {
+                return File.ReadAllBytes(filePath);
+            }
+            catch (IOException e)
+            {
+                Debug.LogException(e);
+                
+                // In case another program already has write access to this file
+                using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                return fs.ReadAllBytes();
+            }
+        }
     }
 }
