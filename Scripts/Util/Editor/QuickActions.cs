@@ -58,7 +58,7 @@ namespace ElasticSea.Framework.Util.Editor
                 var version = new Version(Application.version);
 
                 var main = version.Minor + 1;
-                var patch = version.Build;
+                var patch = 0;
                 var build = 0;
                 UpdateVersion(main, patch, build);
             }
