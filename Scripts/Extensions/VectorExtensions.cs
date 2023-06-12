@@ -557,6 +557,27 @@ namespace ElasticSea.Framework.Extensions
 			}
 		}
 
+		public static bool RaycastPoint(this Plane plane, Vector3 start, Vector3 end, out Vector3 point)
+		{
+			var ray = new Ray(start, end - start);
+			if (plane.Raycast(ray, out var d))
+			{
+				if (Mathf.Abs(d) >= (end - start).magnitude)
+				{
+					point = Vector3.zero;
+					return false;
+				}
+				
+				point =  ray.origin + ray.direction * d;
+				return true;
+			}
+			else
+			{
+				point = Vector3.zero;
+				return false;
+			}
+		}
+
 		public static Vector3? Intersect(this Plane plane, Ray ray)
 		{
 			float enter;
