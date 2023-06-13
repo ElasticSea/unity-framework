@@ -1,3 +1,4 @@
+using ElasticSea.Framework.Extensions;
 using UnityEngine;
 
 namespace ElasticSea.Framework.Scripts.Util
@@ -125,6 +126,95 @@ namespace ElasticSea.Framework.Scripts.Util
 	        mesh.normals = normals;
 	        mesh.uv = uvs;
 	        return mesh;
+        }
+        
+        public static float Intersect(this Mesh mesh, Ray ray)
+        {
+	        var vertices = mesh.vertices;
+	        var triangles = mesh.triangles;
+
+	        for (int i = 0; i < triangles.Length; i+=3)
+	        {
+		        var v0 = vertices[triangles[i + 0]];
+		        var v1 = vertices[triangles[i + 1]];
+		        var v2 = vertices[triangles[i + 2]];
+
+		        var intersectRayTriangle = IntersectRayTriangle(ray, v0, v1, v2);
+		        if (float.IsNaN(intersectRayTriangle) == false)
+		        {
+			        return intersectRayTriangle;
+		        }
+	        }
+
+	        return float.NaN;
+        }
+        
+        public static bool Intersect(this Mesh mesh, Vector3 from, Vector3 to, out Vector3 hit)
+        {
+	        var ray = new Ray(from, to - from);
+	        var distanceHit = mesh.Intersect(ray);
+
+	        hit = Vector3.zero;
+	        
+	        if (float.IsNaN(distanceHit))
+	        {
+		        return false;
+	        }
+
+	        if (distanceHit > from.Distance(to))
+	        {
+		        return false;
+	        }
+
+	        hit = ray.origin + ray.direction * distanceHit;
+	        return true;
+        }
+
+        const float kEpsilon = 0.000001f;
+     
+        /// <summary>
+        /// Ray-versus-triangle intersection test suitable for ray-tracing etc.
+        /// Port of Möller–Trumbore algorithm c++ version from:
+        /// https://en.wikipedia.org/wiki/Möller–Trumbore_intersection_algorithm
+        /// </summary>
+        /// <returns><c>The distance along the ray to the intersection</c> if one exists, <c>NaN</c> if one does not.</returns>
+        /// <param name="ray">Le ray.</param>
+        /// <param name="v0">A vertex of the triangle.</param>
+        /// <param name="v1">A vertex of the triangle.</param>
+        /// <param name="v2">A vertex of the triangle.</param>
+        public static float IntersectRayTriangle(Ray ray, Vector3 v0, Vector3 v1, Vector3 v2) {
+     
+	        // edges from v1 & v2 to v0.     
+	        Vector3 e1 = v1 - v0;
+	        Vector3 e2 = v2 - v0;
+       
+	        Vector3 h = Vector3.Cross(ray.direction, e2);
+	        float   a = Vector3.Dot  (e1           , h );
+	        if ((a > -kEpsilon) && (a < kEpsilon)) {
+		        return float.NaN;
+	        }
+       
+	        float   f = 1.0f / a;
+       
+	        Vector3 s = ray.origin - v0;
+	        float   u = f * Vector3.Dot(s, h);
+	        if ((u < 0.0f) || (u > 1.0f)) {
+		        return float.NaN;
+	        }
+       
+	        Vector3 q = Vector3.Cross(s, e1);
+	        float   v = f * Vector3.Dot(ray.direction, q);
+	        if ((v < 0.0f) || (u  + v > 1.0f)) {
+		        return float.NaN;
+	        }
+       
+	        float t = f * Vector3.Dot(e2, q);
+	        if (t > kEpsilon) {
+		        return t;
+	        }
+	        else {
+		        return float.NaN;
+	        }
         }
     }
 }
