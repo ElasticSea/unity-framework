@@ -8,7 +8,7 @@ namespace ElasticSea.Framework.Scripts.Util.DI
 {
     public static class DependencyInjectionUtils
     {
-        private static Dictionary<Type, List<(Type fieldType, Action<object, object> action)>> dict = new();
+        private static Dictionary<Type, List<(Type fieldType, Action<object, object> action)>> dict = new Dictionary<Type, List<(Type fieldType, Action<object, object> action)>>();
         private static List<(Type fieldType, Action<object, object> action)> GetSetters(object mb)
         {
             var fields = mb.GetType()

@@ -53,9 +53,9 @@ namespace ElasticSea.Framework.Scripts.Util
 
         private static readonly Vector3[] boxNormals =
         {
-            new(1, 0, 0),
-            new(0, 1, 0),
-            new(0, 0, 1)
+            new Vector3(1, 0, 0),
+            new Vector3(0, 1, 0),
+            new Vector3(0, 0, 1)
         };
 
         public static bool IsIntersecting(FastBox box, FastTriangle fastTriangle)
