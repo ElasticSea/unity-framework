@@ -100,7 +100,7 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
                 .Where(s => s.IsNullOrEmpty() == false)
                 .Select(s =>
                 {
-                    var split = s.Split(" ");
+                    var split = s.Split(' ');
                     var name = split[0];
                     var code = int.Parse(split[1], System.Globalization.NumberStyles.HexNumber);
                     return (name, code);
