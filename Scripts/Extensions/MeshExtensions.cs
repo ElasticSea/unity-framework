@@ -77,6 +77,14 @@ namespace ElasticSea.Framework.Extensions
         }
         
         /// <summary>
+        /// Sets vertices from min to max value on the x and z axis
+        /// </summary>
+        public static Mesh SetXZSize(this Mesh source, Vector2 min, Vector2 max)
+        {
+            return source.SetXZSize(min, max, Vector3.one / 2f);
+        }
+        
+        /// <summary>
         /// Sets vertices from min to max value on the x axis
         /// </summary>
         public static Mesh SetXSize(this Mesh source, float min, float max, Vector3 normalizedCenter)
@@ -96,6 +104,38 @@ namespace ElasticSea.Framework.Extensions
                 var vert = vertices[i];
                 var x = vert.x < boundsCenterX ? vert.x + leftOffset : vert.x + rightOffset;
                 vertices[i] = new Vector3(x, vert.y, vert.z);
+            }
+
+            mesh.vertices = vertices;
+            mesh.RecalculateBounds();
+
+            return mesh;
+        }
+        
+        /// <summary>
+        /// Sets vertices from min to max value on the x axis
+        /// </summary>
+        public static Mesh SetXZSize(this Mesh source, Vector2 min, Vector2 max, Vector3 normalizedCenter)
+        {
+            var mesh = source.Clone();
+            var bounds = mesh.bounds;
+            var vertices = mesh.vertices;
+            var boundsCenter = (bounds.min + bounds.size.Multiply(normalizedCenter));
+            // var originalLeftSize = boundsCenterX - bounds.min.x;
+            // var originalRightSize =  bounds.max.x - boundsCenterX;
+
+            var leftOffsetX = min.x - bounds.min.x;
+            var rightOffsetX = max.x - bounds.max.x;
+
+            var leftOffsetZ = min.y - bounds.min.z;
+            var rightOffsetZ = max.y - bounds.max.z;
+
+            for (var i = 0; i < vertices.Length; i++)
+            {
+                var vert = vertices[i];
+                var x = vert.x < boundsCenter.x ? vert.x + leftOffsetX : vert.x + rightOffsetX;
+                var z = vert.z < boundsCenter.z ? vert.z + leftOffsetZ : vert.z + rightOffsetZ;
+                vertices[i] = new Vector3(x, vert.y, z);
             }
 
             mesh.vertices = vertices;
