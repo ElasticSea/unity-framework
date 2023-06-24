@@ -970,5 +970,94 @@ namespace ElasticSea.Framework.Util
                 }
             }
         }
+
+        public static PageElement<T>[][] CalculatePages<T>((T value, float size)[] elements, float maxSize, float leftNavigationSize, float rightNavigationSize)
+        {
+            // For 3 elements and less its always best to just make it one page
+            if (elements.Length <= 3)
+            {
+                return new[]
+                {
+                    elements.Select(e =>
+                    {
+                        return new PageElement<T>
+                        {
+                            Size = e.size,
+                            Element = e.value,
+                            Type = ElementType.Element
+                        };
+                    }).ToArray()
+                };
+            }
+
+            var pages = new List<List<PageElement<T>>>();
+            var currentPage = new List<PageElement<T>>();
+            pages.Add(currentPage);
+
+            var buffer = maxSize;
+
+            for (var i = 0; i < elements.Length; i++)
+            {
+                var element = elements[i];
+
+                // First element of non first page is always left navigation
+                if (pages.Count > 1 && currentPage.Count == 0)
+                {
+                    currentPage.Add(new PageElement<T>
+                    {
+                        Size = leftNavigationSize,
+                        Type = ElementType.LeftNav
+                    });
+                    buffer -= leftNavigationSize;
+
+                    i--;
+                    // Skip this iteration
+                    continue;
+                }
+
+                // Element and nav size does not fit on the page, create new page and continue with that one
+                var bufferTooSmall = buffer < element.size + rightNavigationSize;
+                var notEmpty = currentPage.Count >= 2;
+                var isNotLast = i < elements.Length - 1;
+                var biggerThanNav = element.size > rightNavigationSize;
+                if (bufferTooSmall && (isNotLast || biggerThanNav) && notEmpty)
+                {
+                    currentPage.Add(new PageElement<T>
+                    {
+                        Size = rightNavigationSize,
+                        Type = ElementType.RightNav
+                    });
+                    currentPage = new List<PageElement<T>>();
+                    pages.Add(currentPage);
+                    buffer = maxSize;
+
+                    i--;
+                    // Skip this iteration
+                    continue;
+                }
+
+                currentPage.Add(new PageElement<T>
+                {
+                    Size = element.size,
+                    Element = element.value,
+                    Type = ElementType.Element
+                });
+                buffer -= element.size;
+            }
+
+            return pages.Select(p => p.ToArray()).ToArray();
+        }
+    }
+    
+    public struct PageElement<T>
+    {
+        public float Size;
+        public ElementType Type;
+        public T Element;
+    }
+    
+    public enum ElementType
+    {
+        LeftNav, Element, RightNav
     }
 }
