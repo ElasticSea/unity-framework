@@ -160,21 +160,26 @@ namespace ElasticSea.Framework.Scripts.Extensions
                 var otherTransform = otherCollider.transform;
                 var thisTransform = thisCollider.transform;
                 if (Physics.ComputePenetration(
-                    otherCollider,
-                    otherTransform.position,
-                    otherTransform.rotation,
-                    thisCollider,
-                    thisTransform.position,
-                    thisTransform.rotation,
-                    out var direction,
-                    out var distance
-                ))
+                        otherCollider,
+                        otherTransform.position,
+                        otherTransform.rotation,
+                        thisCollider,
+                        thisTransform.position,
+                        thisTransform.rotation,
+                        out var direction,
+                        out var distance
+                    ))
                 {
                     return true;
                 }
             }
 
             return false;
+        }
+        
+        public static Bounds LocalBounds(this BoxCollider boxCollider)
+        {
+            return new Bounds(boxCollider.center, boxCollider.size);
         }
     }
 }

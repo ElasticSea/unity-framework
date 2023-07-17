@@ -25,6 +25,7 @@ namespace ElasticSea.Framework.Util
         public static void DrawLine(Vector3 from, Vector3 to, float thickness = 1)
         {
 #if UNITY_EDITOR
+            Handles.matrix = Gizmos.matrix;
             Handles.DrawBezier(from, to, from, to, Gizmos.color, null, thickness);
 #endif
         }
@@ -116,6 +117,50 @@ namespace ElasticSea.Framework.Util
                 DrawLine(prevPt, nextPt);
  
                 prevPt = nextPt;
+            }
+        }
+
+        public static void DrawCylinder(Vector3 start, Vector3 end, float radius, int numSegments)
+        {
+            // I t$$anonymous$$nk of normal as conceptually in the Y direction.  We find the
+            // "forward" and "right" axes relative to normal and I t$$anonymous$$nk of them 
+            // as the X and Z axes, though they aren't in any particular direction.
+            // All that matters is that they're perpendicular to each other and on
+            // the plane defined by pos and normal.
+
+            var normal = end - start;
+            
+            var temp = (normal.x < normal.z) ? new Vector3(1f, 0f, 0f) : new Vector3(0f, 0f, 1f);
+            var forward = Vector3.Cross(normal, temp).normalized;
+            var right = Vector3.Cross(forward, normal).normalized;
+ 
+            var prevPt1 = start + (forward * radius);
+            var prevPt2 = end + (forward * radius);
+            float angleStep = (Mathf.PI * 2f) / numSegments;
+            for (int i = 0; i < numSegments; i++)
+            {
+                // Get the angle for the end of t$$anonymous$$s segment.  If it's the last segment,
+                // use the angle of the first point so the last segment meets up with
+                // the first point exactly (regardless of floating point imprecision).
+                float angle = (i == numSegments - 1) ? 0f : (i + 1) * angleStep;
+ 
+                // Get the segment end point in local space, i.e. pretend as if the
+                // normal was (0, 1, 0), forward was (0, 0, 1), right was (1, 0, 0),
+                // and pos was (0, 0, 0).
+                var nextPtLocal = new Vector3(Mathf.Sin(angle), 0f, Mathf.Cos(angle)) * radius;
+ 
+                // Transform from local to world coords.  nextPtLocal's x,z are distances
+                // along its axes, so we want those as the distances along our right and
+                // forward axes.
+                var nextPt1 = start + (right * nextPtLocal.x) + (forward * nextPtLocal.z);
+                var nextPt2 = end + (right * nextPtLocal.x) + (forward * nextPtLocal.z);
+ 
+                DrawLine(prevPt1, nextPt1);
+                DrawLine(prevPt2, nextPt2);
+                DrawLine(nextPt1, nextPt2);
+ 
+                prevPt1 = nextPt1;
+                prevPt2 = nextPt2;
             }
         }
     }

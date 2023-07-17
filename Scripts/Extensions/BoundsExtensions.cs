@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ElasticSea.Framework.Scripts.Util;
+using ElasticSea.Framework.Util;
+using Unity.XR.CoreUtils;
 using UnityEngine;
 
 namespace ElasticSea.Framework.Extensions
@@ -60,6 +63,65 @@ namespace ElasticSea.Framework.Extensions
 		        radius = Mathf.Max(currentRadius, radius);
 	        }
 	        return (center, radius);
+        }
+        
+        public static Rect ToRectBounds(this Vector2[] points)
+        {
+	        var length = points.Length;
+	        
+	        var min = points[0];
+	        var max = points[0];
+	        for (int i = 0; i < length; i++)
+	        {
+		        var point = points[i];
+		        min = Vector2.Min(min, point);
+		        max = Vector2.Max(max, point);
+	        }
+
+	        return Rect.MinMaxRect(min.x, min.y, max.x, max.y);
+        }
+        
+        public static (Vector2 center, float radius) ToFastCircleBounds(this Vector2[] points)
+        {
+	        var length = points.Length;
+
+	        var rectBounds = points.ToRectBounds();
+
+	        var center = rectBounds.center;
+	        var radius = 0f;
+	        for (int i = 0; i < length; i++)
+	        {
+		        var point = points[i];
+		        var currentRadius = (center - point).magnitude;
+		        radius = Mathf.Max(currentRadius, radius);
+	        }
+	        return (center, radius);
+        }
+        
+        public static (Vector2 center, float radius) ToCircleBounds(this Vector2[] points)
+        {
+	        var circle = SmallestEnclosingCircle.MakeCircle(points);
+	        return (circle.c, (float) circle.r);
+        }
+        
+        public static CylinderBounds ToCylinderBounds(this Vector3[] points)
+        {
+	        var length = points.Length;
+	        var points2d = new Vector2[length];
+	        var minY = points[0].y;
+	        var maxY = points[0].y;
+	        for (int i = 0; i < length; i++)
+	        {
+		        var vector3 = points[i];
+		        points2d[i] = new Vector2(vector3.x, vector3.z);
+		        minY = Mathf.Min(minY, vector3.y);
+		        maxY = Mathf.Max(maxY, vector3.y);
+	        }
+
+	        var centerY = Mathf.Lerp(minY, maxY, 0.5f);
+	        var height = maxY - minY;
+	        var circle = SmallestEnclosingCircle.MakeCircle(points2d);
+	        return new CylinderBounds(new Vector3(circle.c.x, centerY, circle.c.y), (float) circle.r, height);
         }
 
         public static Bounds Encapsulate(this List<Bounds> bounds)
@@ -390,6 +452,35 @@ namespace ElasticSea.Framework.Extensions
 		    var newBounds = new Bounds();
 		    newBounds.SetMinMax(bounds.min.SetX(min), bounds.max.SetX(max));
 		    return newBounds;
+	    }
+
+	    public static Bounds Rotate(this Bounds bounds, Quaternion rotate)
+	    {
+		    var center = bounds.center;
+		    var extent = bounds.extents;
+		    
+		    var points = new[]
+		    {
+			    center + new Vector3(-extent.x, -extent.y, -extent.z),
+			    center + new Vector3(+extent.x, -extent.y, -extent.z),
+			    center + new Vector3(-extent.x, -extent.y, +extent.z),
+			    center + new Vector3(+extent.x, -extent.y, +extent.z),
+			    center + new Vector3(-extent.x, +extent.y, -extent.z),
+			    center + new Vector3(+extent.x, +extent.y, -extent.z),
+			    center + new Vector3(-extent.x, +extent.y, +extent.z),
+			    center + new Vector3(+extent.x, +extent.y, +extent.z),
+		    };
+
+		    var min = Vector3.positiveInfinity;
+		    var max = Vector3.negativeInfinity;
+		    for (int i = 0; i < points.Length; i++)
+		    {
+			    points[i] = rotate * points[i];
+			    min = Vector3.Min(min, points[i]);
+			    max = Vector3.Max(max, points[i]);
+		    }
+		    
+		    return Utils.Bounds(min, max);
 	    }
     }
 }

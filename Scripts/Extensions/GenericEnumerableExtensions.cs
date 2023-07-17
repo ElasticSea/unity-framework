@@ -1153,5 +1153,12 @@ namespace ElasticSea.Framework.Extensions
 		    public ICollection<K> Keys => dictionary.Keys;
 		    public ICollection<V> Values => dictionary.Values;
 	    }
+
+	    public static T[] CloneArray<T>(this T[] array)
+	    {
+		    var newArray = new T[array.Length];
+		    Array.Copy(array, newArray, array.Length);
+		    return newArray;
+	    }
 	}
 }

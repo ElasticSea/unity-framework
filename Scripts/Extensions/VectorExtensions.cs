@@ -649,6 +649,16 @@ namespace ElasticSea.Framework.Extensions
 			return v / points.Length;
 		}
 
+		public static Vector2 Average(this Vector2[] points)
+		{
+			var v = Vector2.zero;
+			for (var i = 0; i < points.Length; i++)
+			{
+				v += points[i];
+			}
+			return v / points.Length;
+		}
+
 		public static Vector3 Lerp(this IList<Vector3> source, float t)
 		{
 			var count = source.Count;
