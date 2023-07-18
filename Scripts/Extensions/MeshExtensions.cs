@@ -85,6 +85,14 @@ namespace ElasticSea.Framework.Extensions
         }
         
         /// <summary>
+        /// Sets vertices from min to max value on the x and z axis
+        /// </summary>
+        public static Mesh SetSize(this Mesh source, Vector3 min, Vector3 max)
+        {
+            return source.SetSize(min, max, Vector3.one / 2f);
+        }
+        
+        /// <summary>
         /// Sets vertices from min to max value on the x axis
         /// </summary>
         public static Mesh SetXSize(this Mesh source, float min, float max, Vector3 normalizedCenter)
@@ -136,6 +144,40 @@ namespace ElasticSea.Framework.Extensions
                 var x = vert.x < boundsCenter.x ? vert.x + leftOffsetX : vert.x + rightOffsetX;
                 var z = vert.z < boundsCenter.z ? vert.z + leftOffsetZ : vert.z + rightOffsetZ;
                 vertices[i] = new Vector3(x, vert.y, z);
+            }
+
+            mesh.vertices = vertices;
+            mesh.RecalculateBounds();
+
+            return mesh;
+        }
+        
+        /// <summary>
+        /// Sets vertices from min to max value on all axises
+        /// </summary>
+        public static Mesh SetSize(this Mesh source, Vector3 min, Vector3 max, Vector3 normalizedCenter)
+        {
+            var mesh = source.Clone();
+            var bounds = mesh.bounds;
+            var vertices = mesh.vertices;
+            var boundsCenter = (bounds.min + bounds.size.Multiply(normalizedCenter));
+
+            var leftOffsetX = min.x - bounds.min.x;
+            var rightOffsetX = max.x - bounds.max.x;
+
+            var leftOffsetY = min.y - bounds.min.y;
+            var rightOffsetY = max.y - bounds.max.y;
+
+            var leftOffsetZ = min.z - bounds.min.z;
+            var rightOffsetZ = max.z - bounds.max.z;
+
+            for (var i = 0; i < vertices.Length; i++)
+            {
+                var vert = vertices[i];
+                var x = vert.x < boundsCenter.x ? vert.x + leftOffsetX : vert.x + rightOffsetX;
+                var y = vert.y < boundsCenter.y ? vert.y + leftOffsetY : vert.y + rightOffsetY;
+                var z = vert.z < boundsCenter.z ? vert.z + leftOffsetZ : vert.z + rightOffsetZ;
+                vertices[i] = new Vector3(x, y, z);
             }
 
             mesh.vertices = vertices;
