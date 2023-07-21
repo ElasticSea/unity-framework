@@ -181,5 +181,11 @@ namespace ElasticSea.Framework.Scripts.Extensions
         {
             return new Bounds(boxCollider.center, boxCollider.size);
         }
+        
+        public static void SetBounds(this BoxCollider boxCollider, Bounds bounds)
+        {
+            boxCollider.center = bounds.center;
+            boxCollider.size = bounds.size;
+        }
     }
 }
