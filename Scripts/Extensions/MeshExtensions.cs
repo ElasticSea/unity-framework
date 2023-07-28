@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ElasticSea.Framework.Util;
 using UnityEngine;
 
 namespace ElasticSea.Framework.Extensions
@@ -575,6 +576,11 @@ namespace ElasticSea.Framework.Extensions
             newMesh.vertices = vertices;
             newMesh.RecalculateBounds();
             return newMesh;
+        }
+
+        public static MeshTransform Transform(this Mesh mesh)
+        {
+            return new MeshTransform(mesh);
         }
     }
 }
