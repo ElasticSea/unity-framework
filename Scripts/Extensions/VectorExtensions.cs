@@ -698,5 +698,12 @@ namespace ElasticSea.Framework.Extensions
 			var z = Mathf.RoundToInt(vec.z);
 			return new Vector3Int(x, y, z);
 		}
+
+		public static Vector2Int RoundToInt(this Vector2 vec)
+		{
+			var x = Mathf.RoundToInt(vec.x);
+			var y = Mathf.RoundToInt(vec.y);
+			return new Vector2Int(x, y);
+		}
 	}
 }
