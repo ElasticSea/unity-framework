@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Blocks.Meshbakers;
 using ElasticSea.Framework.Extensions;
 using UnityEngine;
 
@@ -29,7 +30,7 @@ namespace ElasticSea.Framework.Scripts.Util
                 this.b = t1;
                 this.c = t2;
                 this.vertices = new[] { t0, t1, t2 };
-                this.normal = new Plane(t0, t1, t2).normal;
+                this.normal = Vector3.Normalize(Vector3.Cross(b - a, c - a));
             }
         }
 
@@ -46,6 +47,15 @@ namespace ElasticSea.Framework.Scripts.Util
                 min = bounds.min;
                 max = bounds.max;
                 vertices = bounds.GetVertices();
+                minCoords = new[] { min.x, min.y, min.z };
+                maxCoords = new[] { max.x, max.y, max.z };
+            }
+
+            public FastBox(FastBounds bounds)
+            {
+                min = bounds.Min;
+                max = bounds.Max;
+                vertices = bounds.Vertices();
                 minCoords = new[] { min.x, min.y, min.z };
                 maxCoords = new[] { max.x, max.y, max.z };
             }
