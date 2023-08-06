@@ -495,6 +495,31 @@ namespace ElasticSea.Framework.Extensions
             mesh.normals = stripedNormals;
         }
         
+        public static void RemoveTriangles(this Mesh mesh, ISet<int> triangleIndexes)
+        {
+            // if (mesh.subMeshCount > 1)
+            // {
+            //     throw new Exception("Only meshes with one submesh are supported.");
+            // }
+
+            var triangles = mesh.triangles;
+            var newTriangles = new int[triangles.Length - triangleIndexes.Count*3];
+            int addedTriangles = 0;
+            for (int i = 0; i < triangles.Length; i+=3)
+            {
+                var triangleIndex = i / 3;
+                if (triangleIndexes.Contains(triangleIndex) == false)
+                {
+                    newTriangles[addedTriangles + 0] = triangles[i + 0];
+                    newTriangles[addedTriangles + 1] = triangles[i + 1];
+                    newTriangles[addedTriangles + 2] = triangles[i + 2];
+                    addedTriangles += 3;
+                }
+            }
+
+            mesh.triangles = newTriangles;
+        }
+        
         public static void TransformVertices(this Mesh mesh, Func<(Vector3 vextex, int index), Vector3> transform)
         {
             mesh.vertices = mesh.vertices.Select((v, i) => transform((v, i))).ToArray();
