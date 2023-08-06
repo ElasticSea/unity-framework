@@ -116,7 +116,8 @@ namespace ElasticSea.Framework.Scripts.Util
             for (var i = 0; i < length; i++)
             {
                 var point = points[i];
-                var val = Vector3.Dot(axis, point);
+                // TODO check next line performance on il2cpp vs Vecto3.Dot
+                var val = axis.x * point.x + axis.y * point.y + axis.z * point.z;
                 if (val < min) min = val;
                 if (val > max) max = val;
             }
