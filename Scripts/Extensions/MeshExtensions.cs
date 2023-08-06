@@ -221,6 +221,7 @@ namespace ElasticSea.Framework.Extensions
         {
             var newMesh = new Mesh
             {
+                indexFormat = mesh.indexFormat,
                 name = mesh.name,
                 vertices = mesh.vertices,
                 normals = mesh.normals,
