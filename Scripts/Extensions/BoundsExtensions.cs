@@ -296,11 +296,21 @@ namespace ElasticSea.Framework.Extensions
 
 		    var bound = bounds[0];
 
+		    var min = bound.min;
+		    var max = bound.max;
 		    for (var i = 1; i < bounds.Length; i++)
 		    {
-			    bound.Encapsulate(bounds[i]);
+			    var newBounds = bounds[i];
+			    var newBoundsMin = newBounds.min;
+			    var newBoundsMax = newBounds.max;
+			    
+			    min.x = Mathf.Min(newBoundsMin.x, min.x);
+			    min.y = Mathf.Min(newBoundsMin.y, min.y);
+			    max.x = Mathf.Max(newBoundsMax.x, max.x);
+			    max.y = Mathf.Max(newBoundsMax.y, max.y);
 		    }
-
+		    
+		    bound.SetMinMax(min, max);
 		    return bound;
 	    }
 		
