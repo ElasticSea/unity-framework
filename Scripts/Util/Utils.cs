@@ -457,6 +457,17 @@ namespace ElasticSea.Framework.Util
             );
         }
         
+        public static int GetUniqueInt(ISet<int> taken)
+        {
+            int candidate;
+            do
+            {
+                candidate = Rng.Next();
+            } while (taken.Contains(candidate));
+
+            return candidate;
+        }
+        
         public static string GetUniqueHexNumber(ISet<string> taken, int digits)
         {
             string candidate;
