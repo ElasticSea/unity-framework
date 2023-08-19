@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace ElasticSea.Framework.Scripts.Util
 {
-    public class SphereBounds
+    public struct SphereBounds
     {
-        private readonly Vector3 center;
-        private readonly float radius;
+        public readonly Vector3 center;
+        public readonly float radius;
 
         public SphereBounds(Vector3 center, float radius)
         {
