@@ -933,6 +933,12 @@ namespace ElasticSea.Framework.Util
             File.WriteAllText(path, contents);
         }
 
+        public static void WriteAllBytes(string path, byte[] contents)
+        {
+            new FileInfo(path).EnsureDirectory();
+            File.WriteAllBytes(path, contents);
+        }
+
         public static void Time(string message, Action inner)
         {
             Debug.Log("Begin " + message);
