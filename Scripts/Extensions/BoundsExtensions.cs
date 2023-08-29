@@ -123,6 +123,42 @@ namespace ElasticSea.Framework.Extensions
 	        var circle = SmallestEnclosingCircle.MakeCircle(points2d);
 	        return new CylinderBounds(new Vector3(circle.c.x, centerY, circle.c.y), (float) circle.r, height);
         }
+        
+        public static Bounds ToCubeBounds(this Bounds[] localBounds)
+        {
+	        var clusterBlocksLength = localBounds.Length;
+	        if (clusterBlocksLength == 0)
+	        {
+		        return default;
+	        }
+	        else
+	        {
+		        var newBounds = localBounds[0];
+
+		        for (var i = 1; i < clusterBlocksLength; i++)
+		        {
+			        newBounds.Encapsulate(localBounds[i]);
+		        }
+
+		        return newBounds;
+	        }
+        }
+
+        public static CylinderBounds ToCylinderBounds(this Bounds[] localBounds)
+        {
+	        var points = new Vector3[localBounds.Length * 8];
+	        var pointsCount = 0;
+	        for (int i = 0; i < localBounds.Length; i++)
+	        {
+		        var vertices = localBounds[i].GetVertices();
+		        for (int j = 0; j < vertices.Length; j++)
+		        {
+			        points[pointsCount++] = vertices[j];
+		        }
+	        }
+
+	        return points.ToCylinderBounds();
+        }
 
         public static Bounds Encapsulate(this List<Bounds> bounds)
         {
