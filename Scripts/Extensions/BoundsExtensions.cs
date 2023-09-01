@@ -380,26 +380,45 @@ namespace ElasticSea.Framework.Extensions
 		    return compositeBounds;
 	    }
 		
-	    public static Bounds GetMeshBounds(this GameObject go, bool includeInactive = false, bool isSharedMesh = false, bool skipEmptyBounds = false, Predicate<MeshFilter> filter = null)
+	    public static Bounds GetMeshBounds(this GameObject go, bool includeInactive = false, bool isSharedMesh = false, Predicate<Transform> filter = null)
 	    {
 		    var meshFilters = go.GetComponentsInChildren<MeshFilter>(includeInactive);
+		    var skinnedMeshRenderers = go.GetComponentsInChildren<SkinnedMeshRenderer>(includeInactive);
 
-		    var bounds = new List<Bounds>();
-
+		    var pairs = new List<(Mesh, Transform)>();
+		    
 		    for (var i = 0; i < meshFilters.Length; i++)
 		    {
 			    var mf = meshFilters[i];
-			    if(filter != null && filter(mf) == false)
+			    var mesh = isSharedMesh ? mf.sharedMesh : mf.mesh;
+			    pairs.Add((mesh, mf.transform));
+		    }
+		    
+		    for (var i = 0; i < skinnedMeshRenderers.Length; i++)
+		    {
+			    var mf = skinnedMeshRenderers[i];
+			    var mesh =  mf.sharedMesh;
+			    pairs.Add((mesh, mf.transform));
+		    }
+
+		    var bounds = new List<Bounds>();
+		    
+		    for (var i = 0; i < pairs.Count; i++)
+		    {
+			    var pair = pairs[i];
+			    var transform = pair.Item2;
+			    var mesh = pair.Item1;
+			    
+			    if(filter != null && filter(transform) == false)
 				    continue;
 			    
-			    var mesh = isSharedMesh ? mf.sharedMesh : mf.mesh;
 			    if(mesh == null)
 				    continue;
 			    
-			    if(skipEmptyBounds && mesh.bounds.size == default)
+			    if(mesh.bounds.size == default)
 				    continue;
 
-			    var localBound = mf.transform.TransformBounds(go.transform, mesh.bounds);
+			    var localBound = transform.TransformBounds(go.transform, mesh.bounds);
 			    
 			    bounds.Add(localBound);
 		    }
