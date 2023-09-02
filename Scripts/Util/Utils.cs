@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
+using DG.Tweening.Core.Easing;
 using ElasticSea.Framework.Extensions;
 using ElasticSea.Framework.Scripts.Extensions;
 using UnityEngine;
@@ -1063,6 +1064,132 @@ namespace ElasticSea.Framework.Util
             }
 
             return pages.Select(p => p.ToArray()).ToArray();
+        }
+
+        public static float Ease(float t, Easing easing)
+        {
+            var duration = 1f;
+            switch (easing)
+            {
+                case Easing.Linear:
+                    return t;
+                case Easing.InSine:
+                    return (-Mathf.Cos(t * 1.5707963705062866f) + 1f);
+                case Easing.OutSine:
+                    return Mathf.Sin(t * 1.5707963705062866f);
+                case Easing.InOutSine:
+                    return (-0.5f * (Mathf.Cos(3.1415927410125732f * t) - 1f));
+                case Easing.InQuad:
+                    return t * t;
+                case Easing.OutQuad:
+                    return (-(t) * (t - 2f));
+                case Easing.InOutQuad:
+                    return t * 0.5f < 1f ? 0.5f * t * t : (-0.5f * (--t * (t - 2f) - 1f));
+                case Easing.InCubic:
+                    return t * t * t;
+                case Easing.OutCubic:
+                    return ((t = (t - 1f)) * t * t + 1f);
+                case Easing.InOutCubic:
+                    return (t * 0.5f) < 1f ? 0.5f * t * t * t : (0.5f * ((t -= 2f) * t * t + 2f));
+                case Easing.InQuart:
+                    return t * t * t * t;
+                case Easing.OutQuart:
+                    return -((t = (t - 1f)) * t * t * t - 1f);
+                case Easing.InOutQuart:
+                    return (t * 0.5f) < 1f ? 0.5f * t * t * t * t : (-0.5f * ((t -= 2f) * t * t * t - 2f));
+                case Easing.InQuint:
+                    return t * t * t * t * t;
+                case Easing.OutQuint:
+                    return ((t = (t - 1f)) * t * t * t * t + 1f);
+                case Easing.InOutQuint:
+                    return (t * 0.5f) < 1f ? 0.5f * t * t * t * t * t : (0.5f * ((t -= 2f) * t * t * t * t + 2f));
+                case Easing.InExpo:
+                    return t != 0f ? Mathf.Pow(2f, 10f * (t - 1f)) : 0.0f;
+                case Easing.OutExpo:
+                    return t == duration ? 1f : (-Mathf.Pow(2f, -10f * t) + 1f);
+                case Easing.InOutExpo:
+                    if (t == 0.0)
+                        return 0.0f;
+                    if (t == duration)
+                        return 1f;
+                    return (t * 0.5f) < 1f ? 0.5f * Mathf.Pow(2f, 10f * (t - 1f)) : (0.5f * (-Mathf.Pow(2f, -10f * --t) + 2f));
+                case Easing.InCirc:
+                    return -(Mathf.Sqrt(1f - (t) * t) - 1f);
+                case Easing.OutCirc:
+                    return Mathf.Sqrt(1f - (t = (t - 1f)) * t);
+                case Easing.InOutCirc:
+                    return (t * 0.5f) < 1f ? (-0.5f * (Mathf.Sqrt(1f - t * t) - 1f)) : (0.5f * (Mathf.Sqrt(1f - (t -= 2f) * t) + 1f));
+                // case Easing.InElastic:
+                //   if ( t == 0.0)
+                //     return 0.0f;
+                //   if ( (t) == 1f)
+                //     return 1f;
+                //   if ( period == 0.0)
+                //     period = duration * 0.3f;
+                //   float num1;
+                //   if ( overshootOrAmplitude < 1f)
+                //   {
+                //     overshootOrAmplitude = 1f;
+                //     num1 = period / 4f;
+                //   }
+                //   else
+                //     num1 = period / 6.2831855f *  Math.Asin(1f /  overshootOrAmplitude);
+                //   return  -( overshootOrAmplitude * Math.Pow(2f, 10.0 *  --t) * Math.Sin(( t *  duration -  num1) * 6.2831854820251465 ));
+                // case Easing.OutElastic:
+                //   if ( t == 0.0)
+                //     return 0.0f;
+                //   if ( (t) == 1f)
+                //     return 1f;
+                //   if ( period == 0.0)
+                //     period = duration * 0.3f;
+                //   float num2;
+                //   if ( overshootOrAmplitude < 1f)
+                //   {
+                //     overshootOrAmplitude = 1f;
+                //     num2 = period / 4f;
+                //   }
+                //   else
+                //     num2 = period / 6.2831855f *  Math.Asin(1f /  overshootOrAmplitude);
+                //   return  ( overshootOrAmplitude * Math.Pow(2f, -10.0 *  t) * Math.Sin(( t *  duration -  num2) * 6.2831854820251465 ) + 1f);
+                // case Easing.InOutElastic:
+                //   if ( t == 0.0)
+                //     return 0.0f;
+                //   if ( (t * 0.5f) == 2f)
+                //     return 1f;
+                //   if ( period == 0.0)
+                //     period = duration * 0.45000002f;
+                //   float num3;
+                //   if ( overshootOrAmplitude < 1f)
+                //   {
+                //     overshootOrAmplitude = 1f;
+                //     num3 = period / 4f;
+                //   }
+                //   else
+                //     num3 = period / 6.2831855f *  Math.Asin(1f /  overshootOrAmplitude);
+                //   return  t < 1f ?  (-0.5 * ( overshootOrAmplitude * Math.Pow(2f, 10.0 *  --t) * Math.Sin(( t *  duration -  num3) * 6.2831854820251465))) :  ( overshootOrAmplitude * Math.Pow(2f, -10.0 *  --t) * Math.Sin(( t *  duration -  num3) * 6.2831854820251465 /  period) * 0.5 + 1f);
+                // case Easing.InBack:
+                //   return  ( (t) *  t * (( overshootOrAmplitude + 1f) *  t -  overshootOrAmplitude));
+                // case Easing.OutBack:
+                //   return  ( (t =  (t - 1f)) *  t * (( overshootOrAmplitude + 1f) *  t +  overshootOrAmplitude) + 1f);
+                // case Easing.InOutBack:
+                //   return  (t * 0.5f) < 1f ?  (0.5 * ( t *  t * (( (overshootOrAmplitude *= 1.525f) + 1f) *  t -  overshootOrAmplitude))) :  (0.5 * ( (t -= 2f) *  t * (( (overshootOrAmplitude *= 1.525f) + 1f) *  t +  overshootOrAmplitude) + 2f));
+                // case Easing.InBounce:
+                //   return Bounce.EasingIn(t, duration, overshootOrAmplitude, period);
+                // case Easing.OutBounce:
+                //   return Bounce.EasingOut(t, duration, overshootOrAmplitude, period);
+                // case Easing.InOutBounce:
+                //   return Bounce.EasingInOut(t, duration, overshootOrAmplitude, period);
+                // case Easing.Flash:
+                //   return Flash.Easing(t, duration, overshootOrAmplitude, period);
+                // case Easing.InFlash:
+                //   return Flash.EasingIn(t, duration, overshootOrAmplitude, period);
+                // case Easing.OutFlash:
+                //   return Flash.EasingOut(t, duration, overshootOrAmplitude, period);
+                // case Easing.InOutFlash:
+                //   return Flash.EasingInOut(t, duration, overshootOrAmplitude, period);
+                default:
+                    throw new Exception($"Easing [{easing}] not suported");
+            }
         }
     }
     
