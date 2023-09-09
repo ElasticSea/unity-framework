@@ -535,11 +535,28 @@ namespace ElasticSea.Framework.Extensions
 		    }
 	    }
 		
-		public static void RunDelayed(this MonoBehaviour behaviour, float delay, Action codeBlock)
-		{
-			if (behaviour && behaviour.isActiveAndEnabled)
-				behaviour.StartCoroutine(RunDelayed(delay, codeBlock));
-		}
+	    public static void RunDelayed(this MonoBehaviour behaviour, float delay, Action codeBlock)
+	    {
+		    if (behaviour && behaviour.isActiveAndEnabled)
+			    behaviour.StartCoroutine(RunDelayed(delay, codeBlock));
+	    }
+		
+	    public static Task<bool> StartCoroutineAsync(this MonoBehaviour behaviour, IEnumerator coroutine)
+	    {
+		    var tcs = new TaskCompletionSource<bool>();
+		    
+		    try
+		    {
+			    behaviour.StartCoroutine(coroutine);
+			    tcs.SetResult(true);
+		    }
+		    catch (Exception e)
+		    {
+			    tcs.SetException(e);
+		    }
+
+		    return tcs.Task;
+	    }
 
 		private static IEnumerator RunDelayed(float delay, Action codeBlock)
 		{
