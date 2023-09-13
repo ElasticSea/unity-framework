@@ -4,8 +4,8 @@ namespace ElasticSea.Framework.Scripts.Util
 {
     public class SynchronizePosition : MonoBehaviour
     {
-        public Transform target;
-        public Vector3 offset;
+        private Transform target;
+        private Vector3 offset;
 
         public Vector3 Offset
         {
