@@ -11,17 +11,28 @@ namespace ElasticSea.Framework.Scripts.Util.DI
         private static Dictionary<Type, List<(Type fieldType, Action<object, object> action)>> dict = new Dictionary<Type, List<(Type fieldType, Action<object, object> action)>>();
         private static List<(Type fieldType, Action<object, object> action)> GetSetters(object mb)
         {
-            var fields = mb.GetType()
-                .GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                .Where(f => f.GetCustomAttribute<DependencyInjectionAttribute>() != null)
-                .Select(f => (f.FieldType, (Action<object, object>) ((m, value) => f.SetValue(m, value))));
-                
-            var properties = mb.GetType()
-                .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                .Where(f => f.GetCustomAttribute<DependencyInjectionAttribute>() != null)
-                .Select(f => (f.PropertyType, (Action<object, object>) ((m, value) => f.SetValue(m, value))));
+            var setters = new List<(Type, Action<object, object>)>();
 
-            return fields.Concat(properties).ToList();
+            Type type= mb.GetType();
+            while (type != null && type != typeof(MonoBehaviour))
+            {
+                var fields = type
+                    .GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                    .Where(f => f.GetCustomAttribute<DependencyInjectionAttribute>() != null)
+                    .Select(f => (f.FieldType, (Action<object, object>) ((m, value) => f.SetValue(m, value))));
+                
+                var properties = type
+                    .GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                    .Where(f => f.GetCustomAttribute<DependencyInjectionAttribute>() != null)
+                    .Select(f => (f.PropertyType, (Action<object, object>) ((m, value) => f.SetValue(m, value))));
+                
+                setters.AddRange(fields);
+                setters.AddRange(properties);
+                
+                type = type.BaseType;
+            }
+
+            return setters;
         } 
         
         public static void InjectGameobject(GameObject target, Dictionary<Type, object> map)
