@@ -342,8 +342,10 @@ namespace ElasticSea.Framework.Extensions
 			    
 			    min.x = Mathf.Min(newBoundsMin.x, min.x);
 			    min.y = Mathf.Min(newBoundsMin.y, min.y);
+			    min.z = Mathf.Min(newBoundsMin.z, min.z);
 			    max.x = Mathf.Max(newBoundsMax.x, max.x);
 			    max.y = Mathf.Max(newBoundsMax.y, max.y);
+			    max.z = Mathf.Max(newBoundsMax.z, max.z);
 		    }
 		    
 		    bound.SetMinMax(min, max);
