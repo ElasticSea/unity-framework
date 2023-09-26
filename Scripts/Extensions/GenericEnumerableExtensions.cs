@@ -363,6 +363,22 @@ namespace ElasticSea.Framework.Extensions
 		}
 
 		/// <summary>
+		/// Returns a random element from this list
+		/// </summary>
+		public static T RandomElement<T>(this T[] array)
+		{
+			return RandomElement(array, new Random());
+		}
+
+		/// <summary>
+		/// Returns a random element from this list using the specified Random object
+		/// </summary>
+		public static T RandomElement<T>(this T[] array, Random rand)
+		{
+			return array[rand.Next(0, array.Length)];
+		}
+
+		/// <summary>
 		/// Returns a random element from this enumerable
 		/// </summary>
 		public static T RandomElement<T>(this IEnumerable<T> source)
