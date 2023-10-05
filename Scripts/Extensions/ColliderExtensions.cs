@@ -6,7 +6,7 @@ namespace ElasticSea.Framework.Scripts.Extensions
 {
     public static class ColliderExtensions
     {
-        public static Collider[] OverlapBox(this BoxCollider boxCollider, Vector3? offset, int layermask = -1)
+        public static Collider[] OverlapBox(this BoxCollider boxCollider, Vector3? offset = null, int layermask = -1)
         {
             var off = offset ?? Vector3.zero;
             var worldCenter = boxCollider.transform.TransformPoint(boxCollider.center);
