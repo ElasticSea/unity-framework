@@ -5,16 +5,21 @@ namespace ElasticSea.Framework.Scripts.Util
 {
     public static class MeshUtils
     {
-        public static Mesh Quad()
+	    public static Mesh Quad()
+	    {
+		    return Quad(Vector3.zero, Vector2.one, Quaternion.identity);
+	    }
+	    
+        public static Mesh Quad(Vector3 center, Vector2 size, Quaternion rotation)
         {
             return new Mesh
             {
                 vertices = new[]
                 {
-                    new Vector3(0, 0, 0),
-                    new Vector3(0, 0, 1),
-                    new Vector3(1, 0, 1),
-                    new Vector3(1, 0, 0)
+                    center + rotation * new Vector3(-size.x/2, 0, -size.y/2),
+                    center + rotation * new Vector3(-size.x/2, 0, +size.y/2),
+                    center + rotation * new Vector3(+size.x/2, 0, +size.y/2),
+                    center + rotation * new Vector3(+size.x/2, 0, -size.y/2)
                 },
                 triangles = new[]
                 {
@@ -30,10 +35,10 @@ namespace ElasticSea.Framework.Scripts.Util
                 },
                 normals = new[]
                 {
-                    new Vector3(0, 1, 0),
-                    new Vector3(0, 1, 0),
-                    new Vector3(0, 1, 0),
-                    new Vector3(0, 1, 0)
+                    rotation * new Vector3(0, 1, 0),
+                    rotation * new Vector3(0, 1, 0),
+                    rotation * new Vector3(0, 1, 0),
+                    rotation * new Vector3(0, 1, 0)
                 }
             };
         }
