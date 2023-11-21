@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEditor;
+using UnityEngine;
 
 namespace ElasticSea.Framework.Scripts.Util.Editor
 {
@@ -19,6 +20,19 @@ namespace ElasticSea.Framework.Scripts.Util.Editor
                 }
             }
             return assets;
+        }
+        
+        public static GameObject[] GetPrefabsAtPath(string path)
+        {
+            var assets = AssetDatabase.FindAssets($"t:Prefab", new[] { path });
+            var foundAssets = new List<GameObject>();
+ 
+            foreach (var guid in assets)
+            {
+                foundAssets.Add(AssetDatabase.LoadAssetAtPath<GameObject>(AssetDatabase.GUIDToAssetPath(guid)));
+            }
+ 
+            return foundAssets.ToArray();
         }
     }
 }
