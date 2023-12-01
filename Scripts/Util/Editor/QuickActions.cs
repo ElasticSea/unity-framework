@@ -29,18 +29,12 @@ namespace ElasticSea.Framework.Util.Editor
 
             if (GUILayout.Button("Bump Build Version"))
             {
-                PlayerSettings.Android.bundleVersionCode++;
-                var iosBuildNumber = PlayerSettings.iOS.buildNumber.ToNullableInt();
-                if (iosBuildNumber != null)
-                {
-                    PlayerSettings.iOS.buildNumber = (iosBuildNumber + 1).ToString();
-                }
+                var version = new Version(Application.version);
 
-                var macosBuildNumber = PlayerSettings.macOS.buildNumber.ToNullableInt();
-                if (macosBuildNumber != null)
-                {
-                    PlayerSettings.macOS.buildNumber = (macosBuildNumber + 1).ToString();
-                }
+                var main = version.Minor;
+                var patch = version.Build;
+                var build = PlayerSettings.iOS.buildNumber.ToInt() + 1;
+                UpdateVersion(main, patch, build);
             }
 
             if (GUILayout.Button("Bump Minor Version"))
@@ -68,7 +62,7 @@ namespace ElasticSea.Framework.Util.Editor
         {
             PlayerSettings.iOS.buildNumber = build.ToString();
             PlayerSettings.macOS.buildNumber = build.ToString();
-            PlayerSettings.Android.bundleVersionCode = Convert.ToInt32($"{main}{patch}{build}");
+            PlayerSettings.Android.bundleVersionCode = Convert.ToInt32($"{main}{patch}{build.ToString().PadLeft(2, '0')}");
             PlayerSettings.bundleVersion = $"0.{main}.{patch}";
         }
     }
