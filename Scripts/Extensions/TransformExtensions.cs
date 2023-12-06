@@ -183,7 +183,7 @@ namespace ElasticSea.Framework.Extensions
 
         public static List<Transform> AllChildren(this Transform transform, bool includeItself = false)
         {
-            return transform.allChildrenEnumerable(includeItself).ToList();
+            return transform.AllChildrenEnumerable(includeItself).ToList();
         }
         
         public static List<Transform> GetAllChildren(this Transform transform, Predicate<Transform> filter)
@@ -207,7 +207,7 @@ namespace ElasticSea.Framework.Extensions
             }
         }
 
-        private static IEnumerable<Transform> allChildrenEnumerable(this Transform transform, bool includeItself = false)
+        public static IEnumerable<Transform> AllChildrenEnumerable(this Transform transform, bool includeItself = false)
         {
             if (includeItself) yield return transform;
 
