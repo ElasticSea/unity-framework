@@ -1066,7 +1066,7 @@ namespace ElasticSea.Framework.Util
             return pages.Select(p => p.ToArray()).ToArray();
         }
 
-        public static float Ease(float t, Easing easing)
+        public static float Ease(float t, Easing easing, float overshootOrAmplitude = 1)
         {
             var duration = 1f;
             switch (easing)
@@ -1167,18 +1167,20 @@ namespace ElasticSea.Framework.Util
                 //   else
                 //     num3 = period / 6.2831855f *  Math.Asin(1f /  overshootOrAmplitude);
                 //   return  t < 1f ?  (-0.5 * ( overshootOrAmplitude * Math.Pow(2f, 10.0 *  --t) * Math.Sin(( t *  duration -  num3) * 6.2831854820251465))) :  ( overshootOrAmplitude * Math.Pow(2f, -10.0 *  --t) * Math.Sin(( t *  duration -  num3) * 6.2831854820251465 /  period) * 0.5 + 1f);
-                // case Easing.InBack:
-                //   return  ( (t) *  t * (( overshootOrAmplitude + 1f) *  t -  overshootOrAmplitude));
-                // case Easing.OutBack:
-                //   return  ( (t =  (t - 1f)) *  t * (( overshootOrAmplitude + 1f) *  t +  overshootOrAmplitude) + 1f);
-                // case Easing.InOutBack:
-                //   return  (t * 0.5f) < 1f ?  (0.5 * ( t *  t * (( (overshootOrAmplitude *= 1.525f) + 1f) *  t -  overshootOrAmplitude))) :  (0.5 * ( (t -= 2f) *  t * (( (overshootOrAmplitude *= 1.525f) + 1f) *  t +  overshootOrAmplitude) + 2f));
-                // case Easing.InBounce:
-                //   return Bounce.EasingIn(t, duration, overshootOrAmplitude, period);
-                // case Easing.OutBounce:
-                //   return Bounce.EasingOut(t, duration, overshootOrAmplitude, period);
-                // case Easing.InOutBounce:
-                //   return Bounce.EasingInOut(t, duration, overshootOrAmplitude, period);
+                case Easing.InBack:
+                    return (t) * t * ((overshootOrAmplitude + 1f) * t - overshootOrAmplitude);
+                case Easing.OutBack:
+                    return (t = (t - 1f)) * t * ((overshootOrAmplitude + 1f) * t + overshootOrAmplitude) + 1f;
+                case Easing.InOutBack:
+                    return t * 0.5f < 1f
+                        ? 0.5f * (t * t * (((overshootOrAmplitude *= 1.525f) + 1f) * t - overshootOrAmplitude))
+                        : 0.5f * ((t -= 2f) * t * (((overshootOrAmplitude *= 1.525f) + 1f) * t + overshootOrAmplitude) + 2f);
+                case Easing.InBounce:
+                  return Bounce.EaseIn(t, duration, 0, 0);
+                case Easing.OutBounce:
+                  return Bounce.EaseOut(t, duration, 0, 0);
+                case Easing.InOutBounce:
+                  return Bounce.EaseInOut(t, duration, 0, 0);
                 // case Easing.Flash:
                 //   return Flash.Easing(t, duration, overshootOrAmplitude, period);
                 // case Easing.InFlash:
@@ -1190,6 +1192,20 @@ namespace ElasticSea.Framework.Util
                 default:
                     throw new Exception($"Easing [{easing}] not suported");
             }
+        }
+        
+        public static float[] CreateAnimationTimeSlots(float t, int count)
+        {
+            var slots = new float[count];
+            var segment = 1f / slots.Length;
+            for (var i = 0; i < slots.Length; i++)
+            {
+                var start = (i + 0) * segment;
+                var end = (i + 1) * segment;
+                slots[i] = Mathf.Clamp01(Mathf.InverseLerp(start, end, t));
+            }
+
+            return slots;
         }
     }
     
