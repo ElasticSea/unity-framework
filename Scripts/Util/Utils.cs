@@ -1207,6 +1207,13 @@ namespace ElasticSea.Framework.Util
 
             return slots;
         }
+        
+        public static (float first, float second) SplitTime(float t, float split)
+        {
+            var first = Mathf.Clamp01(Mathf.InverseLerp(0, split, t));
+            var second = Mathf.Clamp01(Mathf.InverseLerp(split, 1, t));
+            return (first, second);
+        }
     }
     
     public struct PageElement<T>
