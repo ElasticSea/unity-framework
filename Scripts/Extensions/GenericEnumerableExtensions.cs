@@ -1106,6 +1106,23 @@ namespace ElasticSea.Framework.Extensions
 
 		    return total / count;
 	    }
+	     
+	    public static Vector3 FastAverage(this Vector3[] source)
+	    {
+		    return source.FastAverage(source.Length);
+	    }
+	    
+	    public static Vector3 FastAverage(this Vector3[] source, int count)
+	    {
+		    var total = Vector3.zero;
+		    count = Mathf.Min(count, source.Length);
+		    for (var i = 0; i < count; i++)
+		    {
+			    total += source[i];
+		    }
+
+		    return total / count;
+	    }
 
 	    public static IDictionary<K, V> ReturnsDefaultOnMissingKey<K, V>(this IDictionary<K, V> dictionary)
 	    {
