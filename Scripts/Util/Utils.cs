@@ -1214,6 +1214,15 @@ namespace ElasticSea.Framework.Util
             var second = Mathf.Clamp01(Mathf.InverseLerp(split, 1, t));
             return (first, second);
         }
+
+        public static Vector3 CircleXZ(float delta)
+        {
+            var circle = Mathf.PI * 2;
+            var angle = delta * circle;
+            var x = Mathf.Cos(angle);
+            var z = MathF.Sin(angle);
+            return new Vector3(x, 0, z);
+        }
     }
     
     public struct PageElement<T>
