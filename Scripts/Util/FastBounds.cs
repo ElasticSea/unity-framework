@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Drawing;
+using UnityEngine;
 
 namespace Blocks.Meshbakers
 {
@@ -6,11 +7,17 @@ namespace Blocks.Meshbakers
     {
         public Vector3 Min;
         public Vector3 Max;
+        public Vector3 Size;
+
+        public FastBounds(Bounds bounds) : this(bounds.min, bounds.max)
+        {
+        }
 
         public FastBounds(Vector3 min, Vector3 max)
         {
             Min = min;
             Max = max;
+            Size = max - min;
         }
 
         public Vector3[] Vertices()

@@ -34,16 +34,35 @@ namespace ElasticSea.Framework.Extensions
         
         public static Bounds ToBounds(this Vector3[] vertices)
         {
-            var min = Vector3.one * float.MaxValue;
-            var max = Vector3.one * float.MinValue;
+	        var min = Vector3.one * float.MaxValue;
+	        var max = Vector3.one * float.MinValue;
 
-            for (int i = 0; i < vertices.Length; i++)
-            {
-                min = vertices[i].Min(min);
-                max = vertices[i].Max(max);
-            }
+	        for (int i = 0; i < vertices.Length; i++)
+	        {
+		        min = vertices[i].Min(min);
+		        max = vertices[i].Max(max);
+	        }
 
-            return new Bounds((max - min) / 2 + min, max - min);
+	        return new Bounds((max - min) / 2 + min, max - min);
+        }
+
+        public static BoundsInt ToBounds(this IEnumerable<Vector3Int> vertices)
+        {
+	        return vertices.ToArray().ToBounds();
+        }
+        
+        public static BoundsInt ToBounds(this Vector3Int[] vertices)
+        {
+	        var min = new Vector3Int(int.MaxValue, int.MaxValue, int.MaxValue);
+	        var max = new Vector3Int(int.MinValue, int.MinValue, int.MinValue);
+
+	        for (int i = 0; i < vertices.Length; i++)
+	        {
+		        min = vertices[i].Min(min);
+		        max = vertices[i].Max(max);
+	        }
+
+	        return new BoundsInt((max - min) / 2 + min, max - min);
         }
         
         public static (Vector3 center, float radius) ToSphereBounds(this IEnumerable<Vector3> points)

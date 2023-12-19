@@ -345,6 +345,11 @@ namespace ElasticSea.Framework.Extensions
 			return Vector3.Min(vectorA, vectorB);
 		}
 
+		public static Vector3Int Min(this Vector3Int vectorA, Vector3Int vectorB)
+		{
+			return Vector3Int.Min(vectorA, vectorB);
+		}
+
 		public static Vector2 Min(this Vector2 vectorA, Vector2 vectorB)
 		{
 			return Vector2.Min(vectorA, vectorB);
