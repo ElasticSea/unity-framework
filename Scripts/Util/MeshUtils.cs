@@ -10,7 +10,7 @@ namespace ElasticSea.Framework.Scripts.Util
 		    return Quad(Vector3.zero, Vector2.one, Quaternion.identity);
 	    }
 	    
-        public static Mesh Quad(Vector3 center, Vector2 size, Quaternion rotation)
+        public static Mesh Quad(Vector3 center, Vector2 size, Quaternion rotation = default)
         {
             return new Mesh
             {
