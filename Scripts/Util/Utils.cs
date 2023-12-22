@@ -933,9 +933,9 @@ namespace ElasticSea.Framework.Util
         {
             var min = bounds.Min;
             var max = bounds.Max;
-            var dx = Mathf.Max(min.x - point.x, 0, point.x - max.x);
-            var dy = Mathf.Max(min.y - point.y, 0, point.y - max.y);
-            var dz = Mathf.Max(min.z - point.z, 0, point.z - max.z);
+            var dx = Mathf.Max(Mathf.Max(min.x - point.x, point.x - max.x), 0);
+            var dy = Mathf.Max(Mathf.Max(min.y - point.y, point.y - max.y), 0);
+            var dz = Mathf.Max(Mathf.Max(min.z - point.z, point.z - max.z), 0);
             return Mathf.Sqrt(dx * dx + dy * dy + dz * dz);
         }
 
