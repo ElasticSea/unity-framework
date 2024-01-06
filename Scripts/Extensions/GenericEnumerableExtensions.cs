@@ -1193,5 +1193,16 @@ namespace ElasticSea.Framework.Extensions
 		    Array.Copy(array, newArray, array.Length);
 		    return newArray;
 	    }
+
+	    public static T[] Cast<T>(this object[] array)
+	    {
+		    var length = array.Length;
+		    var newArray = new T[length];
+		    for (var i = 0; i < length; i++)
+		    {
+			    newArray[i] = (T)array[i];
+		    }
+		    return newArray;
+	    }
 	}
 }
