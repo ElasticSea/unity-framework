@@ -37,6 +37,7 @@
 
 #endregion License and information
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -456,9 +457,36 @@ namespace ElasticSea.Framework.Util
             aWriter.Write(aVec.z);
         }
 
+        public static void WriteVector3Int(this BinaryWriter aWriter, Vector3Int aVec)
+        {
+            aWriter.Write(aVec.x);
+            aWriter.Write(aVec.y);
+            aWriter.Write(aVec.z);
+        }
+
         public static Vector3 ReadVector3(this BinaryReader aReader)
         {
             return new Vector3(aReader.ReadSingle(), aReader.ReadSingle(), aReader.ReadSingle());
+        }
+
+        public static Vector3Int ReadVector3Int(this BinaryReader aReader)
+        {
+            return new Vector3Int(aReader.ReadInt32(), aReader.ReadInt32(), aReader.ReadInt32());
+        }
+        
+        public static void WriteVersion(this BinaryWriter writer, Version version)
+        {
+            writer.Write(version.Major);
+            writer.Write(version.Minor);
+            writer.Write(version.Build);
+        }
+
+        public static Version ReadVersion(this BinaryReader writer)
+        {
+            var major = writer.ReadInt32();
+            var minor = writer.ReadInt32();
+            var build = writer.ReadInt32();
+            return new Version(major, minor, build);
         }
 
         public static void WriteVector4(this BinaryWriter aWriter, Vector4 aVec)
