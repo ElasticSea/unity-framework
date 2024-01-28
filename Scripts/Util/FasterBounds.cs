@@ -1,4 +1,6 @@
-﻿namespace ElasticSea.Framework.Util
+﻿using UnityEngine;
+
+namespace ElasticSea.Framework.Util
 {
     public struct FasterBounds
     {
@@ -10,6 +12,13 @@
             this.xmax = xmax;
             this.ymax = ymax;
             this.zmax = zmax;
+        }
+
+        public Bounds ToBounds()
+        {
+            var min = new Vector3(xmin, ymin, zmin);
+            var max = new Vector3(xmax, ymax, zmax);
+            return Utils.Bounds(min, max);
         }
 
         public float xmin;
