@@ -190,9 +190,18 @@ namespace ElasticSea.Framework.Extensions
         /// <summary>
         /// Moves vertices from the center to each direction
         /// </summary>
-        public static Mesh ExtendMeshToBounds(this Mesh source, Bounds boundsToMatch)
+        public static Mesh ExtendMeshToBoundsClone(this Mesh source, Bounds boundsToMatch)
         {
             var mesh = source.Clone();
+            mesh.ExtendMeshToBounds(boundsToMatch);
+            return mesh; 
+        }
+        
+        /// <summary>
+        /// Moves vertices from the center to each direction
+        /// </summary>
+        public static void ExtendMeshToBounds(this Mesh mesh, Bounds boundsToMatch)
+        {
             var bounds = mesh.bounds;
             var vertices = mesh.vertices;
             
@@ -213,8 +222,6 @@ namespace ElasticSea.Framework.Extensions
 
             mesh.vertices = vertices;
             mesh.bounds = boundsToMatch;
-
-            return mesh;
         }
         
         public static Mesh Clone(this Mesh mesh)
