@@ -7,6 +7,11 @@ namespace ElasticSea.Framework.Scripts.Util
 {
     public class GameGizmoUtils
     {
+        public static GameObject DrawArrow(Vector3 from, Vector3 to)
+        {
+            return DrawArrow(from, to, from.Distance(to)/4, Color.blue, Color.red);
+        }
+        
         public static GameObject DrawArrow(Vector3 from, Vector3 to, float arrowHeadLength, Color bottom, Color top, float killDelay = 0f)
         {
             var go = new GameObject("Arrow");
