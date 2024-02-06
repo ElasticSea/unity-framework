@@ -569,6 +569,16 @@ namespace ElasticSea.Framework.Extensions
 		    return Utils.Bounds(min, max);
 	    }
 
+	    public static Bounds Scale(this Bounds bounds, float scaleBy)
+	    {
+		    return bounds.Scale(new Vector3(scaleBy, scaleBy, scaleBy));
+	    }
+
+	    public static Bounds Scale(this Bounds bounds, Vector3 scaleBy)
+	    {
+		    return new Bounds(bounds.center.Multiply(scaleBy), bounds.size.Multiply(scaleBy));
+	    }
+
 	    public static Bounds Grow(this Bounds bounds, float growBy)
 	    {
 		    return bounds.Grow(new Vector3(growBy, growBy, growBy));
