@@ -1234,6 +1234,30 @@ namespace ElasticSea.Framework.Util
             var z = MathF.Sin(angle);
             return new Vector3(x, 0, z);
         }
+
+        public static (Vector2 offset, Vector2Int dimensions) GetGridDimensions(Vector2 gridSize, Vector2 cellSize, float spacing)
+        {
+            return GetGridDimensions(gridSize.x, gridSize.y, cellSize.x, cellSize.y, spacing, spacing);
+        }
+
+        public static (Vector2 offset, Vector2Int dimensions) GetGridDimensions(Vector2 gridSize, Vector2 cellSize, Vector2 spacing)
+        {
+            return GetGridDimensions(gridSize.x, gridSize.y, cellSize.x, cellSize.y, spacing.x, spacing.y);
+        }
+
+        public static (Vector2 offset, Vector2Int dimensions) GetGridDimensions(float gridWidth, float gridHeight, float cellWidth, float cellHeight, float xSpacing, float ySpacing)
+        {
+            var xCellCount = Mathf.FloorToInt((gridWidth - xSpacing) / (cellWidth + xSpacing));
+            var yCellCount = Mathf.FloorToInt((gridHeight - ySpacing) / (cellHeight + ySpacing));
+
+            var finalWidth = (xCellCount - 1) * xSpacing + xCellCount * cellWidth;
+            var finalHeight = (yCellCount - 1) * ySpacing + yCellCount * cellHeight;
+
+            var dimensions = new Vector2Int(xCellCount, yCellCount);
+            var offset = new Vector2((gridWidth - finalWidth) / 2, (gridHeight - finalHeight) / 2);
+
+            return (offset, dimensions);
+        }
     }
     
     public struct PageElement<T>
