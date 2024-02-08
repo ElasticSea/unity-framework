@@ -1095,7 +1095,7 @@ namespace ElasticSea.Framework.Util
                 case Easing.OutQuad:
                     return (-(t) * (t - 2f));
                 case Easing.InOutQuad:
-                    return t * 0.5f < 1f ? 0.5f * t * t : (-0.5f * (--t * (t - 2f) - 1f));
+                    return (t /= 0.5f) < 1.0f ? 0.5f * t * t : -0.5f * (--t * (t - 2.0f) - 1.0f);
                 case Easing.InCubic:
                     return t * t * t;
                 case Easing.OutCubic:
