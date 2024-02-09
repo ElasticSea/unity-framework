@@ -1235,17 +1235,25 @@ namespace ElasticSea.Framework.Util
             return new Vector3(x, 0, z);
         }
 
-        public static (Vector2 offset, Vector2Int dimensions) GetGridDimensions(Vector2 gridSize, Vector2 cellSize, float spacing)
+        public static (Rect rect, Vector2Int dimensions) GetGridDimensions(Rect availableRect, Vector2 cellSize, float spacing)
+        {
+            var rectSize = availableRect.size;
+            var (occupiedRect, dimensions) = GetGridDimensions(rectSize, cellSize, spacing);
+            occupiedRect.position += availableRect.min;
+            return (occupiedRect, dimensions);
+        }
+
+        public static (Rect rect, Vector2Int dimensions) GetGridDimensions(Vector2 gridSize, Vector2 cellSize, float spacing)
         {
             return GetGridDimensions(gridSize.x, gridSize.y, cellSize.x, cellSize.y, spacing, spacing);
         }
 
-        public static (Vector2 offset, Vector2Int dimensions) GetGridDimensions(Vector2 gridSize, Vector2 cellSize, Vector2 spacing)
+        public static (Rect rect, Vector2Int dimensions) GetGridDimensions(Vector2 gridSize, Vector2 cellSize, Vector2 spacing)
         {
             return GetGridDimensions(gridSize.x, gridSize.y, cellSize.x, cellSize.y, spacing.x, spacing.y);
         }
 
-        public static (Vector2 offset, Vector2Int dimensions) GetGridDimensions(float gridWidth, float gridHeight, float cellWidth, float cellHeight, float xSpacing, float ySpacing)
+        public static (Rect rect, Vector2Int dimensions) GetGridDimensions(float gridWidth, float gridHeight, float cellWidth, float cellHeight, float xSpacing, float ySpacing)
         {
             var xCellCount = Mathf.FloorToInt((gridWidth - xSpacing) / (cellWidth + xSpacing));
             var yCellCount = Mathf.FloorToInt((gridHeight - ySpacing) / (cellHeight + ySpacing));
@@ -1256,7 +1264,8 @@ namespace ElasticSea.Framework.Util
             var dimensions = new Vector2Int(xCellCount, yCellCount);
             var offset = new Vector2((gridWidth - finalWidth) / 2, (gridHeight - finalHeight) / 2);
 
-            return (offset, dimensions);
+            var rect = Rect.MinMaxRect(offset.x, offset.y, offset.x + finalWidth, offset.y + finalHeight);
+            return (rect, dimensions);
         }
     }
     
