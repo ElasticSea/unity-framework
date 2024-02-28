@@ -1235,31 +1235,34 @@ namespace ElasticSea.Framework.Util
             return new Vector3(x, 0, z);
         }
 
-        public static (Rect rect, Vector2Int dimensions) GetGridDimensions(Rect availableRect, Vector2 cellSize, float spacing, int cellWidthLimit = -1, int cellHeightLimit = -1)
+        public static (Rect rect, Vector2Int dimensions) GetGridDimensions(Rect availableRect, Vector2 cellSize, float spacing, int cellWidthLimit = -1, int cellHeightLimit = -1, int cellWidthMin = -1, int cellHeightMin = -1)
         {
             var rectSize = availableRect.size;
-            var (occupiedRect, dimensions) = GetGridDimensions(rectSize, cellSize, spacing, cellWidthLimit, cellHeightLimit);
+            var (occupiedRect, dimensions) = GetGridDimensions(rectSize, cellSize, spacing, cellWidthLimit, cellHeightLimit, cellWidthMin, cellHeightMin);
             occupiedRect.position += availableRect.min;
             return (occupiedRect, dimensions);
         }
 
-        public static (Rect rect, Vector2Int dimensions) GetGridDimensions(Vector2 gridSize, Vector2 cellSize, float spacing, int cellWidthLimit = -1, int cellHeightLimit = -1)
+        public static (Rect rect, Vector2Int dimensions) GetGridDimensions(Vector2 gridSize, Vector2 cellSize, float spacing, int cellWidthLimit = -1, int cellHeightLimit = -1, int cellWidthMin = -1, int cellHeightMin = -1)
         {
-            return GetGridDimensions(gridSize.x, gridSize.y, cellSize.x, cellSize.y, spacing, spacing, cellWidthLimit, cellHeightLimit);
+            return GetGridDimensions(gridSize.x, gridSize.y, cellSize.x, cellSize.y, spacing, spacing, cellWidthLimit, cellHeightLimit, cellWidthMin, cellHeightMin);
         }
 
-        public static (Rect rect, Vector2Int dimensions) GetGridDimensions(Vector2 gridSize, Vector2 cellSize, Vector2 spacing, int cellWidthLimit = -1, int cellHeightLimit = -1)
+        public static (Rect rect, Vector2Int dimensions) GetGridDimensions(Vector2 gridSize, Vector2 cellSize, Vector2 spacing, int cellWidthLimit = -1, int cellHeightLimit = -1, int cellWidthMin = -1, int cellHeightMin = -1)
         {
-            return GetGridDimensions(gridSize.x, gridSize.y, cellSize.x, cellSize.y, spacing.x, spacing.y, cellWidthLimit, cellHeightLimit);
+            return GetGridDimensions(gridSize.x, gridSize.y, cellSize.x, cellSize.y, spacing.x, spacing.y, cellWidthLimit, cellHeightLimit, cellWidthMin, cellHeightMin);
         }
 
-        public static (Rect rect, Vector2Int dimensions) GetGridDimensions(float gridWidth, float gridHeight, float cellWidth, float cellHeight, float xSpacing, float ySpacing, int cellWidthLimit = -1, int cellHeightLimit = -1)
+        public static (Rect rect, Vector2Int dimensions) GetGridDimensions(float gridWidth, float gridHeight, float cellWidth, float cellHeight, float xSpacing, float ySpacing, int cellWidthLimit = -1, int cellHeightLimit = -1, int cellWidthMin = -1, int cellHeightMin = -1)
         {
             var xCellCount = Mathf.FloorToInt((gridWidth - xSpacing) / (cellWidth + xSpacing));
             var yCellCount = Mathf.FloorToInt((gridHeight - ySpacing) / (cellHeight + ySpacing));
 
             if (cellWidthLimit != -1) xCellCount = Mathf.Min(xCellCount, cellWidthLimit);
             if (cellHeightLimit != -1) yCellCount = Mathf.Min(yCellCount, cellHeightLimit);
+
+            if (cellWidthMin != -1) xCellCount = Mathf.Max(xCellCount, cellWidthMin);
+            if (cellHeightMin != -1) yCellCount = Mathf.Max(yCellCount, cellHeightMin);
 
             var finalWidth = (xCellCount - 1) * xSpacing + xCellCount * cellWidth;
             var finalHeight = (yCellCount - 1) * ySpacing + yCellCount * cellHeight;
