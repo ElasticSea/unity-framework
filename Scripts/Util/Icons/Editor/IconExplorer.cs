@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using DG.DOTweenEditor;
 using ElasticSea.Framework.Extensions;
@@ -65,7 +67,7 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
             if (configIcons == null || dirty)
             {
                 configIcons = GenerateConfig(pack)
-                    .Where(pair => filterName.IsNullOrEmpty() || pair.name.Contains(filterName))
+                    .Where(pair => filterName.IsNullOrEmpty() || pair.name.Contains(filterName) || ParseNoException(filterName, NumberStyles.HexNumber) == pair.code)
                     .Take(limit)
                     .ToList();
             }
@@ -90,6 +92,18 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
             EditorGUILayout.EndHorizontal();
 
             dirty = false;
+        }
+
+        private int ParseNoException(string text, NumberStyles numberStyles)
+        {
+            try
+            {
+                return int.Parse(text, numberStyles);
+            }
+            catch (Exception e)
+            {
+                return 0;
+            }
         }
 
         private IEnumerable<(string name, int code)> GenerateConfig(IconFont iconPack)
