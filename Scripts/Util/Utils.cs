@@ -1273,6 +1273,25 @@ namespace ElasticSea.Framework.Util
             var rect = Rect.MinMaxRect(offset.x, offset.y, offset.x + finalWidth, offset.y + finalHeight);
             return (rect, dimensions);
         }
+        
+        public static Collider[] OverlapBox(Transform transform, Bounds bounds, Vector3? offset = null, int layermask = -1)
+        {
+            var off = offset ?? Vector3.zero;
+            var worldCenter = transform.TransformPoint(bounds.center);
+            var worldExtents = transform.lossyScale.Multiply(bounds.size) / 2 + off;
+            var orientation = transform.rotation;
+
+            return Physics.OverlapBox(worldCenter, worldExtents, orientation, layermask);
+        }
+        
+        public static int OverlapBoxNonAlloc(Transform transform, Bounds bounds, Collider[] results, int layermask = -1, float offset = 0, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        {
+            var worldCenter = transform.TransformPoint(bounds.center);
+            var worldExtents = transform.lossyScale.Multiply(bounds.size) / 2 + new Vector3(offset, offset, offset);
+            var orientation = transform.rotation;
+
+            return Physics.OverlapBoxNonAlloc(worldCenter, worldExtents, results, orientation, layermask, queryTriggerInteraction);
+        }
     }
     
     public struct PageElement<T>
