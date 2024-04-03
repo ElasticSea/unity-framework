@@ -540,6 +540,48 @@ namespace ElasticSea.Framework.Extensions
 		    return newBounds;
 	    }
 
+	    public static Bounds SetMinX(this Bounds bounds, float min)
+	    {
+		    var newBounds = new Bounds();
+		    newBounds.SetMinMax(bounds.min.SetX(min), bounds.max);
+		    return newBounds;
+	    }
+
+	    public static Bounds SetMinY(this Bounds bounds, float min)
+	    {
+		    var newBounds = new Bounds();
+		    newBounds.SetMinMax(bounds.min.SetY(min), bounds.max);
+		    return newBounds;
+	    }
+
+	    public static Bounds SetMinZ(this Bounds bounds, float min)
+	    {
+		    var newBounds = new Bounds();
+		    newBounds.SetMinMax(bounds.min.SetZ(min), bounds.max);
+		    return newBounds;
+	    }
+
+	    public static Bounds SetMaxX(this Bounds bounds, float max)
+	    {
+		    var newBounds = new Bounds();
+		    newBounds.SetMinMax(bounds.min, bounds.max.SetX(max));
+		    return newBounds;
+	    }
+
+	    public static Bounds SetMaxY(this Bounds bounds, float max)
+	    {
+		    var newBounds = new Bounds();
+		    newBounds.SetMinMax(bounds.min, bounds.max.SetY(max));
+		    return newBounds;
+	    }
+
+	    public static Bounds SetMaxZ(this Bounds bounds, float max)
+	    {
+		    var newBounds = new Bounds();
+		    newBounds.SetMinMax(bounds.min, bounds.max.SetZ(max));
+		    return newBounds;
+	    }
+
 	    public static Bounds Rotate(this Bounds bounds, Quaternion rotate)
 	    {
 		    var center = bounds.center;
