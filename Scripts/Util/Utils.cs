@@ -812,7 +812,7 @@ namespace ElasticSea.Framework.Util
             var myReq = WebRequest.Create(url);
             myReq.Proxy = null;
             var responseAsync = await myReq.GetResponseAsync();
-            return responseAsync.GetResponseStream().ReadAllBytes();
+            return await responseAsync.GetResponseStream().ReadAllBytesAsync();
         }
         
         public static (byte[] bytes, int width, int height) NearestNeighbourScaleDown(byte[] bytes, int bytesPerPixel, int width, int height, int skip)

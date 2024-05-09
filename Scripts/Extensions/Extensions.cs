@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using UnityEngine;
 
 // ReSharper disable once CheckNamespace
@@ -231,6 +232,18 @@ namespace System
             using (var memoryStream = new MemoryStream())
             {
                 stream.CopyTo(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
+
+        public static async Task<byte[]> ReadAllBytesAsync(this Stream stream)
+        {
+            if (stream is MemoryStream memoryStream1)
+                return memoryStream1.ToArray();
+
+            using (var memoryStream = new MemoryStream())
+            {
+                await stream.CopyToAsync(memoryStream);
                 return memoryStream.ToArray();
             }
         }
