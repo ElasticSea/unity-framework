@@ -211,6 +211,8 @@ namespace ElasticSea.Framework.Extensions
 
 		public static Vector3 Flip(this Vector3 vector) => vector * -1;
 
+		public static Vector2 FlipXY(this Vector2 vector) => new Vector2(vector.y, vector.x);
+
 		public static Vector3 Snap(this Vector3 vector, float roundTo, float precision = float.MaxValue, float offset = 0) => new Vector3(
 			vector.x.Snap(roundTo, precision, offset),
 			vector.y.Snap(roundTo, precision, offset),

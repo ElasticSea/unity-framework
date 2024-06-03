@@ -204,24 +204,34 @@ namespace ElasticSea.Framework.Extensions
         {
             var bounds = mesh.bounds;
             var vertices = mesh.vertices;
+
+            ExtendMeshToBounds(vertices, vertices, bounds, boundsToMatch);
+
+            mesh.vertices = vertices;
+            mesh.bounds = boundsToMatch;
             
+        }
+        
+        
+        /// <summary>
+        /// Moves vertices from the center to each direction
+        /// </summary>
+        public static void ExtendMeshToBounds(this Vector3[] sourceVertices, Vector3[] targetVertices, Bounds bounds, Bounds boundsToMatch)
+        {
             // Center is at 0.5, 0.5, 0.5
             var boundsCenter = bounds.min + bounds.size.Multiply(Vector3.one * 0.5f);
 
             var minExtends = boundsToMatch.min - bounds.min + boundsCenter - bounds.center;
             var maxExtends = boundsToMatch.max - bounds.max + boundsCenter - bounds.center;
 
-            for (var i = 0; i < vertices.Length; i++)
+            for (var i = 0; i < sourceVertices.Length; i++)
             {
-                var vert = vertices[i];
+                var vert = sourceVertices[i];
                 var x = vert.x + (vert.x > boundsCenter.x / 2 ? maxExtends.x : minExtends.x);
                 var y = vert.y + (vert.y > boundsCenter.y / 2 ? maxExtends.y : minExtends.y);
                 var z = vert.z + (vert.z > boundsCenter.z / 2 ? maxExtends.z : minExtends.z);
-                vertices[i] = new Vector3(x, y, z) ;
+                targetVertices[i] = new Vector3(x, y, z) ;
             }
-
-            mesh.vertices = vertices;
-            mesh.bounds = boundsToMatch;
         }
         
         public static Mesh Clone(this Mesh mesh)
