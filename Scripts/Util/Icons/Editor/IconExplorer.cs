@@ -28,20 +28,18 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
         private void OnGUI()
         {
             var prevPack = pack;
-            if (pack == null)
+            pack = (IconFont) EditorGUILayout.ObjectField(pack, typeof(IconFont), true);
+            
+            GUILayout.BeginHorizontal();
+            foreach (var font in EditorUtils.FindAssetsByType<IconFont>())
             {
-                GUILayout.BeginHorizontal();
-                pack = (IconFont) EditorGUILayout.ObjectField(pack, typeof(IconFont), true);
-                if (GUILayout.Button("Find", GUILayout.Width(100)))
+                if (GUILayout.Button(font.name))
                 {
-                    pack = EditorUtils.FindAssetsByType<IconFont>().FirstOrDefault();
+                    pack = font;
                 }
-                GUILayout.EndHorizontal();
             }
-            else
-            {
-                pack = (IconFont) EditorGUILayout.ObjectField(pack, typeof(IconFont), true);
-            }
+            GUILayout.EndHorizontal();
+          
             if (pack != prevPack) dirty = true;
             if (pack == null) return;
             var fontStyle = new GUIStyle(GUI.skin.label) {font = pack.Font, fontSize = 32};
