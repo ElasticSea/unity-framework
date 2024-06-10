@@ -1292,6 +1292,18 @@ namespace ElasticSea.Framework.Util
 
             return Physics.OverlapBoxNonAlloc(worldCenter, worldExtents, results, orientation, layermask, queryTriggerInteraction);
         }
+
+        public static T[] Grow<T>(this T[] array, int length)
+        {
+            if (length > array.Length)
+            {
+                var newArray = new T[length];
+                Array.Copy(array, newArray, array.Length);
+                return newArray;
+            }
+
+            return array;
+        }
     }
     
     public struct PageElement<T>
