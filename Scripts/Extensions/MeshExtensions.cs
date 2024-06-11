@@ -546,6 +546,12 @@ namespace ElasticSea.Framework.Extensions
         {
             mesh.normals = mesh.normals.Select((v, i) => transform((v, i))).ToArray();
         }
+        
+        public static void TransformNormals2(this Mesh mesh, Func<(Vector3 normal, Vector3 vertex, int index), Vector3> transform)
+        {
+            var vertices = mesh.vertices;
+            mesh.normals = mesh.normals.Select((v, i) => transform((v, vertices[i], i))).ToArray();
+        }
 
         public static Vector3 Centroid(this List<Mesh> meshes, out float volume)
         {
