@@ -626,12 +626,20 @@ namespace ElasticSea.Framework.Extensions
 			return Vector2.Lerp(vector3A, vector3B, t);
 		}
 
-		public static float InverseLerp(this Vector3 from, Vector3 to, Vector3 point)
+		public static float InverseLerpWeird(this Vector3 from, Vector3 to, Vector3 point)
 		{
 			var mainVec = to - from;
 			var toProject = point - from;
 			var projected = toProject.Project(mainVec);
 			return projected.magnitude / mainVec.magnitude * Mathf.Sign(mainVec.Dot(projected));
+		}
+
+		public static Vector3 InverseLerp(this Vector3 from, Vector3 to, Vector3 point)
+		{
+			var x = Mathf.InverseLerp(from.x, to.x, point.x);
+			var y = Mathf.InverseLerp(from.y, to.y, point.y);
+			var z = Mathf.InverseLerp(from.z, to.z, point.z);
+			return new Vector3(x, y, z);
 		}
 		
 		public static Vector3 Average(this IEnumerable<Vector3> points)
