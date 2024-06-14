@@ -631,6 +631,42 @@ namespace ElasticSea.Framework.Extensions
 		    return new Bounds(bounds.center, bounds.size + growBy * 2);
 	    }
 
+	    public static Bounds GrowRight(this Bounds bounds, float growBy)
+	    {
+		    var offset = Vector3.right * growBy;
+		    return new Bounds(bounds.center + offset / 2, bounds.size + offset);
+	    }
+
+	    public static Bounds GrowLeft(this Bounds bounds, float growBy)
+	    {
+		    var offset = Vector3.left * growBy;
+		    return new Bounds(bounds.center + offset / 2, bounds.size + offset);
+	    }
+
+	    public static Bounds GrowUp(this Bounds bounds, float growBy)
+	    {
+		    var offset = Vector3.up * growBy;
+		    return new Bounds(bounds.center + offset / 2, bounds.size + offset);
+	    }
+
+	    public static Bounds GrowDown(this Bounds bounds, float growBy)
+	    {
+		    var offset = Vector3.down * growBy;
+		    return new Bounds(bounds.center + offset / 2, bounds.size + offset);
+	    }
+
+	    public static Bounds GrowForward(this Bounds bounds, float growBy)
+	    {
+		    var offset = Vector3.forward * growBy;
+		    return new Bounds(bounds.center + offset / 2, bounds.size + offset);
+	    }
+
+	    public static Bounds GrowBack(this Bounds bounds, float growBy)
+	    {
+		    var offs = Vector3.back * growBy;
+		    return new Bounds(bounds.center + offs / 2, bounds.size + offs);
+	    }
+
 	    public static Bounds Shrink(this Bounds bounds, float shrinkBy)
 	    {
 		    return bounds.Grow(-shrinkBy);
