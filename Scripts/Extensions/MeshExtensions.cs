@@ -218,8 +218,7 @@ namespace ElasticSea.Framework.Extensions
         /// </summary>
         public static void ExtendMeshToBounds(this Vector3[] sourceVertices, Vector3[] targetVertices, Bounds bounds, Bounds boundsToMatch)
         {
-            // Center is at 0.5, 0.5, 0.5
-            var boundsCenter = bounds.min + bounds.size.Multiply(Vector3.one * 0.5f);
+            var boundsCenter = bounds.center;
 
             var minExtends = boundsToMatch.min - bounds.min + boundsCenter - bounds.center;
             var maxExtends = boundsToMatch.max - bounds.max + boundsCenter - bounds.center;
@@ -227,9 +226,9 @@ namespace ElasticSea.Framework.Extensions
             for (var i = 0; i < sourceVertices.Length; i++)
             {
                 var vert = sourceVertices[i];
-                var x = vert.x + (vert.x > boundsCenter.x / 2 ? maxExtends.x : minExtends.x);
-                var y = vert.y + (vert.y > boundsCenter.y / 2 ? maxExtends.y : minExtends.y);
-                var z = vert.z + (vert.z > boundsCenter.z / 2 ? maxExtends.z : minExtends.z);
+                var x = vert.x + (vert.x > boundsCenter.x ? maxExtends.x : minExtends.x);
+                var y = vert.y + (vert.y > boundsCenter.y ? maxExtends.y : minExtends.y);
+                var z = vert.z + (vert.z > boundsCenter.z ? maxExtends.z : minExtends.z);
                 targetVertices[i] = new Vector3(x, y, z) ;
             }
         }
