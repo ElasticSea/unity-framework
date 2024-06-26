@@ -14,17 +14,17 @@ namespace ElasticSea.Framework.Util.Gizmo
             camera = camera ?? Camera.main;
 
             var gameGizmoProvider = new GameGizmoProvider(CreateMaterial());
-            
-            camera.gameObject.GetOrAddComponent<OnPostRenderCallback>().OnPostRenderEvent += () =>
-            {
-                presenter.OnGameOrEditorGizmoDraw(gameGizmoProvider);
-            };
-
             var editorGizmoProvider = new EditorGizmoProvider();
-            target.gameObject.GetOrAddComponent<OnDrawGizmoCallback>().OnDrawGizmosEvent += () =>
+            
+            void Draw(IGizmoProvider provider)
             {
-                presenter.OnGameOrEditorGizmoDraw(editorGizmoProvider);
-            };
+                provider.Color = Color.white;
+                provider.Matrix = Matrix4x4.identity;
+                presenter.OnGameOrEditorGizmoDraw(provider);
+            }
+            
+            camera.gameObject.GetOrAddComponent<OnPostRenderCallback>().OnPostRenderEvent += () => Draw(gameGizmoProvider);
+            target.gameObject.GetOrAddComponent<OnDrawGizmoCallback>().OnDrawGizmosEvent += () => Draw(editorGizmoProvider);
 #endif
         }
 
