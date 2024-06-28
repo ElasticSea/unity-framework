@@ -11,7 +11,6 @@ namespace ElasticSea.Framework.Util.Gizmo
         public static void Setup(IGizmoPresenter presenter, MonoBehaviour target, Camera camera = null)
         {
 #if UNITY_EDITOR
-            camera = camera ?? Camera.main;
 
             var gameGizmoProvider = new GameGizmoProvider(CreateMaterial());
             var editorGizmoProvider = new EditorGizmoProvider();
@@ -23,8 +22,42 @@ namespace ElasticSea.Framework.Util.Gizmo
                 presenter.OnGameOrEditorGizmoDraw(provider);
             }
             
-            camera.gameObject.GetOrAddComponent<OnPostRenderCallback>().OnPostRenderEvent += () => Draw(gameGizmoProvider);
+            camera = camera ?? Camera.main;
+            if (camera)
+            {
+                camera.gameObject.GetOrAddComponent<OnPostRenderCallback>().OnPostRenderEvent += () => Draw(gameGizmoProvider);
+            }
+
             target.gameObject.GetOrAddComponent<OnDrawGizmoCallback>().OnDrawGizmosEvent += () => Draw(editorGizmoProvider);
+#endif
+        }
+        
+        public static void SetupGame(IGizmoPresenter presenter, Camera camera = null)
+        {
+#if UNITY_EDITOR
+
+            var gameGizmoProvider = new GameGizmoProvider(CreateMaterial());
+            
+            void Draw(IGizmoProvider provider)
+            {
+                provider.Color = Color.white;
+                provider.Matrix = Matrix4x4.identity;
+                presenter.OnGameOrEditorGizmoDraw(provider);
+            }
+            
+            camera = camera ?? Camera.main;
+            camera.gameObject.GetOrAddComponent<OnPostRenderCallback>().OnPostRenderEvent += () => Draw(gameGizmoProvider);
+#endif
+        }
+        
+        public static void DrawEditor(IGizmoPresenter presenter)
+        {
+#if UNITY_EDITOR
+
+            var editorGizmoProvider = new EditorGizmoProvider();
+            editorGizmoProvider.Color = Color.white;
+            editorGizmoProvider.Matrix = Matrix4x4.identity;
+            presenter.OnGameOrEditorGizmoDraw(editorGizmoProvider);
 #endif
         }
 
