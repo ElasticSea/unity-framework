@@ -33,6 +33,11 @@ namespace ElasticSea.Framework.Util.Gizmo
             
         }
 
+        public void DrawSphere(Vector3 center, float radius)
+        {
+            Gizmos.DrawSphere(center, radius);
+        }
+
         public void DrawWireSphere(Vector3 center, float radius)
         {
             Gizmos.DrawWireSphere(center, radius);

@@ -1,4 +1,5 @@
 ﻿using ElasticSea.Framework.Extensions;
+using ElasticSea.Framework.Scripts.Util;
 using ElasticSea.Framework.Util.Callbacks;
 using UnityEngine;
 
@@ -12,7 +13,7 @@ namespace ElasticSea.Framework.Util.Gizmo
         {
 #if UNITY_EDITOR
 
-            var gameGizmoProvider = new GameGizmoProvider(CreateMaterial());
+            var gameGizmoProvider = new GameGizmoProvider(CreateMaterial(), MeshUtils.Icosphere(1));
             var editorGizmoProvider = new EditorGizmoProvider();
             
             void Draw(IGizmoProvider provider)
@@ -36,7 +37,7 @@ namespace ElasticSea.Framework.Util.Gizmo
         {
 #if UNITY_EDITOR
 
-            var gameGizmoProvider = new GameGizmoProvider(CreateMaterial());
+            var gameGizmoProvider = new GameGizmoProvider(CreateMaterial(), MeshUtils.Icosphere(1));
             
             void Draw(IGizmoProvider provider)
             {

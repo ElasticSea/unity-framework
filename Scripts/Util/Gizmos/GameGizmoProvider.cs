@@ -7,6 +7,7 @@ namespace ElasticSea.Framework.Util
     public class GameGizmoProvider : IGizmoProvider
     {
         private Material material;
+        private Mesh sphereMesh;
         
         public Matrix4x4 Matrix
         {
@@ -18,9 +19,10 @@ namespace ElasticSea.Framework.Util
             set => Gizmos.color = value;
         }
 
-        public GameGizmoProvider(Material material)
+        public GameGizmoProvider(Material material, Mesh sphereMesh)
         {
             this.material = material;
+            this.sphereMesh = sphereMesh;
         }
 
         private void BeforeDraw()
@@ -67,6 +69,13 @@ namespace ElasticSea.Framework.Util
             BeforeDraw();
             DrawCapsuleInternal(p1, p2, radius);
             AfterDraw();
+        }
+
+        public void DrawSphere(Vector3 p1, float radius)
+        {
+            material.SetPass(0);
+            var matrix = Gizmos.matrix * Matrix4x4.TRS(p1, Quaternion.identity, Vector3.one * radius);
+            Graphics.DrawMeshNow(sphereMesh, matrix, 0);
         }
 
         public void DrawWireSphere(Vector3 p1, float radius)
