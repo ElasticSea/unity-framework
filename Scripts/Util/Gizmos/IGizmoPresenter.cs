@@ -72,9 +72,13 @@ namespace ElasticSea.Framework.Util.Gizmo
             // lineMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
             // lineMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
             // Turn backface culling off
-            lineMaterial.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
+            lineMaterial.SetInt("_Cull", 0);
             // Turn off depth writes
             lineMaterial.SetInt("_ZWrite", 0);
+            // Dont test the depth buffer
+            lineMaterial.SetInt("_ZTest", 0);
+            // Write at the end after everything
+            lineMaterial.renderQueue = 5000;
             return lineMaterial;
         }
     }
