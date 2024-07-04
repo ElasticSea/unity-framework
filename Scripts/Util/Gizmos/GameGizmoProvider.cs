@@ -27,6 +27,7 @@ namespace ElasticSea.Framework.Util
 
         private void BeforeDraw()
         {
+            material.color = Color.white;
             material.SetPass(0);
             
             GL.PushMatrix();
@@ -73,6 +74,7 @@ namespace ElasticSea.Framework.Util
 
         public void DrawSphere(Vector3 p1, float radius)
         {
+            material.color = Gizmos.color;
             material.SetPass(0);
             var matrix = Gizmos.matrix * Matrix4x4.TRS(p1, Quaternion.identity, Vector3.one * radius);
             Graphics.DrawMeshNow(sphereMesh, matrix, 0);
