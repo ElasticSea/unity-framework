@@ -26,11 +26,12 @@ namespace ElasticSea.Framework.Util.Gizmo
 
         public void DrawWireCapsule(Vector3 from, Vector3 to, float radius)
         {
+            GizmoUtils.DrawWireCapsule(from, to, radius);
         }
 
         public void DrawWireCircle(Vector3 from, Vector3 normal, float radius)
         {
-            
+            GizmoUtils.DrawCircle(from, normal, radius, 32);
         }
 
         public void DrawSphere(Vector3 center, float radius)
