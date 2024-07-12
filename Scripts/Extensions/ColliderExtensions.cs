@@ -1,5 +1,6 @@
 using System;
 using ElasticSea.Framework.Extensions;
+using ElasticSea.Framework.Util;
 using UnityEngine;
 
 namespace ElasticSea.Framework.Scripts.Extensions
@@ -29,6 +30,15 @@ namespace ElasticSea.Framework.Scripts.Extensions
         {
             var worldCenter = colliderLocalToWorld.MultiplyPoint3x4(boxCollider.center);
             var worldExtents = colliderLocalToWorld.lossyScale.Multiply(boxCollider.size) / 2;
+            var orientation = colliderLocalToWorld.rotation;
+
+            return Physics.OverlapBoxNonAlloc(worldCenter, worldExtents, results, orientation, layermask, queryTriggerInteraction);
+        }
+        
+        public static int OverlapBoxNonAlloc(this BoxColliderData boxColliderData, Collider[] results, Matrix4x4 colliderLocalToWorld, int layermask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        {
+            var worldCenter = colliderLocalToWorld.MultiplyPoint3x4(boxColliderData.Center);
+            var worldExtents = colliderLocalToWorld.lossyScale.Multiply(boxColliderData.Size) / 2;
             var orientation = colliderLocalToWorld.rotation;
 
             return Physics.OverlapBoxNonAlloc(worldCenter, worldExtents, results, orientation, layermask, queryTriggerInteraction);
@@ -93,6 +103,16 @@ namespace ElasticSea.Framework.Scripts.Extensions
             return Physics.OverlapCapsuleNonAlloc(worldTop, worldBottom, radius, results, layermask, queryTriggerInteraction);
         }
 
+        public static int OverlapCapsuleNonAlloc(this CapsuleColliderData capsuleColliderData, Collider[] results, Matrix4x4 colliderLocalToWorld, int layermask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        {
+            var worldBottom = colliderLocalToWorld.MultiplyPoint3x4(capsuleColliderData.Start);
+            var worldTop = colliderLocalToWorld.MultiplyPoint3x4(capsuleColliderData.End);
+            var scale = colliderLocalToWorld.lossyScale.Min();
+            var radius = capsuleColliderData.Radius * scale;
+            
+            return Physics.OverlapCapsuleNonAlloc(worldTop, worldBottom, radius, results, layermask, queryTriggerInteraction);
+        }
+
         public static Collider[] OverlapSphere(this SphereCollider sphereCollider, int layermask = -1)
         {
             var scale = sphereCollider.transform.lossyScale.Min();
@@ -116,6 +136,15 @@ namespace ElasticSea.Framework.Scripts.Extensions
             var scale = colliderLocalToWorld.lossyScale.Min();
             var worldCenter = colliderLocalToWorld.MultiplyPoint3x4(sphereCollider.center);
             var worldRadius = sphereCollider.radius * scale;
+            
+            return Physics.OverlapSphereNonAlloc(worldCenter, worldRadius, results, layermask, queryTriggerInteraction);
+        }
+
+        public static int OverlapSphereNonAlloc(this SphereColliderData sphereColliderData, Collider[] results, Matrix4x4 colliderLocalToWorld, int layermask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        {
+            var scale = colliderLocalToWorld.lossyScale.Min();
+            var worldCenter = colliderLocalToWorld.MultiplyPoint3x4(sphereColliderData.Center);
+            var worldRadius = sphereColliderData.Radius * scale;
             
             return Physics.OverlapSphereNonAlloc(worldCenter, worldRadius, results, layermask, queryTriggerInteraction);
         }
@@ -151,6 +180,18 @@ namespace ElasticSea.Framework.Scripts.Extensions
                 case SphereCollider sc: return sc.OverlapSphereNonAlloc(results, colliderLocalToWorld, layermask, queryTriggerInteraction);
                 case BoxCollider bc: return bc.OverlapBoxNonAlloc(results, colliderLocalToWorld, layermask, queryTriggerInteraction);
                 case CapsuleCollider cc: return cc.OverlapCapsuleNonAlloc(results, colliderLocalToWorld, layermask, queryTriggerInteraction);
+            }
+            
+            throw new ArgumentException($"Collider of type: {collider.GetType().GetSimpleAliasName()} is not supported.");
+        }
+        
+        public static int OverlapNonAlloc(this ColliderData collider, Matrix4x4 colliderLocalToWorld, Collider[] results, int layermask = -1, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        {
+            switch (collider)
+            {
+                case SphereColliderData sc: return sc.OverlapSphereNonAlloc(results, colliderLocalToWorld, layermask, queryTriggerInteraction);
+                case BoxColliderData bc: return bc.OverlapBoxNonAlloc(results, colliderLocalToWorld, layermask, queryTriggerInteraction);
+                case CapsuleColliderData cc: return cc.OverlapCapsuleNonAlloc(results, colliderLocalToWorld, layermask, queryTriggerInteraction);
             }
             
             throw new ArgumentException($"Collider of type: {collider.GetType().GetSimpleAliasName()} is not supported.");
