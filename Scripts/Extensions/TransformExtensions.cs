@@ -45,6 +45,22 @@ namespace ElasticSea.Framework.Extensions
             return dest.InverseTransformPoint(world);
         }
 
+        /// <summary>
+        /// Transforms world rotation to transform local space
+        /// </summary>
+        public static Quaternion InverseTransformRotation(this Transform t, Quaternion rotation)
+        {
+            return Quaternion.Inverse(t.rotation) * rotation;
+        }
+
+        /// <summary>
+        /// Transforms local rotation to world space
+        /// </summary>
+        public static Quaternion TransformRotation(this Transform t, Quaternion rotation)
+        {
+            return t.rotation * rotation;
+        }
+
         public static void SetLocalX(this Transform transform, float x)
         {
             transform.localPosition = new Vector3(x, transform.localPosition.y, transform.localPosition.z);
