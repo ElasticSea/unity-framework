@@ -1304,6 +1304,25 @@ namespace ElasticSea.Framework.Util
 
             return array;
         }
+
+        public static float AngleDifference(float angle1, float angle2)
+        {
+            float diff = (angle2 - angle1 + 180) % 360 - 180;
+            return diff < -180 ? diff + 360 : diff;
+        }
+
+        public static Vector3 InverseLerpEulerAngles(Vector3 min, Vector3 max, Vector3 value)
+        {
+            var x = InverseLerpAngle(min.x, max.x, value.x);
+            var y = InverseLerpAngle(min.y, max.y, value.y);
+            var z = InverseLerpAngle(min.z, max.z, value.z);
+            return new Vector3(x, y, z);
+        }
+
+        public static float InverseLerpAngle(float min, float max, float t)
+        {
+            return Mathf.Abs(AngleDifference(t, min) / AngleDifference(max, min));
+        }
     }
     
     public struct PageElement<T>

@@ -191,5 +191,88 @@ namespace ElasticSea.Framework.Tests.Extensions
             
             CollectionAssert.AreEqual(expected, actual.bytes);
         }
+
+        [Test]
+        public void InverseLerpEulerAngles_1()
+        {
+            var min = 0;
+            var max = 360;
+
+            var value = 360;
+
+            var actual = Utils.InverseLerpAngle(min, max, value);
+            var expected = float.NaN;
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void InverseLerpEulerAngles_10()
+        {
+            var min = 360;
+            var max = 0;
+
+            var value = 360;
+
+            var actual = Utils.InverseLerpAngle(min, max, value);
+            var expected = float.NaN;
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void InverseLerpEulerAngles_2()
+        {
+            var min = 315;
+            var max = 45;
+
+            var value = 0f;
+
+            var actual = Utils.InverseLerpAngle(min, max, value);
+            var expected = 0.5f;
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void InverseLerpEulerAngles_3()
+        {
+            var min = 270;
+            var max = 360;
+
+            var value = 0;
+
+            var actual = Utils.InverseLerpAngle(min, max, value);
+            var expected = 1;
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void InverseLerpEulerAngles_4()
+        {
+            var min = 270;
+            var max = 360;
+
+            var value = 90;
+
+            var actual = Utils.InverseLerpAngle(min, max, value);
+            var expected = 2;
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [Test]
+        public void InverseLerpEulerAngles_5()
+        {
+            var min = 350;
+            var max = 320;
+            var value = 330;
+
+            var actual = Utils.InverseLerpAngle(min, max, value);
+            var expected = 2 / 3f;
+
+            Assert.AreEqual(expected, actual);
+        }
     }
 }
