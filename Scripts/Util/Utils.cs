@@ -577,6 +577,18 @@ namespace ElasticSea.Framework.Util
             }
         }
         
+        public static IEnumerable<string> EnumerateDirectories(string path)
+        {
+            if (Directory.Exists(path))
+            {
+                return Directory.EnumerateDirectories(path);
+            }
+            else
+            {
+                return Array.Empty<string>();
+            }
+        }
+        
         public static Vector3[] PointsOnSphere(int count)
         {
             Vector3[] upts = new Vector3[count];
