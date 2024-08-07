@@ -206,6 +206,33 @@ namespace ElasticSea.Framework.Extensions
 	        return transformedVertices.ToBounds();
         }
         
+        // Transforms local from one transform to another
+        public static Bounds TransformBounds(this Matrix4x4 from, Matrix4x4 to, Bounds bounds)
+        {
+	        var transformedVertices = bounds.GetVertices();
+	        var length = transformedVertices.Length;
+	        for (var i = 0; i < length; i++)
+	        {
+		        var localFromPoint = transformedVertices[i];
+		        var worldFromPoint = from.MultiplyPoint(localFromPoint);
+		        var localToPoint = to.inverse.MultiplyPoint(worldFromPoint);
+		        transformedVertices[i] = localToPoint;
+	        }
+	        return transformedVertices.ToBounds();
+        }
+        
+        // Transforms world bounds to local bounds
+        public static Bounds InverseTransformBounds(this Transform transform, Bounds bounds)
+        {
+	        var transformedVertices = bounds.GetVertices();
+	        var length = transformedVertices.Length;
+	        for (var i = 0; i < length; i++)
+	        {
+		        transformedVertices[i] = transform.InverseTransformPoint(transformedVertices[i]);
+	        }
+	        return transformedVertices.ToBounds();
+        }
+        
         public static Bounds LocalToWorldBounds(this Bounds localBounds, Transform transform)
         {
 	        var vertices = localBounds.GetVertices();
