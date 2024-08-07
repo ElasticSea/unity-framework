@@ -563,18 +563,7 @@ namespace ElasticSea.Framework.Util
         
         public static void EnsureDirectory(string path, bool clear = false)
         {
-            if (Directory.Exists(path))
-            {
-                if (clear)
-                {
-                    Directory.Delete(path, true);
-                    Directory.CreateDirectory(path);
-                }
-            }
-            else
-            {
-                Directory.CreateDirectory(path);
-            }
+            new DirectoryInfo(path).EnsureDirectory(clear);
         }
         
         public static IEnumerable<string> EnumerateDirectories(string path)
