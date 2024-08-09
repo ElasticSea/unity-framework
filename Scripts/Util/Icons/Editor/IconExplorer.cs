@@ -65,7 +65,7 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
             if (configIcons == null || dirty)
             {
                 configIcons = GenerateConfig(pack)
-                    .Where(pair => filterName.IsNullOrEmpty() || pair.name.Contains(filterName) || ParseNoException(filterName, NumberStyles.HexNumber) == pair.code)
+                    .Where(pair => filterName.IsNullOrEmpty() || pair.name.Contains(filterName) || ParseNoException(filterName, NumberStyles.HexNumber) == pair.code || filterName[0] == pair.code)
                     .Take(limit)
                     .ToList();
             }
