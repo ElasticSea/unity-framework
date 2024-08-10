@@ -1265,7 +1265,14 @@ namespace ElasticSea.Framework.Util
             var z = MathF.Sin(angle);
             return new Vector3(x, 0, z);
         }
-
+        public static (Rect rect, Vector2Int dimensions) GetGridDimensions(Rect availableRect, float cellSize, float spacing = 0)
+        {
+            var rectSize = availableRect.size;
+            var (occupiedRect, dimensions) = GetGridDimensions(rectSize.x, rectSize.y, cellSize, cellSize, spacing, spacing);
+            occupiedRect.position += availableRect.min;
+            return (occupiedRect, dimensions);
+        }
+        
         public static (Rect rect, Vector2Int dimensions) GetGridDimensions(Rect availableRect, Vector2 cellSize, float spacing, int cellWidthLimit = -1, int cellHeightLimit = -1, int cellWidthMin = -1, int cellHeightMin = -1)
         {
             var rectSize = availableRect.size;
@@ -1303,6 +1310,46 @@ namespace ElasticSea.Framework.Util
 
             var rect = Rect.MinMaxRect(offset.x, offset.y, offset.x + finalWidth, offset.y + finalHeight);
             return (rect, dimensions);
+        }
+        
+        public static (Vector2Int dimensions, Vector2 spacing) GetGridDimensionsFit(Vector2 size, float cellSize)
+        {
+            return GetGridDimensionsFit(size.x, size.y, cellSize, cellSize);
+        }
+        
+        public static Vector2[] GetGridDimensionsFit(Rect rect, Vector2 cell, Vector2 minOffset)
+        {
+            var columns = Mathf.FloorToInt((rect.width - minOffset.x) / (cell.x + minOffset.x));
+            var rows = Mathf.FloorToInt((rect.height - minOffset.y) / (cell.y + minOffset.y));
+            
+            var xOffset = (rect.width - columns * cell.x) / (columns + 1f);
+            var yOffset = (rect.height - rows * cell.y) / (rows + 1f);
+
+            var cells = new Vector2[columns * rows];
+            for (int y = 0; y < rows; y++)
+            {
+                for (int x = 0; x < columns; x++)
+                {
+                    var cellX = (x * (cell.x + xOffset)) + rect.x + xOffset; 
+                    var cellY = (y * (cell.y + yOffset)) + rect.y + yOffset;
+                    cells[x + y * columns] = new Vector2(cellX, cellY);
+                }
+            }
+            
+            return cells;
+        }
+
+        public static (Vector2Int dimensions, Vector2 spacing) GetGridDimensionsFit(float gridWidth, float gridHeight, float cellWidth, float cellHeight)
+        {
+            var xCellCount = Mathf.FloorToInt(gridWidth / cellWidth);
+            var yCellCount = Mathf.FloorToInt(gridHeight / cellHeight);
+
+            var xSpacing = (gridWidth - xCellCount * cellWidth) / (xCellCount + 1f);
+            var ySpacing = (gridHeight - yCellCount * cellHeight) / (yCellCount + 1f);
+
+            var dimensions = new Vector2Int(xCellCount, yCellCount);
+            var spacing = new Vector2(xSpacing, ySpacing);
+            return (dimensions, spacing);
         }
         
         public static Collider[] OverlapBox(Transform transform, Bounds bounds, Vector3? offset = null, int layermask = -1)
