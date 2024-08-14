@@ -84,6 +84,14 @@ namespace ElasticSea.Framework.Util
 #endif
         }
 
+        public static void DrawCircle(Vector3 pos, Vector3 normal, float radius)
+        {
+            // 1 segment per cm
+            var circumference = 2 * Mathf.PI * radius;
+            var segments = Mathf.CeilToInt(circumference / 0.01f);
+            DrawCircle(pos, normal, radius, segments);
+        }
+
         public static void DrawCircle(Vector3 pos, Vector3 normal, float radius, int numSegments)
         {
             // I t$$anonymous$$nk of normal as conceptually in the Y direction.  We find the
