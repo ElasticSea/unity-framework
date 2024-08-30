@@ -12,6 +12,14 @@ namespace ElasticSea.Framework.Scripts.Extensions
             return rects.ToArray().Encapsulate();
         }
         
+        public static Rect Encapsulate(this Rect rect, Rect other)
+        {
+            var final = new Rect();
+            final.min = rect.min.Min(other.min);
+            final.max = rect.max.Max(other.max);
+            return final;
+        }
+        
         public static Rect Encapsulate(this Rect[] rects)
         {
             var length = rects.Length;
