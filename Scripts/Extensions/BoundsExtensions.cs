@@ -733,5 +733,26 @@ namespace ElasticSea.Framework.Extensions
 	    {
 		    return new Vector3(bounds.center.x, bounds.center.y, bounds.min.z);
 	    }
+
+	    public static Rect BottomSide(this Bounds bounds)
+	    {
+		    return new Rect(bounds.min.x, bounds.min.z, bounds.size.x, bounds.size.z);
+	    }
+
+	    public static Rect TopSide(this Bounds bounds) => bounds.BottomSide();
+
+	    public static Rect BackSide(this Bounds bounds)
+	    {
+		    return new Rect(bounds.min.x, bounds.min.y, bounds.size.x, bounds.size.y);
+	    }
+
+	    public static Rect FrontSide(this Bounds bounds) => bounds.BackSide();
+
+	    public static Rect RightSide(this Bounds bounds)
+	    {
+		    return new Rect(bounds.min.z, bounds.min.y, bounds.size.z, bounds.size.y);
+	    }
+
+	    public static Rect LeftSide(this Bounds bounds) => bounds.RightSide();
     }
 }
