@@ -1265,6 +1265,11 @@ namespace ElasticSea.Framework.Util
             var z = MathF.Sin(angle);
             return new Vector3(x, 0, z);
         }
+        public static int GetCount(float availableSize, float elementSize, float spacing)
+        {
+            return Mathf.FloorToInt((availableSize - spacing) / (elementSize + spacing));
+        }
+        
         public static (Rect rect, Vector2Int dimensions) GetGridDimensions(Rect availableRect, float cellSize, float spacing = 0)
         {
             var rectSize = availableRect.size;
@@ -1293,8 +1298,8 @@ namespace ElasticSea.Framework.Util
 
         public static (Rect rect, Vector2Int dimensions) GetGridDimensions(float gridWidth, float gridHeight, float cellWidth, float cellHeight, float xSpacing, float ySpacing, int cellWidthLimit = -1, int cellHeightLimit = -1, int cellWidthMin = -1, int cellHeightMin = -1)
         {
-            var xCellCount = Mathf.FloorToInt((gridWidth - xSpacing) / (cellWidth + xSpacing));
-            var yCellCount = Mathf.FloorToInt((gridHeight - ySpacing) / (cellHeight + ySpacing));
+            var xCellCount = GetCount(gridWidth, cellWidth, xSpacing);
+            var yCellCount = GetCount(gridHeight, cellHeight, ySpacing);
 
             if (cellWidthLimit != -1) xCellCount = Mathf.Min(xCellCount, cellWidthLimit);
             if (cellHeightLimit != -1) yCellCount = Mathf.Min(yCellCount, cellHeightLimit);

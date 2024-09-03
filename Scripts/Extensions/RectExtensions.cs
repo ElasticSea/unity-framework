@@ -58,5 +58,12 @@ namespace ElasticSea.Framework.Scripts.Extensions
         {
             return rect.Grow(-shrinkBy);
         }
+
+        public static Rect Move(this Rect rect, Vector2 moveBy)
+        {
+            var newRect = new Rect(rect);
+            newRect.position += moveBy;
+            return newRect;
+        }
     }
 }
