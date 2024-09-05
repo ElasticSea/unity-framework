@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ElasticSea.Framework.Scripts.Util;
 using ElasticSea.Framework.Util;
+using Oculus.Platform.Models;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 
@@ -10,22 +11,48 @@ namespace ElasticSea.Framework.Extensions
 {
     public static class BoundsExtensions
     {
-        public static Vector3[] GetVertices(this Bounds bounds)
-        {
-	        var center = bounds.center;
-	        var extent = bounds.extents;
-	        return new[]
-	        {
-		        center + new Vector3(-extent.x, -extent.y, -extent.z),
-		        center + new Vector3(+extent.x, -extent.y, -extent.z),
-		        center + new Vector3(-extent.x, -extent.y, +extent.z),
-		        center + new Vector3(+extent.x, -extent.y, +extent.z),
-		        center + new Vector3(-extent.x, +extent.y, -extent.z),
-		        center + new Vector3(+extent.x, +extent.y, -extent.z),
-		        center + new Vector3(-extent.x, +extent.y, +extent.z),
-		        center + new Vector3(+extent.x, +extent.y, +extent.z),
-	        };
-        }
+	    public static Vector3[] GetVertices(this Bounds bounds)
+	    {
+		    var center = bounds.center;
+		    var extent = bounds.extents;
+		    return new[]
+		    {
+			    center + new Vector3(-extent.x, -extent.y, -extent.z),
+			    center + new Vector3(+extent.x, -extent.y, -extent.z),
+			    center + new Vector3(-extent.x, -extent.y, +extent.z),
+			    center + new Vector3(+extent.x, -extent.y, +extent.z),
+			    center + new Vector3(-extent.x, +extent.y, -extent.z),
+			    center + new Vector3(+extent.x, +extent.y, -extent.z),
+			    center + new Vector3(-extent.x, +extent.y, +extent.z),
+			    center + new Vector3(+extent.x, +extent.y, +extent.z),
+		    };
+	    }
+
+	    public static (Vector3[] vertices, Vector3 normal)[] GetFaces(this Bounds bounds)
+	    {
+		    var min = bounds.min;
+		    var max = bounds.max;
+
+		    var faces = new (Vector3[] vertices, Vector3 normal)[6];
+
+		    var lbb = new Vector3(min.x, min.y, min.z);
+		    var rbb = new Vector3(max.x, min.y, min.z);
+		    var ltb = new Vector3(min.x, max.y, min.z);
+		    var rtb = new Vector3(max.x, max.y, min.z);
+		    var lbf = new Vector3(min.x, min.y, max.z);
+		    var rbf = new Vector3(max.x, min.y, max.z);
+		    var ltf = new Vector3(min.x, max.y, max.z);
+		    var rtf = new Vector3(max.x, max.y, max.z);
+
+		    faces[0] = (new[] { lbb, ltb, rtb, rbb }, Vector3.back);
+		    faces[1] = (new[] { rbb, rtb, rtf, rbf }, Vector3.right);
+		    faces[2] = (new[] { rbf, rtf, ltf, lbf }, Vector3.forward);
+		    faces[3] = (new[] { lbf, ltf, ltb, lbb }, Vector3.left);
+		    faces[4] = (new[] { lbf, lbb, rbb, rbf }, Vector3.down);
+		    faces[5] = (new[] { ltb, ltf, rtf, rtb }, Vector3.up);
+
+		    return faces;
+	    }
 
         public static Bounds ToBounds(this IEnumerable<Vector3> vertices)
         {
@@ -658,40 +685,24 @@ namespace ElasticSea.Framework.Extensions
 		    return new Bounds(bounds.center, bounds.size + growBy * 2);
 	    }
 
-	    public static Bounds GrowRight(this Bounds bounds, float growBy)
-	    {
-		    var offset = Vector3.right * growBy;
-		    return new Bounds(bounds.center + offset / 2, bounds.size + offset);
-	    }
+	    public static Bounds GrowRight(this Bounds bounds, float growBy) => GrowDir(bounds, Vector3.right, growBy);
+	    public static Bounds GrowLeft(this Bounds bounds, float growBy) => GrowDir(bounds, Vector3.left, growBy);
+	    public static Bounds GrowUp(this Bounds bounds, float growBy) => GrowDir(bounds, Vector3.up, growBy);
+	    public static Bounds GrowDown(this Bounds bounds, float growBy) => GrowDir(bounds, Vector3.down, growBy);
+	    public static Bounds GrowForward(this Bounds bounds, float growBy) => GrowDir(bounds, Vector3.forward, growBy);
+	    public static Bounds GrowBack(this Bounds bounds, float growBy) => GrowDir(bounds, Vector3.back, growBy);
 
-	    public static Bounds GrowLeft(this Bounds bounds, float growBy)
-	    {
-		    var offset = Vector3.left * growBy;
-		    return new Bounds(bounds.center + offset / 2, bounds.size + offset);
-	    }
+	    public static Bounds ShrinkRight(this Bounds bounds, float shrinkBy) => GrowDir(bounds, Vector3.right, -shrinkBy);
+	    public static Bounds ShrinkLeft(this Bounds bounds, float shrinkBy) => GrowDir(bounds, Vector3.left, -shrinkBy);
+	    public static Bounds ShrinkUp(this Bounds bounds, float shrinkBy) => GrowDir(bounds, Vector3.up, -shrinkBy);
+	    public static Bounds ShrinkDown(this Bounds bounds, float shrinkBy) => GrowDir(bounds, Vector3.down, -shrinkBy);
+	    public static Bounds ShrinkForward(this Bounds bounds, float shrinkBy) => GrowDir(bounds, Vector3.forward, -shrinkBy);
+	    public static Bounds ShrinkBack(this Bounds bounds, float shrinkBy) => GrowDir(bounds, Vector3.back, -shrinkBy);
 
-	    public static Bounds GrowUp(this Bounds bounds, float growBy)
+	    private static Bounds GrowDir(Bounds bounds, Vector3 direction, float growBy)
 	    {
-		    var offset = Vector3.up * growBy;
-		    return new Bounds(bounds.center + offset / 2, bounds.size + offset);
-	    }
-
-	    public static Bounds GrowDown(this Bounds bounds, float growBy)
-	    {
-		    var offset = Vector3.down * growBy;
-		    return new Bounds(bounds.center + offset / 2, bounds.size + offset);
-	    }
-
-	    public static Bounds GrowForward(this Bounds bounds, float growBy)
-	    {
-		    var offset = Vector3.forward * growBy;
-		    return new Bounds(bounds.center + offset / 2, bounds.size + offset);
-	    }
-
-	    public static Bounds GrowBack(this Bounds bounds, float growBy)
-	    {
-		    var offs = Vector3.back * growBy;
-		    return new Bounds(bounds.center + offs / 2, bounds.size + offs);
+		    var offset = direction * growBy;
+		    return new Bounds(bounds.center + offset / 2, bounds.size + direction.Abs() * growBy);
 	    }
 
 	    public static Bounds Shrink(this Bounds bounds, float shrinkBy)
@@ -754,5 +765,70 @@ namespace ElasticSea.Framework.Extensions
 	    }
 
 	    public static Rect LeftSide(this Bounds bounds) => bounds.RightSide();
+
+	    public static Vector3 ClosestOnTheSurface(this Bounds bounds, Vector3 point, float maxDist)
+	    {
+		    var min = bounds.min;
+		    var max = bounds.max;
+		    var center = bounds.center;
+		    
+		    var insideX = point.x >= min.x && point.x <= max.x;
+		    var insideY = point.y >= min.y && point.y <= max.y;
+		    var insideZ = point.z >= min.z && point.z <= max.z;
+
+		    float surfaceDist(float value, float min, float max)
+		    {
+			    return Mathf.Min(Mathf.Abs(min - value), Mathf.Abs(max - value));
+		    }
+
+		    var xSurfaceDist = (insideY && insideZ) ? surfaceDist(point.x, min.x, max.x) : float.PositiveInfinity;
+		    var ySurfaceDist = (insideX && insideZ) ? surfaceDist(point.y, min.y, max.y) : float.PositiveInfinity;
+		    var zSurfaceDist = (insideX && insideY) ? surfaceDist(point.z, min.z, max.z) : float.PositiveInfinity;
+
+		    var smallest = float.PositiveInfinity;
+		    var smallestId = -1;
+
+		    if (xSurfaceDist < smallest)
+		    {
+			    smallest = xSurfaceDist;
+			    smallestId = 0;
+		    }
+		    
+		    if (ySurfaceDist < smallest)
+		    {
+			    smallest = ySurfaceDist;
+			    smallestId = 1;
+		    }
+		    
+		    if (zSurfaceDist < smallest)
+		    {
+			    smallest = zSurfaceDist;
+			    smallestId = 2;
+		    }
+
+
+		    if (smallest < maxDist)
+		    {
+			    switch (smallestId)
+			    {
+				    case 0:
+					    // x
+					    point.x = point.x > center.x ? max.x : min.x;
+					    break;
+
+				    case 1:
+					    // y
+					    point.y = point.y > center.y ? max.y : min.y;
+					    break;
+
+				    case 2:
+					    // z
+					    point.z = point.z > center.z ? max.z : min.z;
+					    break;
+			    }
+		    }
+
+		    return point;
+	    }
     }
 }
