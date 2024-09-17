@@ -65,5 +65,21 @@ namespace ElasticSea.Framework.Scripts.Extensions
             newRect.position += moveBy;
             return newRect;
         }
+
+        public static (Rect left, Rect right) SplitHorizontal(this Rect rect)
+        {
+            var centerPoint = Mathf.Lerp(rect.xMin, rect.xMax, 0.5f);
+            var left = Rect.MinMaxRect(rect.xMin, rect.yMin, centerPoint, rect.yMax);
+            var right = Rect.MinMaxRect(centerPoint, rect.yMin, rect.xMax, rect.yMax);
+            return (left, right);
+        }
+
+        public static (Rect bottom, Rect top) SplitVertical(this Rect rect)
+        {
+            var centerPoint = Mathf.Lerp(rect.yMin, rect.yMax, 0.5f);
+            var bottom = Rect.MinMaxRect(rect.xMin, rect.yMin, rect.xMax, centerPoint);
+            var top = Rect.MinMaxRect(rect.xMin, centerPoint, rect.xMax, rect.yMax);
+            return (bottom, top);
+        }
     }
 }
