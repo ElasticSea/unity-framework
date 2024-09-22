@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Blocks.Meshbakers;
@@ -844,6 +845,44 @@ namespace ElasticSea.Framework.Util
             myReq.Proxy = null;
             var responseAsync = await myReq.GetResponseAsync();
             return await responseAsync.GetResponseStream().ReadAllBytesAsync();
+        }
+        
+        public static async Task<byte[]> HttpDownloadFileAsync(string url, Action<int> byteDownloadedCallback, int initialCapacity = -1) {
+            
+            var myReq = WebRequest.Create(url);
+            myReq.Proxy = null;
+            var responseAsync = await myReq.GetResponseAsync();
+            var stream = responseAsync.GetResponseStream();
+            return HttpDownloadFileAsync(stream, byteDownloadedCallback, initialCapacity);
+        }
+
+        private static byte[] HttpDownloadFileAsync(Stream responseStream, Action<int> byteDownloadedCallback, int initialCapacity = -1)
+        {
+            byteDownloadedCallback(0);
+
+            initialCapacity = Mathf.Max(initialCapacity, 0);
+            var data = new byte[initialCapacity];
+            
+            int currentIndex = 0;
+            var buffer = new byte[1024];
+            do
+            {
+                var bytesReceived = responseStream.Read(buffer, 0, buffer.Length);
+                Thread.Sleep(1);
+
+                if (bytesReceived == 0)
+                {
+                    break;
+                }
+
+                data = data.EnsureArray(currentIndex + bytesReceived);
+                Array.Copy(buffer, 0, data, currentIndex, bytesReceived);
+                currentIndex += bytesReceived;
+
+                byteDownloadedCallback(currentIndex);
+            } while (true);
+
+            return data;
         }
         
         public static (byte[] bytes, int width, int height) NearestNeighbourScaleDown(byte[] bytes, int bytesPerPixel, int width, int height, int skip)
