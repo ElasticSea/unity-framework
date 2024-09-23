@@ -17,6 +17,7 @@ using ElasticSea.Framework.Extensions;
 using ElasticSea.Framework.Scripts.Extensions;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
@@ -832,43 +833,85 @@ namespace ElasticSea.Framework.Util
             return Mathf.Lerp(destinationStart, destinationEnd, t);
         }
         
-        // public static async Task<byte[]> HttpDownloadFileAsync(string url) {
-        //     using var httpClient = new HttpClient();
-        //     using var response = await httpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
-        //     using var streamToReadFrom = await response.Content.ReadAsStreamAsync(); 
-        //     return streamToReadFrom.ReadAllBytes();
-        // }
-        
-        public static async Task<byte[]> HttpDownloadFileAsync(string url) {
-            
-            var myReq = WebRequest.Create(url);
-            myReq.Proxy = null;
-            var responseAsync = await myReq.GetResponseAsync();
-            return await responseAsync.GetResponseStream().ReadAllBytesAsync();
+        public static Task<byte[]> DownloadFile(string url, Action<int> bytesDownloadedCallback = null)
+        {
+            return DownloadFileUnityWebRequest(url, bytesDownloadedCallback);
+            // return DownloadFileWebRequest(url, bytesDownloadedCallback);
+            // return DownloadFileWebRequest(url, bytesDownloadedCallback);
         }
         
-        public static async Task<byte[]> HttpDownloadFileAsync(string url, Action<int> byteDownloadedCallback, int initialCapacity = -1) {
-            
-            var myReq = WebRequest.Create(url);
-            myReq.Proxy = null;
-            var responseAsync = await myReq.GetResponseAsync();
-            var stream = responseAsync.GetResponseStream();
-            return HttpDownloadFileAsync(stream, byteDownloadedCallback, initialCapacity);
+        private static async Task<byte[]> DownloadFileUnityWebRequest(string url, Action<int> bytesDownloadedCallback = null)
+        {
+            using var request = UnityWebRequest.Get(url);
+
+            var operation = request.SendWebRequest();
+
+            if (bytesDownloadedCallback != null)
+            {
+                while (!operation.isDone)
+                {
+                    bytesDownloadedCallback((int)request.downloadedBytes);
+                    await Task.Yield();
+                }
+            }
+            else
+            {
+                while (!operation.isDone)
+                {
+                    await Task.Yield();
+                }
+            }
+
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                throw new Exception("Failed to download file: " + request.error);
+            }
+            else
+            {
+                return request.downloadHandler.data;
+            }
         }
 
-        private static byte[] HttpDownloadFileAsync(Stream responseStream, Action<int> byteDownloadedCallback, int initialCapacity = -1)
+        private static HttpClient client = new();
+        
+        private static async Task<byte[]> DownloadFileHttpClient(string url, Action<int> bytesDownloadedCallback = null)
+        {
+            await using var s = await client.GetStreamAsync(url);
+            return await HttpDownloadFileAsync(s, bytesDownloadedCallback);
+        }
+
+        private static async Task<byte[]> DownloadFileWebRequest(string url, Action<int> bytesDownloadedCallback = null)
+        {
+            var myReq = WebRequest.Create(url);
+            myReq.Proxy = null;
+            using var responseAsync = await myReq.GetResponseAsync();
+            await using var responseStream = responseAsync.GetResponseStream();
+            return await HttpDownloadFileAsync(responseStream, bytesDownloadedCallback);
+        }
+
+        private static async Task<byte[]> HttpDownloadFileAsync(Stream responseStream, Action<int> bytesDownloadedCallback)
+        {
+            if (bytesDownloadedCallback == null)
+            {
+                return await responseStream.ReadAllBytesAsync();
+            }
+            else
+            {
+                return HttpDownloadFileAsyncInternal(responseStream, bytesDownloadedCallback);
+            }
+        }
+
+        private static byte[] HttpDownloadFileAsyncInternal(Stream responseStream, Action<int> byteDownloadedCallback)
         {
             byteDownloadedCallback(0);
 
-            initialCapacity = Mathf.Max(initialCapacity, 0);
-            var data = new byte[initialCapacity];
+            var data = new byte[0];
             
             int currentIndex = 0;
             var buffer = new byte[1024];
             do
             {
                 var bytesReceived = responseStream.Read(buffer, 0, buffer.Length);
-                Thread.Sleep(1);
 
                 if (bytesReceived == 0)
                 {
