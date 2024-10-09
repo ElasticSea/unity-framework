@@ -61,6 +61,15 @@ namespace ElasticSea.Framework.Extensions
             return t.rotation * rotation;
         }
 
+        /// <summary>
+        /// Transforms rotation from local space to local space of another transform
+        /// </summary>
+        public static Quaternion TransformRotation(this Transform t, Quaternion rotation, Transform dest)
+        {
+            var world = t.TransformRotation(rotation);
+            return dest.InverseTransformRotation(world);
+        }
+
         public static void SetLocalX(this Transform transform, float x)
         {
             transform.localPosition = new Vector3(x, transform.localPosition.y, transform.localPosition.z);
