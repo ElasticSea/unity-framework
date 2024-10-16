@@ -64,8 +64,18 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
 
             if (configIcons == null || dirty)
             {
+                var codepoints = new HashSet<int>();
+                foreach (var c in  filterName.Split(",").Select(s => ParseNoException(s, NumberStyles.HexNumber)).Where(c => c != 0))
+                {
+                    codepoints.Add(c);
+                }
+                foreach (var c in  filterName.Split(",").Where(c => c.Length > 0))
+                {
+                    codepoints.Add(c[0]);
+                }
+                
                 configIcons = GenerateConfig(pack)
-                    .Where(pair => filterName.IsNullOrEmpty() || pair.name.Contains(filterName) || ParseNoException(filterName, NumberStyles.HexNumber) == pair.code || filterName[0] == pair.code)
+                    .Where(pair => filterName.IsNullOrEmpty() || pair.name.Contains(filterName) || codepoints.Contains(pair.code))
                     .Take(limit)
                     .ToList();
             }
