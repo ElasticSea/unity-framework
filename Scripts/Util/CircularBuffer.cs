@@ -6,7 +6,7 @@ namespace ElasticSea.Framework.Util
 {
     public class CircularBuffer<T> : IEnumerable<T>
     {
-        protected readonly T[] buffer;
+        protected T[] buffer;
         private int nextIndex;
 
         public CircularBuffer(int capacity)
@@ -19,13 +19,14 @@ namespace ElasticSea.Framework.Util
 
         public int Count { get; private set; }
 
+        public bool IsFull => Count == Capacity;
+
         public IEnumerator<T> GetEnumerator()
         {
             int start;
             int count;
 
-            var underFilled = Count < Capacity;
-            if (underFilled)
+            if (!IsFull)
             {
                 start = 0;
                 count = nextIndex;
@@ -52,6 +53,12 @@ namespace ElasticSea.Framework.Util
             buffer[nextIndex] = element;
             Count = Mathf.Min(Count + 1, Capacity);
             nextIndex = (nextIndex + 1) % Capacity;
+        }
+
+        public void Reset()
+        {
+            nextIndex = 0;
+            Count = 0;
         }
     }
 }
