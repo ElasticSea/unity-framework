@@ -1488,6 +1488,31 @@ namespace ElasticSea.Framework.Util
         {
             return Mathf.Abs(AngleDifference(t, min) / AngleDifference(max, min));
         }
+
+        public static Vector2[] GetUniformPointsInCircle(float radius, float pointRadius)
+        {
+            var pointDiameter = pointRadius * 2;
+            var layerCount = Mathf.CeilToInt(radius / pointDiameter);
+
+            var points = new List<Vector2>();
+            points.Add(new Vector2(0, 0));
+            for (int i = 0; i < layerCount; i++)
+            {
+                var layerRadius = i * pointDiameter;
+                var layerCircumference = 2 * Mathf.PI * layerRadius;
+                var pointCount = (int)(layerCircumference / pointDiameter);
+                for (int j = 0; j < pointCount; j++)
+                {
+                    var angle = j * (Mathf.PI * 2) / (pointCount - 1);
+                    var x = Mathf.Cos(angle) * layerRadius;
+                    var y = Mathf.Sin(angle) * layerRadius;
+            
+                    points.Add(new Vector2(x, y));
+                }
+            }
+
+            return points.ToArray();
+        }
     }
     
     public struct PageElement<T>
