@@ -1243,5 +1243,28 @@ namespace ElasticSea.Framework.Extensions
 		    Array.Copy(second, 0, result, first.Length, second.Length);
 		    return result;
 	    }
+
+	    public static T[] FlattenArrays<T>(this IEnumerable<T[]> arrays)
+	    {
+		    var temp = arrays.ToArray();
+
+		    var length = 0;
+		    for (var i = 0; i < temp.Length; i++)
+		    {
+			    length += temp[i].Length;
+		    }
+
+		    var result = new T[length];
+
+		    var offset = 0;
+		    for (var i = 0; i < temp.Length; i++)
+		    {
+			    var tmp = temp[i];
+			    Array.Copy(tmp, 0, result, offset, tmp.Length);
+			    offset += tmp.Length;
+		    }
+		    
+		    return result;
+	    }
 	}
 }
