@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace ElasticSea.Framework.Util
@@ -19,6 +20,24 @@ namespace ElasticSea.Framework.Util
         public void Enqueue(Action action)
         {
             executionQueue.Enqueue(action);
+        }
+
+        public Task<T> EnqueueAsync<T>(Func<T> action)
+        {
+            var tcs = new TaskCompletionSource<T>();
+            executionQueue.Enqueue(() =>
+            {
+                try
+                {
+                    var result = action();
+                    tcs.SetResult(result);
+                }
+                catch (Exception e)
+                {
+                    tcs.SetException(e);
+                }
+            });
+            return tcs.Task;
         }
     }
 }
