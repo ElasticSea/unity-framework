@@ -630,5 +630,17 @@ namespace ElasticSea.Framework.Extensions
         {
             return new MeshTransform(mesh);
         }
+
+        public static Mesh FlipTriangles(this Mesh mesh)
+        {
+            var t = mesh.triangles;
+            for (int i = 0; i < t.Length; i += 3)
+            {
+                (t[i + 2], t[i + 1]) = (t[i + 1], t[i + 2]);
+            }
+            mesh.triangles = t;
+
+            return mesh;
+        }
     }
 }
