@@ -282,5 +282,10 @@ namespace ElasticSea.Framework.Extensions
             var world = t.TransformVector(vector);
             return dest.InverseTransformVector(world);
         }
+
+        public static void SetLocalPose(this Transform t, Pose pose)
+        {
+            t.SetLocalPositionAndRotation(pose.position, pose.rotation);
+        }
     }
 }
