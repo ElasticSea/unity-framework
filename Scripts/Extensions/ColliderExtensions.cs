@@ -260,6 +260,26 @@ namespace ElasticSea.Framework.Scripts.Extensions
             return false;
         }
         
+        public static Bounds LocalBounds(this Collider collider)
+        {
+            if (collider is BoxCollider boxCollider)
+            {
+                return new Bounds(boxCollider.center, boxCollider.size);
+            }
+            
+            if (collider is MeshCollider meshCollider)
+            {
+                return meshCollider.sharedMesh.bounds;
+            }
+
+            if (collider is SphereCollider sphereCollider)
+            {
+                return new Bounds(sphereCollider.center, Vector3.one * sphereCollider.radius * 2);
+            }
+
+            throw new Exception($"Local bounds not supported on {collider.GetType().GetSimpleAliasName()}");
+        }
+        
         public static Bounds LocalBounds(this BoxCollider boxCollider)
         {
             return new Bounds(boxCollider.center, boxCollider.size);
