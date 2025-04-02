@@ -15,10 +15,13 @@ using Blocks.Meshbakers;
 using DG.Tweening.Core.Easing;
 using ElasticSea.Framework.Extensions;
 using ElasticSea.Framework.Scripts.Extensions;
+using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 using Debug = UnityEngine.Debug;
 using Object = UnityEngine.Object;
 using Random = System.Random;
@@ -1512,6 +1515,53 @@ namespace ElasticSea.Framework.Util
             }
 
             return points.ToArray();
+        }
+        
+        public static VisualElement BuildInspectorPropertiesVisualElement(SerializedObject obj)
+        {
+            VisualElement container = new VisualElement {name = obj.targetObject.name};
+          
+            SerializedProperty iterator = obj.GetIterator();
+            Type targetType = obj.targetObject.GetType();
+            List<MemberInfo> members = new List<MemberInfo>(targetType.GetMembers());
+
+            if (!iterator.NextVisible(true)) return container;
+            do
+            {
+                if (iterator.propertyPath == "m_Script" && obj.targetObject != null)
+                {
+                    continue;
+                }
+                PropertyField propertyField = new PropertyField(iterator.Copy())
+                {
+                    name = "PropertyField:" + iterator.propertyPath,
+                };
+                propertyField.Bind(iterator.serializedObject);
+
+                MemberInfo member = members.Find(x => x.Name == propertyField.bindingPath);
+                if (member != null)
+                {
+                    IEnumerable<Attribute> headers = member.GetCustomAttributes(typeof(HeaderAttribute));
+                    IEnumerable<Attribute> spaces = member.GetCustomAttributes(typeof(SpaceAttribute));
+                    foreach (Attribute x in headers)
+                    {
+                        HeaderAttribute actual = (HeaderAttribute) x;
+                        Label header = new Label { text = actual.header};
+                        header.style.unityFontStyleAndWeight = FontStyle.Bold;
+                        container.Add(new Label { text = " ", name = "Header Spacer"});
+                        container.Add(header);
+                    }
+                    foreach (Attribute unused in spaces)
+                    {
+                        container.Add(new Label { text = " " });
+                    }
+                }
+
+                container.Add(propertyField);
+            }
+            while (iterator.NextVisible(false));
+
+            return container;
         }
     }
     
