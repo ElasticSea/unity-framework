@@ -1221,6 +1221,13 @@ namespace ElasticSea.Framework.Extensions
 		    }
 	    }
 
+	    public static void Enumerate(this IEnumerator enumerator)
+	    {
+		    while (enumerator.MoveNext())
+		    {
+		    }
+	    }
+
 	    public static T[] ConcatArray<T>(this T[] first, T[] second)
 	    {
 		    if (first == null && second == null)
