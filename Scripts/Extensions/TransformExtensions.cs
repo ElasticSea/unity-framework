@@ -191,10 +191,56 @@ namespace ElasticSea.Framework.Extensions
 #endif
         }
 
-        public static List<Transform> Children(this Transform transform, bool includeItself = false)
+        public static Transform[] Children(this Transform transform, bool includeItself = false)
         {
-            return transform.ChildrenEnumerable(includeItself).ToList();
+            if (includeItself)
+            {
+                return ChildrenIncludeSelf(transform);
+            }
+            else
+            {
+                
+                return Children(transform);
+            }
         }
+        
+        private static Transform[] ChildrenIncludeSelf(Transform transform)
+        {
+            var array = new Transform[transform.childCount + 1];
+
+            array[0] = transform;
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                array[i + 1] = transform.GetChild(i);
+            }
+            
+            return array;
+        }
+        
+        private static Transform[] Children(Transform transform)
+        {
+            var array = new Transform[transform.childCount];
+
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                array[i] = transform.GetChild(i);
+            }
+            
+            return array;
+        }
+        
+        // public static Transform[] Children(this Transform transform, bool includeItself = false)
+        // {
+        //     var array = new Transform[transform.childCount + 1];
+        //
+        //     array[0] = transform;
+        //     for (int i = 0; i < transform.childCount; i++)
+        //     {
+        //         array[i + 1] = transform.GetChild(i);
+        //     }
+        //     
+        //     return array;
+        // }
 
         public static IEnumerable<Transform> ChildrenEnumerable(this Transform transform, bool includeItself = false)
         {
