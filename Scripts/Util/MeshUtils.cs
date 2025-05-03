@@ -57,7 +57,7 @@ namespace ElasticSea.Framework.Scripts.Util
 				return i;
 			}
 
-			public static Mesh Create(float radius, int recursionLevel = 3)
+			public static Mesh Create(Vector3 center, float radius, int recursionLevel = 3)
 			{
 				List<Vector3> vertList = new List<Vector3>();
 				Dictionary<long, int> middlePointIndexCache = new Dictionary<long, int>();
@@ -66,20 +66,20 @@ namespace ElasticSea.Framework.Scripts.Util
 				// create 12 vertices of a icosahedron
 				float t = (1f + Mathf.Sqrt(5f)) / 2f;
 
-				vertList.Add(new Vector3(-1f, t, 0f).normalized * radius);
-				vertList.Add(new Vector3(1f, t, 0f).normalized * radius);
-				vertList.Add(new Vector3(-1f, -t, 0f).normalized * radius);
-				vertList.Add(new Vector3(1f, -t, 0f).normalized * radius);
-
-				vertList.Add(new Vector3(0f, -1f, t).normalized * radius);
-				vertList.Add(new Vector3(0f, 1f, t).normalized * radius);
-				vertList.Add(new Vector3(0f, -1f, -t).normalized * radius);
-				vertList.Add(new Vector3(0f, 1f, -t).normalized * radius);
-
-				vertList.Add(new Vector3(t, 0f, -1f).normalized * radius);
-				vertList.Add(new Vector3(t, 0f, 1f).normalized * radius);
-				vertList.Add(new Vector3(-t, 0f, -1f).normalized * radius);
-				vertList.Add(new Vector3(-t, 0f, 1f).normalized * radius);
+				vertList.Add(center + new Vector3(-1f, t, 0f).normalized * radius);
+				vertList.Add(center + new Vector3(1f, t, 0f).normalized * radius);
+				vertList.Add(center + new Vector3(-1f, -t, 0f).normalized * radius);
+				vertList.Add(center + new Vector3(1f, -t, 0f).normalized * radius);
+				
+				vertList.Add(center + new Vector3(0f, -1f, t).normalized * radius);
+				vertList.Add(center + new Vector3(0f, 1f, t).normalized * radius);
+				vertList.Add(center + new Vector3(0f, -1f, -t).normalized * radius);
+				vertList.Add(center + new Vector3(0f, 1f, -t).normalized * radius);
+				
+				vertList.Add(center + new Vector3(t, 0f, -1f).normalized * radius);
+				vertList.Add(center + new Vector3(t, 0f, 1f).normalized * radius);
+				vertList.Add(center + new Vector3(-t, 0f, -1f).normalized * radius);
+				vertList.Add(center + new Vector3(-t, 0f, 1f).normalized * radius);
 
 
 				// create 20 triangles of the icosahedron
@@ -166,7 +166,12 @@ namespace ElasticSea.Framework.Scripts.Util
 
 		public static Mesh Icosphere(float radius, int recursionLevel = 3)
 		{
-			return IcosphereUtils.Create(radius, recursionLevel);
+			return IcosphereUtils.Create(Vector3.zero, radius, recursionLevel);
+		}
+
+		public static Mesh Icosphere(Vector3 center, float radius, int recursionLevel = 3)
+		{
+			return IcosphereUtils.Create(center, radius, recursionLevel);
 		}
 
 		public static Mesh Quad()
