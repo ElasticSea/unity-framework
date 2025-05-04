@@ -181,5 +181,15 @@ namespace ElasticSea.Framework.Util
             sphere.GetComponent<Renderer>().material.color = color;
             return sphere;
         }
+
+        public static GameObject DrawDebugGameobjectCube(Vector3 position, Color color, float scale = 0.001f)
+        {
+            var sphere = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Object.Destroy(sphere.GetComponent<Collider>());
+            sphere.transform.position = position;
+            sphere.transform.localScale = Vector3.one * scale;
+            sphere.GetComponent<Renderer>().material.color = color;
+            return sphere;
+        }
     }
 }
