@@ -340,7 +340,7 @@ namespace ElasticSea.Framework.Extensions
             
             while (child != parent)
             {
-                trs *= child.GetTRS();
+                trs = child.GetTRS() * trs;
                 child = child.parent;
             }
 
