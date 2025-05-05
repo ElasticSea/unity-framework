@@ -1,5 +1,4 @@
-﻿using System;
-using ElasticSea.Framework.Extensions;
+﻿using ElasticSea.Framework.Extensions;
 using UnityEngine;
 
 namespace ElasticSea.Framework.Scripts.Util
@@ -29,25 +28,6 @@ namespace ElasticSea.Framework.Scripts.Util
             this.newUvs = new Vector2[source.uv.Length];
         }
 
-        public void ExtendVerticesZAxis(float center, Vector3 extend)
-        {
-            var length = originalVertices.Length;
-            var newVertices = new Vector3[length];
-            for (var i = 0; i < length; i++)
-            {
-                var v = originalVertices[i];
-                if (v.z >= center)
-                {
-                    v += extend;
-                }
-
-                newVertices[i] = v;
-            }
-
-            finalMesh.vertices = newVertices;
-            finalMesh.RecalculateBounds();
-        }
-
         public void ExtendMeshToBounds(Bounds boundsToMatch)
         {
             var bounds = originalBounds;
@@ -70,38 +50,28 @@ namespace ElasticSea.Framework.Scripts.Util
             finalMesh.vertices = newVertices;
             finalMesh.bounds = boundsToMatch;
         }
-        
-        public void RemapUvs(Rect newRect)
+
+        public void ExtendMeshToBoundsX(float min, float max)
         {
-            for (var i = 0; i < originalUvs.Length; i++)
+            // Center is at 0.5, 0.5, 0.5
+            var boundsCenter = originalBounds.min + originalBounds.size.Multiply(Vector3.one * 0.5f);
+
+            var minExtends = min - originalBounds.min.x + boundsCenter.x - originalBounds.center.x;
+            var maxExtends = max - originalBounds.max.x + boundsCenter.x - originalBounds.center.x;
+
+            for (var i = 0; i < originalVertices.Length; i++)
             {
-                var uv = originalUvs[i];
-                var x = Mathf.Lerp(newRect.xMin, newRect.xMax, uv.x);
-                var y = Mathf.Lerp(newRect.yMin, newRect.yMax, uv.y);
-                newUvs[i] = new Vector2(x, y);
+                var vert = originalVertices[i];
+                var x = vert.x + (vert.x > boundsCenter.x / 2 ? maxExtends : minExtends);
+                var y = vert.y;
+                var z = vert.z;
+                newVertices[i] = new Vector3(x, y, z);
             }
 
-            finalMesh.uv = newUvs;
-        }
+            finalMesh.vertices = newVertices;
 
-        public void ExtendUvsZAxis(float center, Vector2 extend)
-        {
-            var length = originalVertices.Length;
-            var newUvs = new Vector2[length];
-            for (var i = 0; i < length; i++)
-            {
-                var v = originalVertices[i];
-                var uv = originalUvs[i];
-                
-                if (v.z >= center)
-                {
-                    uv += extend;
-                }
-
-                newUvs[i] = uv;
-            }
-
-            finalMesh.uv = newUvs;
+            var newBounds = originalBounds.SetMinMaxX(min, max);
+            finalMesh.bounds = newBounds;
         }
     }
 }
