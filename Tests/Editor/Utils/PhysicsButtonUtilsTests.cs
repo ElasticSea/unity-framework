@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.UnityConverters.Math;
 using NUnit.Framework;
-using PhysicalGizmos;
 using Debug = UnityEngine.Debug;
 
 namespace Tests.Editor.Gizmos
