@@ -110,27 +110,11 @@ namespace ElasticSea.Framework.Extensions
 	        return (center, radius);
         }
         
-        public static Rect ToRectBounds(this Vector2[] points)
-        {
-	        var length = points.Length;
-	        
-	        var min = points[0];
-	        var max = points[0];
-	        for (int i = 0; i < length; i++)
-	        {
-		        var point = points[i];
-		        min = Vector2.Min(min, point);
-		        max = Vector2.Max(max, point);
-	        }
-
-	        return Rect.MinMaxRect(min.x, min.y, max.x, max.y);
-        }
-        
         public static (Vector2 center, float radius) ToFastCircleBounds(this Vector2[] points)
         {
 	        var length = points.Length;
 
-	        var rectBounds = points.ToRectBounds();
+	        var rectBounds = points.ToRect();
 
 	        var center = rectBounds.center;
 	        var radius = 0f;
@@ -574,9 +558,9 @@ namespace ElasticSea.Framework.Extensions
 	    public static Rect ToRect(this Vector2[] vertices)
 	    {
 		    var min = vertices[0];
-		    var max = vertices[1];
+		    var max = vertices[0];
 
-		    for (var i = 0; i < vertices.Length; i++)
+		    for (var i = 1; i < vertices.Length; i++)
 		    {
 			    var current = vertices[i];
 			    min = min.Min(current);
