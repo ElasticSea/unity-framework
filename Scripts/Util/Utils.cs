@@ -1513,6 +1513,61 @@ namespace ElasticSea.Framework.Util
 
             return points.ToArray();
         }
+        
+        public static bool IsPointInConvexHull(Vector2 point, Vector2[] hull, bool sorted = false)
+        {
+            if (!sorted)
+            {
+                // Find the point with the lowest y (and leftmost if tie)
+                var start = hull.OrderBy(p => p.y).ThenBy(p => p.x).First();
+
+                // Sort points by polar angle with 'start'
+                var sortedPoints = hull
+                    .OrderBy(p => Math.Atan2(p.y - start.y, p.x - start.x))
+                    .ToList();
+                
+                var hullStack = new Stack<Vector2>();
+                hullStack.Push(start);
+                
+                foreach (var p in sortedPoints.Skip(1))
+                {
+                    while (hullStack.Count > 1)
+                    {
+                        var top = hullStack.Pop();       // Peek
+                        var second = hullStack.Peek();   // Second-to-last element
+
+                        if (Cross2D(second, top, p) > 0)
+                        {
+                            hullStack.Push(top);  // Put it back if it forms a valid angle
+                            break;
+                        }
+                    }
+                    hullStack.Push(p);
+                }
+
+                hull = hullStack.ToArray();
+            }
+            
+            var count = hull.Length;
+            for (int i = 0; i < count; i++)
+            {
+                var current = hull[i + 0];
+                var next = hull[(i + 1) % count];
+
+                if (Cross2D(current, next, point) > 0)
+                {
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+
+        // Cross product of two vectors (p1 - p0) x (p2 - p0)
+        private static float Cross2D(Vector2 p0, Vector2 p1, Vector2 p2)
+        {
+            return (p1.x - p0.x) * (p2.y - p0.y) - (p1.y - p0.y) * (p2.x - p0.x);
+        }
     }
     
     public struct PageElement<T>
