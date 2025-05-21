@@ -81,5 +81,16 @@ namespace ElasticSea.Framework.Scripts.Extensions
             var top = Rect.MinMaxRect(rect.xMin, centerPoint, rect.xMax, rect.yMax);
             return (bottom, top);
         }
+
+        public static Vector2[] Vertices(this Rect rect)
+        {
+            return new Vector2[]
+            {
+                new (rect.xMin, rect.yMin),
+                new (rect.xMin, rect.yMax),
+                new (rect.xMax, rect.yMax),
+                new (rect.xMax, rect.yMin),
+            };
+        }
     }
 }
