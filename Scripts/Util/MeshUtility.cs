@@ -70,7 +70,7 @@ namespace ElasticSea.Framework.Scripts.Util
 
             finalMesh.vertices = newVertices;
 
-            var newBounds = originalBounds.SetMinMaxX(min, max);
+            var newBounds = originalBounds.SetMinMaxXOld(min, max);
             finalMesh.bounds = newBounds;
         }
     }

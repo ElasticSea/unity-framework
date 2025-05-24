@@ -570,53 +570,59 @@ namespace ElasticSea.Framework.Extensions
 		    return Rect.MinMaxRect(min.x, min.y, max.x, max.y);
 	    }
 
-	    public static Bounds SetMinMaxX(this Bounds bounds, float min, float max)
+	    public static Bounds SetMinMaxXOld(this Bounds bounds, float min, float max)
 	    {
 		    var newBounds = new Bounds();
 		    newBounds.SetMinMax(bounds.min.SetX(min), bounds.max.SetX(max));
 		    return newBounds;
 	    }
 
-	    public static Bounds SetMinX(this Bounds bounds, float min)
+	    public static Bounds SetMinXOld(this Bounds bounds, float min)
 	    {
 		    var newBounds = new Bounds();
 		    newBounds.SetMinMax(bounds.min.SetX(min), bounds.max);
 		    return newBounds;
 	    }
 
-	    public static Bounds SetMinY(this Bounds bounds, float min)
+	    public static Bounds SetMinYOld(this Bounds bounds, float min)
 	    {
 		    var newBounds = new Bounds();
 		    newBounds.SetMinMax(bounds.min.SetY(min), bounds.max);
 		    return newBounds;
 	    }
 
-	    public static Bounds SetMinZ(this Bounds bounds, float min)
+	    public static Bounds SetMinZOld(this Bounds bounds, float min)
 	    {
 		    var newBounds = new Bounds();
 		    newBounds.SetMinMax(bounds.min.SetZ(min), bounds.max);
 		    return newBounds;
 	    }
 
-	    public static Bounds SetMaxX(this Bounds bounds, float max)
+	    public static Bounds SetMaxXOld(this Bounds bounds, float max)
 	    {
 		    var newBounds = new Bounds();
 		    newBounds.SetMinMax(bounds.min, bounds.max.SetX(max));
 		    return newBounds;
 	    }
 
-	    public static Bounds SetMaxY(this Bounds bounds, float max)
+	    public static Bounds SetMaxYOld(this Bounds bounds, float max)
 	    {
 		    var newBounds = new Bounds();
 		    newBounds.SetMinMax(bounds.min, bounds.max.SetY(max));
 		    return newBounds;
 	    }
 
-	    public static Bounds SetMaxZ(this Bounds bounds, float max)
+	    public static Bounds SetMaxZOld(this Bounds bounds, float max)
 	    {
 		    var newBounds = new Bounds();
 		    newBounds.SetMinMax(bounds.min, bounds.max.SetZ(max));
 		    return newBounds;
+	    }
+
+	    public static void SetMaxX(this ref Bounds bounds, float x)
+	    {
+		    var max = bounds.max;
+		    bounds.max = new Vector3(x, max.y, max.z);
 	    }
 
 	    public static Bounds Rotate(this Bounds bounds, Quaternion rotate)
@@ -812,6 +818,11 @@ namespace ElasticSea.Framework.Extensions
 		    }
 
 		    return point;
+	    }
+
+	    public static void Move(this ref Bounds bounds, Vector3 value)
+	    {
+			bounds.SetMinMax(bounds.min + value, bounds.max + value);
 	    }
     }
 }
