@@ -625,6 +625,36 @@ namespace ElasticSea.Framework.Extensions
 		    bounds.max = new Vector3(x, max.y, max.z);
 	    }
 
+	    public static void SetMaxY(this ref Bounds bounds, float y)
+	    {
+		    var max = bounds.max;
+		    bounds.max = new Vector3(max.x, y, max.z);
+	    }
+
+	    public static void SetMaxZ(this ref Bounds bounds, float z)
+	    {
+		    var max = bounds.max;
+		    bounds.max = new Vector3(max.x, max.y, z);
+	    }
+
+	    public static void SetMinX(this ref Bounds bounds, float x)
+	    {
+		    var min = bounds.min;
+		    bounds.min = new Vector3(x, min.y, min.z);
+	    }
+
+	    public static void SetMinY(this ref Bounds bounds, float y)
+	    {
+		    var min = bounds.min;
+		    bounds.min = new Vector3(min.x, y, min.z);
+	    }
+
+	    public static void SetMinZ(this ref Bounds bounds, float z)
+	    {
+		    var min = bounds.min;
+		    bounds.min = new Vector3(min.x, min.y, z);
+	    }
+
 	    public static Bounds Rotate(this Bounds bounds, Quaternion rotate)
 	    {
 		    var center = bounds.center;
