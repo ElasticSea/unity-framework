@@ -41,7 +41,7 @@ namespace ElasticSea.Framework.Scripts.Util
             // Clone list to preserve the caller's data, do Durstenfeld shuffle
 
             points = points.CloneArray();
-            points.ShuffleFast();
+            points.ShuffleFastInPlace();
 
             // Progressively add Vector2s to circle or recompute circle
             Circle c = Circle.INVALID;

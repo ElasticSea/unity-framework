@@ -610,12 +610,12 @@ namespace ElasticSea.Framework.Extensions
 			list.AddRange(collection.Where(item => predicate(item)));
 		}
 
-		public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> enumerable, Random rng = null)
+		public static T[] Shuffle<T>(this IEnumerable<T> enumerable, Random rng = null)
 		{
-			return enumerable.ToList().Shuffle(rng);
+			return enumerable.ToArray().ShuffleFastInPlace(rng);
 		}
 
-		public static IList<T> Shuffle<T>(this IList<T> list, Random rng = null)
+		public static IList<T> ShuffleInPlace<T>(this IList<T> list, Random rng = null)
 		{
 			rng = rng ?? new Random();
 			int n = list.Count;
@@ -629,7 +629,7 @@ namespace ElasticSea.Framework.Extensions
 			return list;
 		}
 		
-		public static T[] ShuffleFast<T>(this T[] array, Random rng = null)
+		public static T[] ShuffleFastInPlace<T>(this T[] array, Random rng = null)
 		{
 			rng = rng ?? new Random();
 			int n = array.Length;
@@ -638,9 +638,7 @@ namespace ElasticSea.Framework.Extensions
 				n--;
 				int k = rng.Next(n + 1);
 				
-				var temp = array[n];
-				array[n] = array[k];
-				array[k] = temp;
+				(array[n], array[k]) = (array[k], array[n]);
 			}
 
 			return array;
