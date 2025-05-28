@@ -409,7 +409,7 @@ namespace ElasticSea.Framework.Extensions
 	    }
 		
 	    [Obsolete]
-	    public static Bounds GetCompositeMeshBounds(this GameObject go, bool isSharedMesh = false, Predicate<MeshFilter> filter = null)
+	    public static Bounds GetCompositeMeshBoundsObsolete(this GameObject go, bool isSharedMesh = false, Predicate<MeshFilter> filter = null)
 	    {
 		    var bounds = go.GetComponentsInChildren<MeshFilter>(true)
 			    .Where(mf => filter == null || filter(mf))
@@ -694,14 +694,24 @@ namespace ElasticSea.Framework.Extensions
 		    return new Bounds(bounds.center.Multiply(scaleBy), bounds.size.Multiply(scaleBy));
 	    }
 
-	    public static Bounds Grow(this Bounds bounds, float growBy)
+	    public static Bounds GrowOld(this Bounds bounds, float growBy)
 	    {
-		    return bounds.Grow(new Vector3(growBy, growBy, growBy));
+		    return bounds.GrowOld(new Vector3(growBy, growBy, growBy));
 	    }
 
-	    public static Bounds Grow(this Bounds bounds, Vector3 growBy)
+	    public static Bounds GrowOld(this Bounds bounds, Vector3 growBy)
 	    {
 		    return new Bounds(bounds.center, bounds.size + growBy * 2);
+	    }
+
+	    public static void Grow(this ref Bounds bounds, float growBy)
+	    {
+		    bounds.Grow(new Vector3(growBy, growBy, growBy));
+	    }
+
+	    public static void Grow(this ref Bounds bounds, Vector3 growBy)
+	    {
+		    bounds.extents += growBy;
 	    }
 
 	    public static Bounds GrowRight(this Bounds bounds, float growBy) => GrowDir(bounds, Vector3.right, growBy);
@@ -726,12 +736,12 @@ namespace ElasticSea.Framework.Extensions
 
 	    public static Bounds Shrink(this Bounds bounds, float shrinkBy)
 	    {
-		    return bounds.Grow(-shrinkBy);
+		    return bounds.GrowOld(-shrinkBy);
 	    }
 
 	    public static Bounds Shrink(this Bounds bounds, Vector3 shrinkBy)
 	    {
-		    return bounds.Grow(-shrinkBy);
+		    return bounds.GrowOld(-shrinkBy);
 	    }
 
 	    public static Vector3 TopCenter(this Bounds bounds)
