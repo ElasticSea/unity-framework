@@ -1470,10 +1470,24 @@ namespace ElasticSea.Framework.Util
             return array;
         }
 
-        public static float AngleDifference(float angle1, float angle2)
+        public static float GetSignedAngle(float angle1, float angle2)
         {
-            float diff = (angle2 - angle1 + 180) % 360 - 180;
-            return diff < -180 ? diff + 360 : diff;
+            var diff = (angle2 - angle1) % 360f;
+            switch (diff)
+            {
+                case < -180f:
+                    diff += 360f;
+                    break;
+                case > 180f:
+                    diff -= 360f;
+                    break;
+            }
+            return diff;
+        }
+
+        public static float GetAngle(float angle1, float angle2)
+        {
+            return Mathf.Abs(GetSignedAngle(angle1, angle2));
         }
 
         public static Vector3 InverseLerpEulerAngles(Vector3 min, Vector3 max, Vector3 value)
@@ -1486,7 +1500,7 @@ namespace ElasticSea.Framework.Util
 
         public static float InverseLerpAngle(float min, float max, float t)
         {
-            return Mathf.Abs(AngleDifference(t, min) / AngleDifference(max, min));
+            return Mathf.Abs(GetSignedAngle(t, min) / GetSignedAngle(max, min));
         }
 
         public static Vector2[] GetUniformPointsInCircle(float radius, float pointRadius)
