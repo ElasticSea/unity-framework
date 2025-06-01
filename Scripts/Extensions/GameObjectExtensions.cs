@@ -604,5 +604,20 @@ namespace ElasticSea.Framework.Extensions
 				SetLayerRecursive(childGameObject, layer);
 			}
 		}
+		
+		public static T[] GetComponent<T>(this GameObject[] gameObjects) where T : Component
+		{
+			var allComponents = new List<T>();
+			foreach (var gameObject in gameObjects)
+			{
+				var component = gameObject.GetComponent<T>();
+				if (component)
+				{
+					allComponents.Add(component);
+				}
+			}
+
+			return allComponents.ToArray();
+		}
     }
 }
