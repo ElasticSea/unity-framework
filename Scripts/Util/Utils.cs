@@ -821,6 +821,18 @@ namespace ElasticSea.Framework.Util
 
             return part1 + part2 + part3 + part4;
         }
+        
+        public static Vector3 GetBezierCurve(Vector3 p1, Vector3 p2, Vector3 p3, float t, float tightness = 1)
+        {
+            t = Mathf.Clamp01(t);
+
+            float u = 1 - t;
+            float u2 = Mathf.Pow(u, 2 * tightness);
+            float ut = 2 * u * t;
+            float t2 = Mathf.Pow(t, 2 * tightness);
+
+            return u2 * p1 + ut * p2 + t2 * p3;
+        }
 
         public static object CallPrivateMethod(object instance, string methodName, params object[] parameters)
         {
