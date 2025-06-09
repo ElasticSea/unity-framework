@@ -73,5 +73,10 @@ namespace ElasticSea.Framework.Extensions
             material.EnableKeyword("_NORMALMAP");
             material.SetTexture("_BumpMap", normal);
         }
+
+        public static void SetBool(this Material material, string keyword, bool value)
+        {
+            material.SetFloat(keyword, value ? 1 : 0);
+        }
     }
 }
