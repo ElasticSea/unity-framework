@@ -20,6 +20,11 @@ namespace Blocks.Meshbakers
             Size = max - min;
         }
 
+        public Bounds GetBounds()
+        {
+            return new Bounds(Min + Size / 2, Size);
+        }
+
         public Vector3[] Vertices()
         {
             return new[]
