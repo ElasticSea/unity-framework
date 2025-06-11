@@ -55,7 +55,7 @@ namespace ElasticSea.Framework.Scripts.Misc
             Elapsed = sw.Elapsed;
             Gizmos.DrawWireSphere(circle2.center.ToXZ(), 0.01f);
 
-            GizmoUtils.DrawCircle(circle2.center.ToXZ(), Vector3.up, circle2.radius, 512);
+            GizmoUtils.DrawCircle(circle2.center.ToXZ(), Vector3.up, circle2.radius);
         }
 
         public void SpawnPoints()

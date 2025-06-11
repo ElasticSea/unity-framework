@@ -31,7 +31,7 @@ namespace ElasticSea.Framework.Util.Gizmo
 
         public void DrawWireCircle(Vector3 from, Vector3 normal, float radius)
         {
-            GizmoUtils.DrawCircle(from, normal, radius, 32);
+            GizmoUtils.DrawCircle(from, normal, radius);
         }
 
         public void DrawSphere(Vector3 center, float radius)
