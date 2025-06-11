@@ -497,13 +497,16 @@ namespace ElasticSea.Framework.Extensions
 		    foreach (var mf in meshFilters)
 		    {
 			    var mesh = isSharedMesh ? mf.sharedMesh : mf.mesh;
-			    var vertices = mesh.vertices;
-			    for (var index = 0; index < vertices.Length; index++)
+			    if (mesh)
 			    {
-				    vertices[index] =  mf.transform.TransformPoint(vertices[index], go.transform);
+				    var vertices = mesh.vertices;
+				    for (var index = 0; index < vertices.Length; index++)
+				    {
+					    vertices[index] = mf.transform.TransformPoint(vertices[index], go.transform);
+				    }
+
+				    localVertices.AddRange(vertices);
 			    }
-			    
-			    localVertices.AddRange(vertices);
 		    }
 		    
 		    return localVertices.ToArray();
