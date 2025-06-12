@@ -86,9 +86,11 @@ namespace ElasticSea.Framework.Util
 
         public static void DrawCircle(Vector3 pos, Vector3 normal, float radius, float thickness = 1)
         {
+#if UNITY_EDITOR
             Handles.color = Gizmos.color;
             Handles.matrix = Gizmos.matrix;
             Handles.DrawWireDisc(pos, normal, radius, thickness);
+#endif
         }
 
         public static void DrawCylinder(Vector3 start, Vector3 end, float radius, int numSegments)
