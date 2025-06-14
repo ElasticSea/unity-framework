@@ -438,6 +438,7 @@ namespace ElasticSea.Framework.Extensions
 		    return compositeBounds;
 	    }
 		
+	    [Obsolete]
 	    public static Bounds GetMeshBounds(this GameObject go, bool includeInactive = false, bool isSharedMesh = false, Predicate<Transform> filter = null)
 	    {
 		    var meshFilters = go.GetComponentsInChildren<MeshFilter>(includeInactive);
