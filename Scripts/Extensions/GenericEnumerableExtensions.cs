@@ -1271,5 +1271,16 @@ namespace ElasticSea.Framework.Extensions
 		    
 		    return result;
 	    }
+
+	    public static void ReverseInPlace<T>(this T[] array)
+	    {
+		    var halfLength = array.Length / 2;
+		    for (int i = 0; i < halfLength; i++)
+		    {
+			    var frontIndex = i;
+			    var backIndex = array.Length - 1 - i;
+			    (array[frontIndex], array[backIndex]) = (array[backIndex], array[frontIndex]);
+		    }
+	    }
 	}
 }
