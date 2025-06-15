@@ -1037,6 +1037,25 @@ namespace ElasticSea.Framework.Util
             Debug.LogException(new Exception(message, e));
         }
 
+        public static Rect MinMaxRect(float xmin, float ymin, float xmax, float ymax)
+        {
+            return new Rect(xmin, ymin, xmax - xmin, ymax - ymin);
+        }
+        
+        public static Bounds MinMaxBounds(float xmin, float ymin, float zmin, float xmax, float ymax, float zmax)
+        {
+            var min = new Vector3(xmin, ymin, zmin);
+            var max = new Vector3(xmax, ymax, zmax);
+            return MinMaxBounds(min, max);
+        }
+        
+        public static Bounds MinMaxBounds(Vector3 min, Vector3 max)
+        {
+            var size = max - min;
+            return new Bounds(min + size/2, size);
+        }
+
+        [Obsolete]
         public static Bounds Bounds(Vector3 min, Vector3 max)
         {
             var bounds = new Bounds();
