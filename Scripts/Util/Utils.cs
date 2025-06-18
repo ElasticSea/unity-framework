@@ -1613,6 +1613,14 @@ namespace ElasticSea.Framework.Util
         {
             return (p1.x - p0.x) * (p2.y - p0.y) - (p1.y - p0.y) * (p2.x - p0.x);
         }
+        
+        public static Vector3 InverseLerp(Vector3 from, Vector3 to, Vector3 point)
+        {
+            var x = Mathf.InverseLerp(from.x, to.x, point.x);
+            var y = Mathf.InverseLerp(from.y, to.y, point.y);
+            var z = Mathf.InverseLerp(from.z, to.z, point.z);
+            return new Vector3(x, y, z);
+        }
     }
     
     public struct PageElement<T>
