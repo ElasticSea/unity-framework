@@ -1,4 +1,6 @@
-﻿using ElasticSea.Framework.Extensions;
+﻿using System;
+using ElasticSea.Framework.Extensions;
+using ElasticSea.Framework.Util;
 using UnityEngine;
 
 namespace ElasticSea.Framework.Scripts.Util
@@ -12,6 +14,7 @@ namespace ElasticSea.Framework.Scripts.Util
         private readonly Bounds originalBounds;
         private readonly Vector3[] newVertices;
         private readonly Vector2[] newUvs;
+        private Bounds newBounds;
 
         public Mesh Mesh => finalMesh;
         public Mesh Source => source;
@@ -49,8 +52,22 @@ namespace ElasticSea.Framework.Scripts.Util
 
             finalMesh.vertices = newVertices;
             finalMesh.bounds = boundsToMatch;
+            this.newBounds = boundsToMatch;
         }
 
+        public void NormalizeUvToBounds()
+        {
+            for (var i = 0; i < newVertices.Length; i++)
+            {
+                var vert = newVertices[i];
+                var uv = Utils.InverseLerp(newBounds.min, newBounds.max, vert);
+                newUvs[i] = uv;
+            }
+
+            finalMesh.uv = newUvs;
+        }
+
+        [Obsolete]
         public void ExtendMeshToBoundsX(float min, float max)
         {
             // Center is at 0.5, 0.5, 0.5
