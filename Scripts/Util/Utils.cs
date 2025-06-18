@@ -686,11 +686,7 @@ namespace ElasticSea.Framework.Util
         public static bool IsPrefabModeIsActive()
         {
 #if UNITY_EDITOR
-#if UNITY_2021_1_OR_NEWER
             return UnityEditor.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage() != null;
-#else
-            return UnityEditor.Experimental.SceneManagement.PrefabStageUtility.GetCurrentPrefabStage() != null;
-#endif
 #endif
             return false;
         }
