@@ -66,29 +66,5 @@ namespace ElasticSea.Framework.Scripts.Util
 
             finalMesh.uv = newUvs;
         }
-
-        [Obsolete]
-        public void ExtendMeshToBoundsX(float min, float max)
-        {
-            // Center is at 0.5, 0.5, 0.5
-            var boundsCenter = originalBounds.min + originalBounds.size.Multiply(Vector3.one * 0.5f);
-
-            var minExtends = min - originalBounds.min.x + boundsCenter.x - originalBounds.center.x;
-            var maxExtends = max - originalBounds.max.x + boundsCenter.x - originalBounds.center.x;
-
-            for (var i = 0; i < originalVertices.Length; i++)
-            {
-                var vert = originalVertices[i];
-                var x = vert.x + (vert.x > boundsCenter.x / 2 ? maxExtends : minExtends);
-                var y = vert.y;
-                var z = vert.z;
-                newVertices[i] = new Vector3(x, y, z);
-            }
-
-            finalMesh.vertices = newVertices;
-
-            var newBounds = originalBounds.SetMinMaxXOld(min, max);
-            finalMesh.bounds = newBounds;
-        }
     }
 }
