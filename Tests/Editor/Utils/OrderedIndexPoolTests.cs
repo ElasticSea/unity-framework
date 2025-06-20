@@ -1,5 +1,4 @@
 using System;
-using Avatars.Hands.DynamicGrab;
 using ElasticSea.Framework.Util;
 using NUnit.Framework;
 
