@@ -12,7 +12,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 using Blocks.Meshbakers;
-using DG.Tweening.Core.Easing;
 using ElasticSea.Framework.Extensions;
 using ElasticSea.Framework.Scripts.Extensions;
 using UnityEngine;
@@ -1219,6 +1218,29 @@ namespace ElasticSea.Framework.Util
 
         public static float Ease(float t, Easing easing, float overshootOrAmplitude = 1)
         {
+            float BounceEaseIn(float time, float duration)
+            {
+                return 1f - BounceEaseOut(duration - time, duration);
+            }
+
+            float BounceEaseOut(float time, float duration)
+            {
+                if ((time /= duration) < 0.3636363744735718)
+                    return 121f / 16f * time * time;
+                if (time < 0.7272727489471436)
+                    return (float)(121.0 / 16.0 * (time -= 0.54545456f) * time + 0.75);
+                return time < 0.9090909361839294
+                    ? (float)(121.0 / 16.0 * (time -= 0.8181818f) * time + 15.0 / 16.0)
+                    : (float)(121.0 / 16.0 * (time -= 0.95454544f) * time + 63.0 / 64.0);
+            }
+
+            float BounceEaseInOut(float time, float duration)
+            {
+                return time < duration * 0.5
+                    ? BounceEaseIn(time * 2f, duration) * 0.5f
+                    : (float)(BounceEaseOut(time * 2f - duration, duration) * 0.5 + 0.5);
+            }
+            
             var duration = 1f;
             switch (easing)
             {
@@ -1327,11 +1349,11 @@ namespace ElasticSea.Framework.Util
                         ? 0.5f * (t * t * (((overshootOrAmplitude *= 1.525f) + 1f) * t - overshootOrAmplitude))
                         : 0.5f * ((t -= 2f) * t * (((overshootOrAmplitude *= 1.525f) + 1f) * t + overshootOrAmplitude) + 2f);
                 case Easing.InBounce:
-                  return Bounce.EaseIn(t, duration, 0, 0);
+                  return BounceEaseIn(t, duration);
                 case Easing.OutBounce:
-                  return Bounce.EaseOut(t, duration, 0, 0);
+                  return BounceEaseOut(t, duration);
                 case Easing.InOutBounce:
-                  return Bounce.EaseInOut(t, duration, 0, 0);
+                  return BounceEaseInOut(t, duration);
                 // case Easing.Flash:
                 //   return Flash.Easing(t, duration, overshootOrAmplitude, period);
                 // case Easing.InFlash:
