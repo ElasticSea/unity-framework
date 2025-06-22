@@ -642,5 +642,17 @@ namespace ElasticSea.Framework.Extensions
 
             return mesh;
         }
+
+        public static Vector2[] VerticesXZ(this Mesh mesh)
+        {
+            var vertices = mesh.vertices;
+            var result = new Vector2[vertices.Length];
+            for (var i = 0; i < vertices.Length; i++)
+            {
+                var vertex = vertices[i];
+                result[i] = new Vector2(vertex.x, vertex.z);
+            }
+            return result;
+        }
     }
 }
