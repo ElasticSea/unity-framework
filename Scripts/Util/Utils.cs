@@ -1639,6 +1639,28 @@ namespace ElasticSea.Framework.Util
             var z = Mathf.InverseLerp(from.z, to.z, point.z);
             return new Vector3(x, y, z);
         }
+        
+        public static void TriggerEvent(object targetObject, string eventName, params object[] args)
+        {
+            var type = targetObject.GetType();
+
+            var eventField = type.GetField(eventName, BindingFlags.NonPublic | BindingFlags.Instance);
+
+            if (eventField == null)
+            {
+                Debug.LogError($"Event '{eventName}' not found in {type.Name}");
+                return;
+            }
+
+            if (eventField.GetValue(targetObject) is not Delegate eventDelegate)
+            {
+                Debug.LogWarning($"Event '{eventName}' has no subscribers.");
+                return;
+            }
+
+            // Trigger (invoke) the event
+            eventDelegate.DynamicInvoke(args);
+        }
     }
     
     public struct PageElement<T>
