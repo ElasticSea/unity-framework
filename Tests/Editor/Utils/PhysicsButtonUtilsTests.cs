@@ -2,9 +2,6 @@
 using System.IO;
 using System.Linq;
 using ElasticSea.Framework.Util;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using Newtonsoft.Json.UnityConverters.Math;
 using NUnit.Framework;
 using Debug = UnityEngine.Debug;
 
