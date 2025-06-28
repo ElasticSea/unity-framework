@@ -734,5 +734,12 @@ namespace ElasticSea.Framework.Extensions
 			var y = Mathf.RoundToInt(vec.y);
 			return new Vector2Int(x, y);
 		}
+
+		public static Vector2Int CeilToInt(this Vector2 vec)
+		{
+			var x = Mathf.CeilToInt(vec.x);
+			var y = Mathf.CeilToInt(vec.y);
+			return new Vector2Int(x, y);
+		}
 	}
 }

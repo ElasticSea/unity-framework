@@ -1036,6 +1036,11 @@ namespace ElasticSea.Framework.Util
         {
             return new Rect(xmin, ymin, xmax - xmin, ymax - ymin);
         }
+
+        public static RectInt MinMaxIntRect(int xmin, int ymin, int xmax, int ymax)
+        {
+            return new RectInt(xmin, ymin, xmax - xmin, ymax - ymin);
+        }
         
         public static Bounds MinMaxBounds(float xmin, float ymin, float zmin, float xmax, float ymax, float zmax)
         {
@@ -1660,6 +1665,26 @@ namespace ElasticSea.Framework.Util
 
             // Trigger (invoke) the event
             eventDelegate.DynamicInvoke(args);
+        }
+        
+        public static Vector2[] SortClockwise(Vector2[] points)
+        {
+            // Compute centroid
+            Vector2 center = Vector2.zero;
+            for (var i = 0; i < points.Length; i++)
+            {
+                var p = points[i];
+                center += p;
+            }
+
+            center /= points.Length;
+
+            // Sort by angle to center
+            return points.OrderBy(p =>
+            {
+                float angle = Mathf.Atan2(p.y - center.y, p.x - center.x);
+                return -angle; // Negative for clockwise
+            }).ToArray();
         }
     }
     

@@ -15,9 +15,11 @@ namespace ElasticSea.Framework.Util
         {
             if (path.Count >= 2)
             {
-                for (var i = 0; i < path.Count - 1; i++)
+                for (var i = 0; i < path.Count; i++)
                 {
-                    Gizmos.DrawLine(path[i], path[i + 1]);
+                    var from = path[i];
+                    var vector3 = path[(i + 1) % path.Count];
+                    Gizmos.DrawLine(from, vector3);
                 }
             }
         }
