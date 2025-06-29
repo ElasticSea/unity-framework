@@ -1,6 +1,5 @@
 ﻿using ElasticSea.Framework.Ui.Interactions;
 using ElasticSea.Framework.Util;
-using Gizmoes.Interactables;
 using UnityEngine;
 
 namespace ElasticSea.Framework.Ui.Icons
