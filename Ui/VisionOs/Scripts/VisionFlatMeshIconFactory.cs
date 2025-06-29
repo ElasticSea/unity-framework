@@ -1,11 +1,11 @@
 ﻿using DG.Tweening;
 using ElasticSea.Framework.Extensions;
 using ElasticSea.Framework.Ui.Icons;
-using Gizmoes.Interactables;
+using ElasticSea.Framework.Ui.Interactions;
+using ElasticSea.Framework.Util;
 using Interactions;
 using Unity.PolySpatial;
 using UnityEngine;
-using Util;
 
 namespace ElasticSea.Framework.Ui.VisionOs
 {
@@ -22,7 +22,7 @@ namespace ElasticSea.Framework.Ui.VisionOs
 
             foreach (var icon in icons)
             {
-                var anim = new HideShowAnimation(DOTween.To(t => icon.Material.SetFloat("_Pressed", t), 0, 1, 0.15f));
+                var anim = new HideShowInternalAnim(DOTween.To(t => icon.Material.SetFloat("_Pressed", t), 0, 1, 0.15f));
                 icon.FocusTransition = anim;
 
                 var interactable = new SimpleInteractable()
@@ -58,6 +58,28 @@ namespace ElasticSea.Framework.Ui.VisionOs
             }
 
             return icons;
+        }
+    
+        private class HideShowInternalAnim : IHideShowAnim
+        {
+            private readonly Tween tween;
+
+            public HideShowInternalAnim(Tween tween)
+            {
+                this.tween = tween.SetAutoKill(false).Pause();
+            }
+        
+            public void Show(bool animate = true)
+            {
+                tween.PlayForward();
+                if (animate == false) tween.Complete();
+            }
+
+            public void Hide(bool animate = true)
+            {
+                tween.PlayBackwards();
+                if (animate == false) tween.Goto(0, true);
+            }
         }
     }
 }

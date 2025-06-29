@@ -1,5 +1,3 @@
-using Interactions;
-
 namespace ElasticSea.Framework.Ui.Interactions
 {
     public interface IInteractable
