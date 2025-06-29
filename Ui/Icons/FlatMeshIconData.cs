@@ -1,5 +1,4 @@
-﻿using ElasticSea.Framework.Scripts.Util;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ElasticSea.Framework.Ui.Icons
 {
@@ -14,10 +13,10 @@ namespace ElasticSea.Framework.Ui.Icons
 
     public class FlatMeshIconMeshData
     {
-        public Mesh Mesh;
+        public Mesh Mesh; // will be modified
+        public Mesh LowPoly; // Used for bounds calculation
         public Material[] Materials;
         public Material[] LockedMaterials;
         public Quaternion MeshRotation;
-        public SphereBounds Bounds;
     }
 }

@@ -93,10 +93,14 @@ namespace ElasticSea.Framework.Ui.Icons
 
         private GameObject GenerateFrontplate(GameObject backplate, float radius, bool locked, Mesh circleMesh, FlatMeshIconMeshData meshData, float padding)
         {
-            var mesh = meshData.Mesh.Clone();
+            var mesh = meshData.Mesh;
+            var lowPolymesh = meshData.LowPoly;
             
             var thickness = 0.0025f;
             SquashMesh(mesh, meshData.MeshRotation, thickness);
+            SquashMesh(lowPolymesh, meshData.MeshRotation, thickness);
+            
+            var bounds = lowPolymesh.vertices.ToSphereBounds();
             
             var scaleAnchor = new GameObject("Scaled");
             scaleAnchor.transform.SetParent(backplate.transform, false);
@@ -109,10 +113,10 @@ namespace ElasticSea.Framework.Ui.Icons
             var addComponent = setGo.AddComponent<MeshRenderer>();
             addComponent.sharedMaterials = locked ? meshData.LockedMaterials : meshData.Materials;
 
-            setGo.transform.localPosition = -meshData.Bounds.center.SetZ(0);
+            setGo.transform.localPosition = -bounds.center.SetZ(0);
 
-            var maxSphereRadius = radius - padding;
-            scaleAnchor.transform.localScale = Vector3.one * (maxSphereRadius / meshData.Bounds.radius);
+            var maxCirleRadius = radius - padding;
+            scaleAnchor.transform.localScale = Vector3.one * (maxCirleRadius / bounds.radius);
             return scaleAnchor;
         }
 
