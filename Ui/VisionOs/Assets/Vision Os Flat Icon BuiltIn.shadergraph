@@ -778,7 +778,7 @@
     "m_SubDatas": [],
     "m_ActiveTargets": [
         {
-            "m_Id": "301c39df30664f8e82fbb258ec30d8e6"
+            "m_Id": "749d26d263f04cd38b4515e4c804fe49"
         }
     ]
 }
@@ -1572,34 +1572,9 @@
 }
 
 {
-    "m_SGVersion": 2,
-    "m_Type": "UnityEditor.Rendering.Universal.ShaderGraph.UniversalUnlitSubTarget",
-    "m_ObjectId": "2f1aba6fe4ff4a079d0d4a470526aa0d"
-}
-
-{
-    "m_SGVersion": 1,
-    "m_Type": "UnityEditor.Rendering.Universal.ShaderGraph.UniversalTarget",
-    "m_ObjectId": "301c39df30664f8e82fbb258ec30d8e6",
-    "m_Datas": [],
-    "m_ActiveSubTarget": {
-        "m_Id": "2f1aba6fe4ff4a079d0d4a470526aa0d"
-    },
-    "m_AllowMaterialOverride": false,
-    "m_SurfaceType": 0,
-    "m_ZTestMode": 4,
-    "m_ZWriteControl": 0,
-    "m_AlphaMode": 0,
-    "m_RenderFace": 2,
-    "m_AlphaClip": false,
-    "m_CastShadows": true,
-    "m_ReceiveShadows": true,
-    "m_DisableTint": false,
-    "m_AdditionalMotionVectorMode": 0,
-    "m_AlembicMotionVectors": false,
-    "m_SupportsLODCrossFade": false,
-    "m_CustomEditorGUI": "",
-    "m_SupportVFX": false
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.Rendering.BuiltIn.ShaderGraph.BuiltInUnlitSubTarget",
+    "m_ObjectId": "2faea3cdcf9045b3848ba60f03b01c0e"
 }
 
 {
@@ -2784,6 +2759,24 @@
         "z": 0.0,
         "w": 0.0
     }
+}
+
+{
+    "m_SGVersion": 2,
+    "m_Type": "UnityEditor.Rendering.BuiltIn.ShaderGraph.BuiltInTarget",
+    "m_ObjectId": "749d26d263f04cd38b4515e4c804fe49",
+    "m_Datas": [],
+    "m_ActiveSubTarget": {
+        "m_Id": "2faea3cdcf9045b3848ba60f03b01c0e"
+    },
+    "m_AllowMaterialOverride": false,
+    "m_SurfaceType": 0,
+    "m_ZWriteControl": 0,
+    "m_ZTestMode": 4,
+    "m_AlphaMode": 0,
+    "m_RenderFace": 2,
+    "m_AlphaClip": false,
+    "m_CustomEditorGUI": ""
 }
 
 {
@@ -3993,7 +3986,7 @@
     "m_Title": "Disabled",
     "m_Position": {
         "x": -400.0,
-        "y": -236.0
+        "y": -235.3333740234375
     }
 }
 
@@ -4029,7 +4022,7 @@
     "m_Title": "Tint",
     "m_Position": {
         "x": -818.0,
-        "y": -1431.0
+        "y": -1430.6666259765625
     }
 }
 

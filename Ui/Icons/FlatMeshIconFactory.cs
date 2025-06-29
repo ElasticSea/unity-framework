@@ -97,14 +97,17 @@ namespace ElasticSea.Framework.Ui.Icons
             var lowPolymesh = meshData.LowPoly;
             
             var thickness = 0.0025f;
-            SquashMesh(mesh, meshData.MeshRotation, thickness);
-            SquashMesh(lowPolymesh, meshData.MeshRotation, thickness);
-            
+            SquashMesh(mesh, meshData.Rotation, thickness);
+            if (lowPolymesh != mesh)
+            {
+                SquashMesh(lowPolymesh, meshData.Rotation, thickness);
+            }
+
             var bounds = lowPolymesh.vertices.ToSphereBounds();
             
             var scaleAnchor = new GameObject("Scaled");
             scaleAnchor.transform.SetParent(backplate.transform, false);
-            scaleAnchor.transform.localPosition = new Vector3(0, 0, -circleMesh.bounds.max.z);
+            scaleAnchor.transform.localPosition = meshData.Offset.ToXy().SetZ( -circleMesh.bounds.max.z);
 
             var setGo = new GameObject("Mesh");
             setGo.transform.SetParent(scaleAnchor.transform, false);

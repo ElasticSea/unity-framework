@@ -17,6 +17,7 @@ namespace ElasticSea.Framework.Ui.Icons
         public Mesh LowPoly; // Used for bounds calculation
         public Material[] Materials;
         public Material[] LockedMaterials;
-        public Quaternion MeshRotation;
+        public Quaternion Rotation;
+        public Vector2 Offset;
     }
 }
