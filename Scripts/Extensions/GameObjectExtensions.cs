@@ -577,6 +577,7 @@ namespace ElasticSea.Framework.Extensions
 			codeBlock();
 		}
 		
+		[Obsolete]
 		public static Mesh Combine(this Mesh mesh, bool mergeSubMeshes, params Mesh[] meshes)
 		{
 			CombineInstance[] combine = new CombineInstance[meshes.Length];
@@ -593,6 +594,58 @@ namespace ElasticSea.Framework.Extensions
 
 			mesh.CombineMeshes(combine, mergeSubMeshes);
 			return mesh;
+		}
+		
+		public static (Mesh mesh, Material[] materials) GetCombinedMesh(this GameObject root, bool includeInactive = false)
+		{
+			var meshFilters = root.GetComponentsInChildren<MeshFilter>(includeInactive);
+
+			var combineInstances = new List<CombineInstance>();
+			var materialsList = new List<Material>();
+
+			for (int i = 0; i < meshFilters.Length; i++)
+			{
+				var mf = meshFilters[i];
+				var mr = mf.GetComponent<MeshRenderer>();
+				
+				if (mf.sharedMesh == null || mr == null)
+				{
+					Debug.LogError("MeshFilter or MeshRenderer is null: " + mf.gameObject.name);;
+					continue;
+				}
+
+				if (!mf.sharedMesh.isReadable)
+				{
+					Debug.LogError("Mesh is not readable: " + mf.gameObject.name);
+					continue;
+				}
+
+				var mesh = mf.sharedMesh;
+				var localToRoot = root.transform.worldToLocalMatrix * mf.transform.localToWorldMatrix;
+
+				for (int sub = 0; sub < mesh.subMeshCount; sub++)
+				{
+					var ci = new CombineInstance
+					{
+						mesh = mesh,
+						subMeshIndex = sub,
+						transform = localToRoot
+					};
+					combineInstances.Add(ci);
+
+					materialsList.Add(mr.sharedMaterials[sub]);
+				}
+			}
+
+			var combinedMesh = new Mesh
+			{
+				name = root.name + "_Combined",
+				indexFormat = UnityEngine.Rendering.IndexFormat.UInt32
+			};
+
+			combinedMesh.CombineMeshes(combineInstances.ToArray(), false, true); // false = keep submeshes
+
+			return (combinedMesh, materialsList.ToArray());
 		}
 		
 		public static void SetLayerRecursive(this GameObject gameObject, int layer)
