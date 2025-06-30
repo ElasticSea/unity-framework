@@ -1,9 +1,9 @@
-﻿using DG.Tweening;
+﻿using System;
+using DG.Tweening;
 using ElasticSea.Framework.Extensions;
 using ElasticSea.Framework.Ui.Icons;
 using ElasticSea.Framework.Ui.Interactions;
 using ElasticSea.Framework.Util;
-using Interactions;
 using Unity.PolySpatial;
 using UnityEngine;
 
@@ -12,19 +12,20 @@ namespace ElasticSea.Framework.Ui.VisionOs
     public class VisionFlatMeshIconFactory : MonoBehaviour
     {
         [SerializeField] private FlatMeshIconFactory factory;
+        [SerializeField] private float pressCircleGrow = 0.02f;
 
-        [SerializeField] private Mesh circleMesh;
-        [SerializeField] private Material circleMaterial;
-
-        public FlatMeshIcon[] Build(FlatMeshIconData[] iconData)
+        public FlatMeshIcon[] Build(FlatMeshIconData[] iconData, Action<int> onSelectedCallback = null)
         {
-            var icons = factory.Build(iconData, circleMesh, circleMaterial);
+            var icons = factory.Build(iconData);
 
-            foreach (var icon in icons)
+            for (var i = 0; i < icons.Length; i++)
             {
+                var icon = icons[i];
+                icon.Material.SetFloat("_MeshOffset", pressCircleGrow);
                 var anim = new HideShowInternalAnim(DOTween.To(t => icon.Material.SetFloat("_Pressed", t), 0, 1, 0.15f));
                 icon.FocusTransition = anim;
 
+                var i1 = i;
                 var interactable = new SimpleInteractable()
                 {
                     PressCallback = @event =>
@@ -38,23 +39,23 @@ namespace ElasticSea.Framework.Ui.VisionOs
                     ReleaseCallback = @event =>
                     {
                         icon.Unfocus();
+                        onSelectedCallback?.Invoke(i1);
                     }
                 };
                 icon.Interactable = interactable;
-                
-                var interactableComponent =  icon.gameObject.GetOrAddComponent<IteractableComponent>();
+
+                var interactableComponent = icon.gameObject.GetOrAddComponent<IteractableComponent>();
                 interactableComponent.Interactable = interactable;
-                
+
 #if UNITY_VISIONOS
                 var visionOSHoverEffect = icon.gameObject.AddComponent<VisionOSHoverEffect>();
                 visionOSHoverEffect.Type = VisionOSHoverEffect.EffectType.Shader;
-                visionOSHoverEffect.FadeInDuration = 0.4f;; 
-                visionOSHoverEffect.FadeOutDuration = 0.4f;; 
-                
+                visionOSHoverEffect.FadeInDuration = 0.4f;
+                visionOSHoverEffect.FadeOutDuration = 0.4f;
+
                 icon.gameObject.layer = LayerMask.NameToLayer("VisionOsCollisionLayer");
                 interactableComponent.CancelByMove = true;
 #endif
-                
             }
 
             return icons;

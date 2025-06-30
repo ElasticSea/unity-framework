@@ -13,11 +13,11 @@ namespace ElasticSea.Framework.Ui.Icons
         [SerializeField] private Component _placementGrid;
         public IPlacement PlacementGrid => _placementGrid as IPlacement;
 
-        private FlatMeshIconData[] icons;
+        [SerializeField] private Mesh circleMesh;
+        [SerializeField] private Material circleMaterial;
 
-        public FlatMeshIcon[] Build(FlatMeshIconData[] icons, Mesh circleMesh, Material circleMaterial)
+        public FlatMeshIcon[] Build(FlatMeshIconData[] icons)
         {
-            this.icons = icons;
             transform.DestroyChildren();
             
             PlacementGrid.Count = icons.Length;
