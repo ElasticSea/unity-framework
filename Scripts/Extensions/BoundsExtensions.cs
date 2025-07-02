@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ElasticSea.Framework.Scripts.Util;
 using ElasticSea.Framework.Util;
-using Unity.XR.CoreUtils;
 using UnityEngine;
 
 namespace ElasticSea.Framework.Extensions
