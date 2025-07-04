@@ -553,9 +553,10 @@ namespace ElasticSea.Framework.Extensions
 			return Vector3.Project(vector3, normal);
 		}
 
-		public static Vector3 ProjectOnPlane(this Vector3 vector3, Plane plane)
+		public static Vector3 ProjectOnPlane(this Vector3 point, Plane plane)
 		{
-			return vector3 - (vector3 - (-plane.normal * plane.distance)).Dot(plane.normal) * plane.normal;
+			float distance = plane.GetDistanceToPoint(point);
+			return point - plane.normal * distance;
 		}
 
 		public static float Angle(this Plane plane, Vector3 vector3)
