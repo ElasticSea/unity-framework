@@ -133,7 +133,7 @@ namespace ElasticSea.Framework.Util
             aWriter.Write(count);
             aWriter.Write(subMeshCount);
             foreach (var v in vertices)
-                aWriter.WriteVector3(v);
+                aWriter.Write(v);
 
             // start of tagged chunks
             if (!string.IsNullOrEmpty(aMesh.name))
@@ -147,7 +147,7 @@ namespace ElasticSea.Framework.Util
             {
                 aWriter.Write((byte) ChunkID.Normals);
                 foreach (var v in normals)
-                    aWriter.WriteVector3(v);
+                    aWriter.Write(v);
             }
 
             var tangents = aMesh.tangents;
@@ -200,7 +200,7 @@ namespace ElasticSea.Framework.Util
                             aWriter.WriteVector2(uv);
                     else if (channelCount == 3)
                         foreach (var uv in uvs)
-                            aWriter.WriteVector3(uv);
+                            aWriter.Write(uv);
                     else
                         foreach (var uv in uvs)
                             aWriter.WriteVector4(uv);
@@ -266,9 +266,9 @@ namespace ElasticSea.Framework.Util
                         aWriter.Write(aMesh.GetBlendShapeFrameWeight(i, n));
                         for (int k = 0; k < count; k++)
                         {
-                            aWriter.WriteVector3(blendVerts[k]);
-                            aWriter.WriteVector3(blendNormals[k]);
-                            aWriter.WriteVector3(blendTangents[k]);
+                            aWriter.Write(blendVerts[k]);
+                            aWriter.Write(blendNormals[k]);
+                            aWriter.Write(blendTangents[k]);
                         }
                     }
                 }
@@ -586,14 +586,14 @@ namespace ElasticSea.Framework.Util
             }
         }
 
-        public static void WriteVector3(this BinaryWriter aWriter, Vector3 aVec)
+        public static void Write(this BinaryWriter aWriter, Vector3 aVec)
         {
             aWriter.Write(aVec.x);
             aWriter.Write(aVec.y);
             aWriter.Write(aVec.z);
         }
 
-        public static void WriteVector3Int(this BinaryWriter aWriter, Vector3Int aVec)
+        public static void Write(this BinaryWriter aWriter, Vector3Int aVec)
         {
             aWriter.Write(aVec.x);
             aWriter.Write(aVec.y);
