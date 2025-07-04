@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ElasticSea.Framework.Scripts.Util;
 using ElasticSea.Framework.Util;
+using Unity.Mathematics.Geometry;
 using UnityEngine;
 
 namespace ElasticSea.Framework.Extensions
@@ -23,6 +24,21 @@ namespace ElasticSea.Framework.Extensions
 			    center + new Vector3(+extent.x, +extent.y, -extent.z),
 			    center + new Vector3(-extent.x, +extent.y, +extent.z),
 			    center + new Vector3(+extent.x, +extent.y, +extent.z),
+		    };
+	    }
+	    
+	    public static Vector3[] GetVertices(this MinMaxAABB bounds)
+	    {
+		    return new[]
+		    {
+			    new Vector3(bounds.Min.x, bounds.Min.y, bounds.Min.z),
+			    new Vector3(bounds.Max.x, bounds.Min.y, bounds.Min.z),
+			    new Vector3(bounds.Min.x, bounds.Min.y, bounds.Max.z),
+			    new Vector3(bounds.Max.x, bounds.Min.y, bounds.Max.z),
+			    new Vector3(bounds.Min.x, bounds.Max.y, bounds.Min.z),
+			    new Vector3(bounds.Max.x, bounds.Max.y, bounds.Min.z),
+			    new Vector3(bounds.Min.x, bounds.Max.y, bounds.Max.z),
+			    new Vector3(bounds.Max.x, bounds.Max.y, bounds.Max.z),
 		    };
 	    }
 
