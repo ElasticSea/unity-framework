@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ElasticSea.Framework.Extensions;
@@ -38,6 +39,18 @@ namespace ElasticSea.Framework.Scripts.Extensions
 
             return rect;
         }
+        
+        public static Rect GrowInPlace(this ref Rect rect, Vector2 growBy)
+        {
+            rect.Set(rect.xMin - growBy.x, rect.yMin - growBy.y, rect.width + 2 * growBy.x, rect.height + 2 * growBy.y);
+            return rect;
+        }
+        
+        public static Rect GrowInPlace(this ref Rect rect, float growBy)
+        {
+            rect.Set(rect.xMin - growBy, rect.yMin - growBy, rect.width + 2 * growBy, rect.height + 2 * growBy);
+            return rect;
+        }
 
         public static Rect Grow(this Rect rect, float growBy)
         {
@@ -49,6 +62,7 @@ namespace ElasticSea.Framework.Scripts.Extensions
             return Rect.MinMaxRect(rect.xMin - growBy.x, rect.yMin - growBy.y, rect.xMax + growBy.x, rect.yMax + growBy.y);
         }
 
+        [Obsolete]
         public static Rect Shrink(this Rect rect, float shrinkBy)
         {
             return rect.Grow(-shrinkBy);
@@ -80,6 +94,30 @@ namespace ElasticSea.Framework.Scripts.Extensions
             var bottom = Rect.MinMaxRect(rect.xMin, rect.yMin, rect.xMax, centerPoint);
             var top = Rect.MinMaxRect(rect.xMin, centerPoint, rect.xMax, rect.yMax);
             return (bottom, top);
+        }
+
+        public static Rect ToRect(this RectInt rect)
+        {
+            return new Rect(rect.x, rect.y, rect.width, rect.height);
+        }
+
+        public static Rect MultiplyInPlace(this ref Rect rect, float multiply)
+        {
+            rect.x *= multiply;
+            rect.y *= multiply;
+            rect.width *= multiply;
+            rect.height *= multiply;
+            return rect;
+        }
+
+        public static Rect Multiply(this Rect rect, float multiply)
+        {
+            return new Rect(
+                rect.x * multiply,
+                rect.y * multiply,
+                rect.width * multiply,
+                rect.height * multiply
+            );
         }
 
         public static Vector2[] Vertices(this Rect rect)
