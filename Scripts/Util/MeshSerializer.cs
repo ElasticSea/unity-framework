@@ -450,6 +450,142 @@ namespace ElasticSea.Framework.Util
             return new Vector2(aReader.ReadSingle(), aReader.ReadSingle());
         }
 
+        public static void Write(this BinaryWriter writer, Vector2[] value)
+        {
+            var length = value.Length;
+            writer.Write(length);
+            for (var i = 0; i < length; i++)
+            {
+                var v = value[i];
+                writer.Write(v.x);
+                writer.Write(v.y);
+            }
+        }
+
+        public static Vector2[] ReadVector2Array(this BinaryReader reader)
+        {
+            var length = reader.ReadInt32();
+            var array = new Vector2[length];
+            for (var i = 0; i < length; i++)
+            {
+                var x = reader.ReadSingle();
+                var y = reader.ReadSingle();
+                array[i] = new Vector2(x, y);
+            }
+
+            return array;
+        }
+
+        public static void Write(this BinaryWriter writer, Vector3[] value)
+        {
+            var length = value.Length;
+            writer.Write(length);
+            for (var i = 0; i < length; i++)
+            {
+                var aVec = value[i];
+                writer.Write(aVec.x);
+                writer.Write(aVec.y);
+                writer.Write(aVec.z);
+            }
+        }
+
+        public static Vector3[] ReadVector3Array(this BinaryReader reader)
+        {
+            var length = reader.ReadInt32();
+            var array = new Vector3[length];
+            for (var i = 0; i < length; i++)
+            {
+                var x = reader.ReadSingle();
+                var y = reader.ReadSingle();
+                var z = reader.ReadSingle();
+                array[i] = new Vector3(x, y, z);
+            }
+
+            return array;
+        }
+
+        public static void Write(this BinaryWriter writer, Vector4[] value)
+        {
+            var length = value.Length;
+            writer.Write(length);
+            for (var i = 0; i < length; i++)
+            {
+                var aVec = value[i];
+                writer.Write(aVec.x);
+                writer.Write(aVec.y);
+                writer.Write(aVec.z);
+                writer.Write(aVec.w);
+            }
+        }
+
+        public static Vector4[] ReadVector4Array(this BinaryReader reader)
+        {
+            var length = reader.ReadInt32();
+            var array = new Vector4[length];
+            for (var i = 0; i < length; i++)
+            {
+                var x = reader.ReadSingle();
+                var y = reader.ReadSingle();
+                var z = reader.ReadSingle();
+                var w = reader.ReadSingle();
+                array[i] = new Vector4(x, y, z, w);
+            }
+
+            return array;
+        }
+
+        public static void Write(this BinaryWriter writer, Color[] value)
+        {
+            var length = value.Length;
+            writer.Write(length);
+            for (var i = 0; i < length; i++)
+            {
+                var v = value[i];
+                writer.Write(v.r);
+                writer.Write(v.g);
+                writer.Write(v.b);
+                writer.Write(v.a);
+            }
+        }
+
+        public static Color[] ReadColorArray(this BinaryReader reader)
+        {
+            var length = reader.ReadInt32();
+            var array = new Color[length];
+            for (var i = 0; i < length; i++)
+            {
+                var r = reader.ReadSingle();
+                var g = reader.ReadSingle();
+                var b = reader.ReadSingle();
+                var a = reader.ReadSingle();
+                array[i] = new Color(r, g, b, a);
+            }
+
+            return array;
+        }
+        
+        public static int[] ReadIntArray(this BinaryReader reader)
+        {
+            var length = reader.ReadInt32();
+            var array = new int[length];
+            for (var i = 0; i < length; i++)
+            {
+                array[i] = reader.ReadInt32();
+            }
+
+            return array;
+        }
+
+        public static void Write(this BinaryWriter writer, int[] value)
+        {
+            var length = value.Length;
+            writer.Write(length);
+            for (var i = 0; i < length; i++)
+            {
+                writer.Write(value[i]);
+            }
+        }
+
         public static void WriteVector3(this BinaryWriter aWriter, Vector3 aVec)
         {
             aWriter.Write(aVec.x);
