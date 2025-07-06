@@ -779,6 +779,9 @@
     "m_ActiveTargets": [
         {
             "m_Id": "749d26d263f04cd38b4515e4c804fe49"
+        },
+        {
+            "m_Id": "55b4bd1814aa48d9b9beb2549639fef7"
         }
     ]
 }
@@ -856,6 +859,12 @@
     "m_Property": {
         "m_Id": "e287ceed56834f2096a75e49c7ba1b29"
     }
+}
+
+{
+    "m_SGVersion": 2,
+    "m_Type": "UnityEditor.Rendering.Universal.ShaderGraph.UniversalUnlitSubTarget",
+    "m_ObjectId": "06474f798e90420cb98e7939a3478f06"
 }
 
 {
@@ -2286,6 +2295,31 @@
         "m_SerializableColors": []
     },
     "m_Value": 0.0
+}
+
+{
+    "m_SGVersion": 1,
+    "m_Type": "UnityEditor.Rendering.Universal.ShaderGraph.UniversalTarget",
+    "m_ObjectId": "55b4bd1814aa48d9b9beb2549639fef7",
+    "m_Datas": [],
+    "m_ActiveSubTarget": {
+        "m_Id": "06474f798e90420cb98e7939a3478f06"
+    },
+    "m_AllowMaterialOverride": false,
+    "m_SurfaceType": 0,
+    "m_ZTestMode": 4,
+    "m_ZWriteControl": 0,
+    "m_AlphaMode": 0,
+    "m_RenderFace": 2,
+    "m_AlphaClip": false,
+    "m_CastShadows": true,
+    "m_ReceiveShadows": true,
+    "m_DisableTint": false,
+    "m_AdditionalMotionVectorMode": 0,
+    "m_AlembicMotionVectors": false,
+    "m_SupportsLODCrossFade": false,
+    "m_CustomEditorGUI": "",
+    "m_SupportVFX": false
 }
 
 {
@@ -3985,8 +4019,8 @@
     "m_ObjectId": "bf91861f83294993b53bc220c675a50a",
     "m_Title": "Disabled",
     "m_Position": {
-        "x": -400.0,
-        "y": -235.3333740234375
+        "x": -400.0000305175781,
+        "y": -235.33334350585938
     }
 }
 
@@ -4021,7 +4055,7 @@
     "m_ObjectId": "c0909b0a739f4c059121510eff3d1a42",
     "m_Title": "Tint",
     "m_Position": {
-        "x": -818.0,
+        "x": -818.0000610351563,
         "y": -1430.6666259765625
     }
 }
