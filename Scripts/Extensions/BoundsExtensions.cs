@@ -26,6 +26,19 @@ namespace ElasticSea.Framework.Extensions
 			    center + new Vector3(+extent.x, +extent.y, +extent.z),
 		    };
 	    }
+
+	    public static Vector3[] GetDiagonalBoundsCorners(this Bounds bounds)
+	    {
+		    var center = bounds.center;
+		    var extent = bounds.extents;
+		    return new[]
+		    {
+			    center + new Vector3(+extent.x, +extent.y, +extent.z),
+			    center + new Vector3(+extent.x, -extent.y, -extent.z),
+			    center + new Vector3(-extent.x, +extent.y, -extent.z),
+			    center + new Vector3(-extent.x, -extent.y, +extent.z)
+		    };
+	    }
 	    
 	    public static Vector3[] GetVertices(this MinMaxAABB bounds)
 	    {
