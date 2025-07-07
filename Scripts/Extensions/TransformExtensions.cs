@@ -365,20 +365,7 @@ namespace ElasticSea.Framework.Extensions
 
         public static Matrix4x4 GetTRSRelativeToParent(this Transform child, Transform parent)
         {
-            var trs = Matrix4x4.identity;
-            
-            while (child != parent)
-            {
-                trs = child.GetTRS() * trs;
-                child = child.parent;
-            }
-
-            return trs;
-        }
-
-        public static Matrix4x4 GetTRS(this Transform transform)
-        {
-            return Matrix4x4.TRS(transform.localPosition, transform.localRotation, transform.localScale);
+            return parent.worldToLocalMatrix * child.localToWorldMatrix;
         }
     }
 }
