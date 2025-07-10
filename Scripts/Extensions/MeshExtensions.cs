@@ -274,6 +274,28 @@ namespace ElasticSea.Framework.Extensions
             mesh.RecalculateBounds();
             return mesh;
         }
+        
+        public static Mesh ScaleFromCenter(this Mesh mesh, Vector3 scale)
+        {
+            var vertices = mesh.vertices;
+            var originalBounds = mesh.bounds;
+
+            for (var i = 0; i < vertices.Length; i++)
+            {
+                var relativeToCenter =  vertices[i] - originalBounds.center;
+
+                var stretched = new Vector3(
+                    relativeToCenter.x * scale.x,
+                    relativeToCenter.y * scale.y,
+                    relativeToCenter.z * scale.z
+                );
+
+                vertices[i] = originalBounds.center + stretched;
+            }
+            mesh.vertices = vertices;
+            mesh.bounds = new Bounds(originalBounds.center, Vector3.Scale(originalBounds.size, scale));
+            return mesh;
+        }
 
         public static Mesh UpdateUvs(this Mesh mesh, Vector2 offset, Vector2 scale)
         {
