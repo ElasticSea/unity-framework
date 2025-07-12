@@ -11,6 +11,12 @@ namespace ElasticSea.Framework.Ui.Layout
             obj.localPosition += Vector3.up * offset;
         }
         
+        public static void AlignAfterRightCenter(Transform obj, Rect bounds, Rect toAlign, float offset = 0)
+        {
+            Align(obj, bounds, toAlign, Alignment.Align.AfterEnd, Alignment.Align.Center);
+            obj.localPosition += Vector3.right * offset;
+        }
+        
         public static void AlignBelowBottomCenter(Transform obj, Rect bounds, Rect toAlign, float offset = 0)
         {
             Align(obj, bounds, toAlign, Alignment.Align.Center, Alignment.Align.BeforeStart);
