@@ -10,6 +10,11 @@ namespace ElasticSea.Framework.Ui.Icons
         public IHideShowAnim FocusTransition;
         public Material Material;
         public SimpleInteractable Interactable;
+        public GameObject Backplate;
+        public GameObject Frontplate;
+        public Rect BackplateRect;
+        public Rect FrontplateRect;
+        public (Vector2 center, float radius) FrontplateCircle;
 
         public void Focus()
         {

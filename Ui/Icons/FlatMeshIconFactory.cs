@@ -1,9 +1,12 @@
 ﻿using System;
 using ElasticSea.Framework.Extensions;
+using ElasticSea.Framework.Scripts.Extensions;
 using ElasticSea.Framework.Ui.Layout;
 using ElasticSea.Framework.Ui.Layout.Placement;
 using ElasticSea.Framework.Util.PropertyDrawers;
+using NanoXLSX;
 using UnityEngine;
+using static ElasticSea.Framework.Util.Utils;
 
 namespace ElasticSea.Framework.Ui.Icons
 {
@@ -19,12 +22,15 @@ namespace ElasticSea.Framework.Ui.Icons
         public FlatMeshIcon[] Build(FlatMeshIconData[] icons)
         {
             transform.DestroyChildren();
-            
-            PlacementGrid.Count = icons.Length;
+
+            if (icons.Length != PlacementGrid.Count)
+            {
+                PlacementGrid.Count = icons.Length;
+            }
 
             var radius = PlacementGrid.Size.FromXY().Min() / 2;
             var circleMeshClone = circleMesh.Clone();
-            GenerateBackplateMesh(circleMeshClone, radius);
+            GenerateBackplateMesh(circleMeshClone, PlacementGrid.Size);
             
             var translucentIcons = new FlatMeshIcon[icons.Length];
             for (var i = 0; i < icons.Length; i++)
@@ -39,8 +45,12 @@ namespace ElasticSea.Framework.Ui.Icons
 
                 var translucentIcon = anchor.AddComponent<FlatMeshIcon>();
                 translucentIcon.Index = i;
-                var backplate = GenerateBackplate(translucentIcon, circleMeshClone, circleMaterial, icon.Locked, icon.AccentColor);
-                GenerateFrontplate(backplate, radius, icon.Locked, circleMeshClone, icon.MeshData, icon.Padding);
+                translucentIcon.BackplateRect = CenterRect(Vector2.zero, PlacementGrid.Size); 
+                translucentIcon.Backplate = GenerateBackplate(translucentIcon, circleMeshClone, circleMaterial, icon.Locked, icon.AccentColor);
+                translucentIcon.FrontplateCircle = (Vector2.zero, radius - icon.Padding);
+                var frontplate = GenerateFrontplate(translucentIcon.Backplate, radius - icon.Padding, icon.Locked, circleMeshClone, icon.MeshData);
+                translucentIcon.Frontplate = frontplate.frontplate;
+                translucentIcon.FrontplateRect = frontplate.rect;
                 
                 translucentIcons[i] = translucentIcon;  
             }
@@ -72,26 +82,30 @@ namespace ElasticSea.Framework.Ui.Icons
             return backplate;
         }
 
-        private void GenerateBackplateMesh(Mesh mesh, float radius)
+        private void GenerateBackplateMesh(Mesh mesh, Vector2 size)
         {
             var vertices = mesh.vertices;
             var verticesLength = vertices.Length;
             var center2d = mesh.bounds.center.FromXY();
-            var offset = radius - Mathf.Max(mesh.bounds.size.x, mesh.bounds.size.y) / 2;
+            var smallerSide = size.Min();
+            var biggerSide = size.Max();
+            var offset = (smallerSide - Mathf.Max(mesh.bounds.size.x, mesh.bounds.size.y)) / 2;
             for (var i = 0; i < verticesLength; i++)
             {
                 var vertex = vertices[i];
                 var vertex2d = new Vector2(vertex.x, vertex.y);
                 var extent = (vertex2d - center2d).normalized * offset;
-
-                vertices[i] = vertex + new Vector3(extent.x, extent.y);
+                float horizontalOffset = (biggerSide - mesh.bounds.size.x) * 0.5f - offset;
+                var sign = vertex2d.x < center2d.x ? -1 : 1;
+                horizontalOffset *= sign;
+                vertices[i] = vertex + new Vector3(extent.x + horizontalOffset, extent.y);
             }
 
             mesh.vertices = vertices;
             mesh.RecalculateBounds();
         }
 
-        private GameObject GenerateFrontplate(GameObject backplate, float radius, bool locked, Mesh circleMesh, FlatMeshIconMeshData meshData, float padding)
+        private (GameObject frontplate, Rect rect) GenerateFrontplate(GameObject backplate, float radius, bool locked, Mesh circleMesh, FlatMeshIconMeshData meshData)
         {
             var mesh = meshData.Mesh;
             var lowPolymesh = meshData.LowPoly;
@@ -104,9 +118,12 @@ namespace ElasticSea.Framework.Ui.Icons
             }
 
             var bounds = lowPolymesh.vertices.ToSphereBounds();
+
+            var frontPlate = new GameObject("Frontplate");
+            frontPlate.transform.SetParent(backplate.transform, false);
             
             var scaleAnchor = new GameObject("Scaled");
-            scaleAnchor.transform.SetParent(backplate.transform, false);
+            scaleAnchor.transform.SetParent(frontPlate.transform, false);
             scaleAnchor.transform.localPosition = meshData.Offset.ToXy().SetZ( -circleMesh.bounds.max.z);
 
             var setGo = new GameObject("Mesh");
@@ -118,9 +135,11 @@ namespace ElasticSea.Framework.Ui.Icons
 
             setGo.transform.localPosition = -bounds.center.SetZ(0);
 
-            var maxCirleRadius = radius - padding;
-            scaleAnchor.transform.localScale = Vector3.one * (maxCirleRadius / bounds.radius);
-            return scaleAnchor;
+            var scale = radius / bounds.radius;
+            scaleAnchor.transform.localScale = Vector3.one * scale;
+
+            var rect = lowPolymesh.bounds.Move(setGo.transform.localPosition).Scale(scale).FrontSide();
+            return (frontPlate, rect);
         }
 
         private void SquashMesh(Mesh mesh, Quaternion rotate, float thickness)

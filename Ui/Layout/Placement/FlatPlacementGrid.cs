@@ -7,7 +7,7 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
     {
         [SerializeField] private int rows;
         [SerializeField] private int columns;
-        [SerializeField] private float cellSize;
+        [SerializeField] private Vector3 size;
         [SerializeField] private Vector2 spacing;
         [SerializeField] private Align horizontalAlign = Align.Center;
         [SerializeField] private Align verticalAlign = Align.Center;
@@ -24,12 +24,6 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
             set => columns = value;
         }
 
-        public float CellSize
-        {
-            get => cellSize;
-            set => cellSize = value;
-        }
-
         public Vector2 Spacing
         {
             get => spacing;
@@ -38,18 +32,18 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
 
         public Vector3 Size
         {
-            get => Vector3.one * cellSize;
+            get => size;
         }
 
         public Bounds Bounds
         {
             get
             {
-                var xSize = cellSize * Columns + spacing.x * (Columns - 1);
-                var ySize = cellSize * Rows + spacing.y * (rows - 1);
+                var xSize = size.x * Columns + spacing.x * (Columns - 1);
+                var ySize = size.y * Rows + spacing.y * (rows - 1);
                 var x = (0.5f - horizontalAlign.GetAlignDelta()) * xSize;
                 var y = (0.5f - verticalAlign.GetAlignDelta()) * ySize;
-                var bounds = new Bounds(new Vector3(x, y, cellSize / 2), new Vector3(xSize, ySize, cellSize));
+                var bounds = new Bounds(new Vector3(x, y, size.z / 2), new Vector3(xSize, ySize, size.z));
                 return bounds;
             }
         }
@@ -65,10 +59,10 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
             var x = index % Columns;
             var y = index / Columns;
             
-            var xpos = x * (cellSize + spacing.x);
-            var ypos = y * (cellSize + spacing.y);
+            var xpos = x * (size.x + spacing.x);
+            var ypos = y * (size.y + spacing.y);
             
-            var cellBounds = new Bounds(Vector3.one * cellSize / 2, Vector3.one * cellSize);
+            var cellBounds = new Bounds(size / 2, size);
 
             var cellMatrix = Matrix4x4.TRS(Bounds.min + new Vector3(xpos, ypos, 0), Quaternion.identity, Vector3.one);
 

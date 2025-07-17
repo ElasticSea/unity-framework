@@ -892,9 +892,15 @@ namespace ElasticSea.Framework.Extensions
 		    return point;
 	    }
 
-	    public static void Move(this ref Bounds bounds, Vector3 value)
+	    public static void MoveInPlace(this ref Bounds bounds, Vector3 value)
 	    {
-			bounds.SetMinMax(bounds.min + value, bounds.max + value);
+		    bounds.SetMinMax(bounds.min + value, bounds.max + value);
+	    }
+
+	    public static Bounds Move(this Bounds bounds, Vector3 value)
+	    {
+		    bounds.SetMinMax(bounds.min + value, bounds.max + value);
+		    return bounds;
 	    }
     }
 }

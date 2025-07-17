@@ -1037,6 +1037,11 @@ namespace ElasticSea.Framework.Util
             return new Rect(xmin, ymin, xmax - xmin, ymax - ymin);
         }
 
+        public static Rect CenterRect(Vector2 center, Vector2 size)
+        {
+            return new Rect(center - size / 2, size);
+        }
+
         public static RectInt MinMaxIntRect(int xmin, int ymin, int xmax, int ymax)
         {
             return new RectInt(xmin, ymin, xmax - xmin, ymax - ymin);
@@ -1453,9 +1458,9 @@ namespace ElasticSea.Framework.Util
             return (rect, dimensions);
         }
         
-        public static (Vector2Int dimensions, Vector2 spacing) GetGridDimensionsFit(Vector2 size, float cellSize)
+        public static (Vector2Int dimensions, Vector2 spacing) GetGridDimensionsFit(Vector2 size, Vector2 cellSize)
         {
-            return GetGridDimensionsFit(size.x, size.y, cellSize, cellSize);
+            return GetGridDimensionsFit(size.x, size.y, cellSize.x, cellSize.y);
         }
         
         public static Vector2[] GetGridDimensionsFit(Rect rect, Vector2 cell, Vector2 minOffset)
