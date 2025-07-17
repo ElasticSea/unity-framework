@@ -4,7 +4,6 @@ using ElasticSea.Framework.Scripts.Extensions;
 using ElasticSea.Framework.Ui.Layout;
 using ElasticSea.Framework.Ui.Layout.Placement;
 using ElasticSea.Framework.Util.PropertyDrawers;
-using NanoXLSX;
 using UnityEngine;
 using static ElasticSea.Framework.Util.Utils;
 
