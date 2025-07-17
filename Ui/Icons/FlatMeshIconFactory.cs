@@ -17,10 +17,12 @@ namespace ElasticSea.Framework.Ui.Icons
 
         [SerializeField] private Mesh circleMesh;
         [SerializeField] private Material circleMaterial;
+        [SerializeField] private Transform container;
 
         public FlatMeshIcon[] Build(FlatMeshIconData[] icons)
         {
-            transform.DestroyChildren();
+            container = container ? container : transform;
+            container.DestroyChildren();
 
             if (icons.Length != PlacementGrid.Count)
             {
@@ -38,7 +40,7 @@ namespace ElasticSea.Framework.Ui.Icons
                 var (cellToLocal, cellBounds) = PlacementGrid.GetCell(i);
 
                 var anchor = new GameObject(icon.Name);
-                anchor.transform.SetParent(transform, false);
+                anchor.transform.SetParent(container, false);
                 anchor.transform.localPosition = cellToLocal.GetPosition() + cellBounds.center;
                 anchor.transform.localRotation = cellToLocal.rotation;
 
