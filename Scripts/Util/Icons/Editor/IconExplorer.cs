@@ -63,15 +63,7 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
 
             if (configIcons == null || dirty)
             {
-                var codepoints = new HashSet<int>();
-                foreach (var c in  filterName.Split(",").Select(s => ParseNoException(s, NumberStyles.HexNumber)).Where(c => c != 0))
-                {
-                    codepoints.Add(c);
-                }
-                foreach (var c in  filterName.Split(",").Where(c => c.Length > 0))
-                {
-                    codepoints.Add(c[0]);
-                }
+                var codepoints = GetCodepoints();
                 
                 configIcons = GenerateConfig(pack)
                     .Where(pair => filterName.IsNullOrEmpty() || pair.name.Contains(filterName) || codepoints.Contains(pair.code))
@@ -99,6 +91,42 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
             EditorGUILayout.EndHorizontal();
 
             dirty = false;
+        }
+
+        private HashSet<int> GetCodepoints()
+        {
+            var codepoints = new HashSet<int>();
+
+            var parts = filterName.Split(",");
+
+            foreach (var part in parts)
+            {
+                var isRange = part.Contains("-");
+                if (isRange)
+                {
+                    var splitPart = part.Split('-');
+                    var start = ParseNoException(splitPart[0], NumberStyles.HexNumber);
+                    var end = ParseNoException(splitPart[1], NumberStyles.HexNumber);
+                    for (var i = start; i <= end; i++)
+                    {
+                        codepoints.Add(i);
+                    }
+                }
+                else
+                {
+                    var codepoint = ParseNoException(part, NumberStyles.HexNumber);
+                    if (codepoint != 0)
+                    {
+                        codepoints.Add(codepoint);
+                    }
+                    else if (part.Length > 0)
+                    {
+                        codepoints.Add(part[0]);
+                    }
+                }
+            }
+            
+            return codepoints;
         }
 
         private int ParseNoException(string text, NumberStyles numberStyles)
