@@ -39,5 +39,10 @@ namespace ElasticSea.Framework.Scripts.Extensions
         {
             System.IO.File.WriteAllText(file.FullName, text);
         }
+        
+        public static byte[] ReadBytes(this FileInfo file)
+        {
+            return System.IO.File.ReadAllBytes(file.FullName);
+        }
     }
 }

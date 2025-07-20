@@ -12,6 +12,18 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
             return grid.GetCell(column - 1 + row * grid.Columns);
         }
 
+        public static (Matrix4x4 cellToLocal, Bounds bounds)[] GetCells(this IPlacementGrid grid)
+        {
+            var count = grid.Count;
+            var cells = new (Matrix4x4 cellToLocal, Bounds bounds)[count];
+            for (var i = 0; i < count; i++)
+            {
+                cells[i] = grid.GetCell(i);
+            }
+
+            return cells;
+        }
+
         public static (Matrix4x4 localToWorld, Bounds bounds) GetCell(this IPlacementGrid grid, Transform gridTransform, int row, int column)
         {
             var (cellToLocal, bounds) = grid.GetCell(row, column);

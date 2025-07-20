@@ -158,5 +158,33 @@ namespace ElasticSea.Framework.Util
             sphere.GetComponent<Renderer>().material.color = color;
             return sphere;
         }
+        
+        public static void DrawSphereOutline(Vector3 center, float radius = 1.0f, int segments = 64, Camera camera = null)
+        {
+            camera = camera ?? Camera.current;
+            if (camera == null) return;
+
+            var localCameraPosition = Gizmos.matrix.inverse.MultiplyPoint(camera.transform.position);
+            var forward = (localCameraPosition - center).normalized;
+            var up = Vector3.up;
+
+            // Prevent up being parallel to forward
+            if (Vector3.Dot(forward, up) > 0.99f)
+                up = Vector3.right;
+
+            var right = Vector3.Cross(up, forward).normalized;
+            up = Vector3.Cross(forward, right).normalized;
+
+            float angleStep = 360f / segments;
+            var prevPoint = center + (right * radius);
+
+            for (int i = 1; i <= segments; i++)
+            {
+                float angle = angleStep * i * Mathf.Deg2Rad;
+                var point = center + (right * Mathf.Cos(angle) + up * Mathf.Sin(angle)) * radius;
+                Gizmos.DrawLine(prevPoint, point);
+                prevPoint = point;
+            }
+        }
     }
 }
