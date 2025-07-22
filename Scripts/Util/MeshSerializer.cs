@@ -610,21 +610,6 @@ namespace ElasticSea.Framework.Util
             return new Vector3Int(aReader.ReadInt32(), aReader.ReadInt32(), aReader.ReadInt32());
         }
         
-        public static void WriteVersion(this BinaryWriter writer, Version version)
-        {
-            writer.Write(version.Major);
-            writer.Write(version.Minor);
-            writer.Write(version.Build);
-        }
-
-        public static Version ReadVersion(this BinaryReader writer)
-        {
-            var major = writer.ReadInt32();
-            var minor = writer.ReadInt32();
-            var build = writer.ReadInt32();
-            return new Version(major, minor, build);
-        }
-
         public static void WriteVector4(this BinaryWriter aWriter, Vector4 aVec)
         {
             aWriter.Write(aVec.x);
