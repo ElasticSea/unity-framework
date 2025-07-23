@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using UnityEngine;
 
 namespace ElasticSea.Framework.Scripts.Extensions
 {
@@ -11,6 +13,8 @@ namespace ElasticSea.Framework.Scripts.Extensions
         
         public static void EnsureDirectory(this DirectoryInfo dir, bool clear = false)
         {
+            dir.Refresh();
+            
             if (dir.Exists)
             {
                 if (clear)
@@ -43,6 +47,22 @@ namespace ElasticSea.Framework.Scripts.Extensions
         public static byte[] ReadBytes(this FileInfo file)
         {
             return System.IO.File.ReadAllBytes(file.FullName);
+        }
+
+        public static void ForceDelete(this DirectoryInfo dir, bool silent = false)
+        {
+            try
+            {
+                if (dir.Exists)
+                    dir.Delete(true);
+            }
+            catch (Exception e)
+            {
+                if (silent)
+                    Debug.LogException(new IOException($"Failed to delete {dir.FullName}", e));
+                else
+                    throw;
+            }
         }
     }
 }
