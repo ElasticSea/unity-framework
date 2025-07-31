@@ -1587,40 +1587,8 @@ namespace ElasticSea.Framework.Util
             return points.ToArray();
         }
         
-        public static bool IsPointInConvexHull(Vector2 point, Vector2[] hull, bool sorted = false)
+        public static bool IsPointInSortedConvexHull(Vector2 point, Vector2[] hull)
         {
-            if (!sorted)
-            {
-                // Find the point with the lowest y (and leftmost if tie)
-                var start = hull.OrderBy(p => p.y).ThenBy(p => p.x).First();
-
-                // Sort points by polar angle with 'start'
-                var sortedPoints = hull
-                    .OrderBy(p => Math.Atan2(p.y - start.y, p.x - start.x))
-                    .ToList();
-                
-                var hullStack = new Stack<Vector2>();
-                hullStack.Push(start);
-                
-                foreach (var p in sortedPoints.Skip(1))
-                {
-                    while (hullStack.Count > 1)
-                    {
-                        var top = hullStack.Pop();       // Peek
-                        var second = hullStack.Peek();   // Second-to-last element
-
-                        if (Cross2D(second, top, p) > 0)
-                        {
-                            hullStack.Push(top);  // Put it back if it forms a valid angle
-                            break;
-                        }
-                    }
-                    hullStack.Push(p);
-                }
-
-                hull = hullStack.ToArray();
-            }
-            
             var count = hull.Length;
             for (int i = 0; i < count; i++)
             {
