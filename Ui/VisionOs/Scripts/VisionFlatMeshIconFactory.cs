@@ -46,6 +46,7 @@ namespace ElasticSea.Framework.Ui.VisionOs
 
                 var interactableComponent = icon.gameObject.GetOrAddComponent<IteractableComponent>();
                 interactableComponent.Interactable = interactable;
+                VisionOsHoverEditorFix.Setup(interactableComponent);
 
 #if UNITY_VISIONOS
                 var visionOSHoverEffect = icon.gameObject.AddComponent<VisionOSHoverEffect>();
