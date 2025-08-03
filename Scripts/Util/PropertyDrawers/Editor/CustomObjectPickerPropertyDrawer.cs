@@ -15,6 +15,7 @@ namespace ElasticSea.Framework.Util.PropertyDrawers.Editor
         private static Type GameObjectType = typeof(GameObject);
         private static Type ScriptableObjectType = typeof(ScriptableObject);
         private static Type ComponentType = typeof(Component);
+        private static Type ComponentsType = typeof(Component[]);
 
 
         private static Type _unityObjectPickerType = null;
@@ -172,9 +173,22 @@ namespace ElasticSea.Framework.Util.PropertyDrawers.Editor
 
                                     if (GameObjectType.IsAssignableFrom(reqObjType))
                                         callback(obj);
-                                    else if (ComponentType.IsAssignableFrom(reqObjType))
+                                    else if (ComponentType.IsAssignableFrom(reqObjType) || ComponentsType.IsAssignableFrom(reqObjType))
                                     {
-                                        Object[] objs = (obj as GameObject).GetComponents(reqObjType);
+                                        Component[] objs = null;
+                                        if (ComponentType.IsAssignableFrom(reqObjType))
+                                        {
+                                            objs = (obj as GameObject).GetComponents(reqObjType);
+                                        }
+                                        else if(ComponentsType.IsAssignableFrom(reqObjType))
+                                        {
+                                            objs = (obj as GameObject).GetComponents(typeof(Component));
+                                        }
+                                        else
+                                        {
+                                            throw new NotImplementedException();   
+                                        }
+                                        
                                         foreach (var @object in objs)
                                         {
                                             bool success = true;
@@ -263,6 +277,13 @@ namespace ElasticSea.Framework.Util.PropertyDrawers.Editor
 
                         return true;
                     }
+                }
+            }
+            else if (ComponentsType.IsAssignableFrom(reqObjType))
+            {
+                if (includeGOComponents && GameObjectType.IsAssignableFrom(objType))
+                {
+                    return true;
                 }
             }
             else if (ScriptableObjectType.IsAssignableFrom(reqObjType))
