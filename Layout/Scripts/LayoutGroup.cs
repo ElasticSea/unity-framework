@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ElasticSea.Framework.Extensions;
+using ElasticSea.Framework.Util;
 using UnityEngine;
 
 namespace ElasticSea.Framework.Layout
@@ -23,8 +24,7 @@ namespace ElasticSea.Framework.Layout
         [SerializeField] private float paddingTop;
         [SerializeField] private float paddingBottom;
 
-        private Dictionary<ILayoutComponent, bool> elementsMap = new();
-        private ILayoutComponent[] elements = new ILayoutComponent[0];
+        private Dictionary<ILayoutComponent, bool> elementsMap = new ();
         private Rect rect;
 
         public void AddElement(ILayoutComponent element)
@@ -57,7 +57,6 @@ namespace ElasticSea.Framework.Layout
         {
             if (elementsMap.TryAdd(element, true))
             {
-                elements = elementsMap.Keys.ToArray();
                 element.OnRectChanged += Refresh;
                 return true;
             }
@@ -69,7 +68,6 @@ namespace ElasticSea.Framework.Layout
         {
             if (elementsMap.Remove(element))
             {
-                elements = elementsMap.Keys.ToArray();
                 element.OnRectChanged -= Refresh;
                 Refresh();
             }
@@ -78,9 +76,12 @@ namespace ElasticSea.Framework.Layout
         public void SetElementVisibility(ILayoutComponent element, bool visible)
         {
             elementsMap[element] = visible;
+            ((Component)element).gameObject.SetActive(visible);
             Refresh();
         }
 
+        private ILayoutComponent[] buffer = new ILayoutComponent[0];
+        
         private void Refresh()
         {
             var minx = float.PositiveInfinity;
@@ -90,26 +91,18 @@ namespace ElasticSea.Framework.Layout
 
             var t = 0f;
 
-            // natural arrangement (down) is reversed
-            var flipOrder = !reverseArrangement;
+            var elementsLength = GetOrderedElements();
 
-            var indexes = Enumerable.Range(0, elements.Length).ToArray();
-            if (flipOrder)
+            for (var i = 0; i < elementsLength; i++)
             {
-                indexes.ReverseInPlace();
-            }
-
-            for (var i = 0; i < indexes.Length; i++)
-            {
-                var index = indexes[i];
-                var element = elements[index];
+                var element = buffer[i];
                 var elementTransform = ((Component)element).transform;
                 var childRect = element.Rect;
                 var childSize = childRect.size;
 
                 var childAlignDelta = childAlign.GetAlignDelta();
 
-                var isLast = index == indexes[elements.Length - 1];
+                var isLast = i == elementsLength - 1;
                 var currentOffset = isLast ? 0 : spacing;
 
                 switch (orientation)
@@ -142,6 +135,30 @@ namespace ElasticSea.Framework.Layout
             rect = Rect.MinMaxRect(minx,miny, maxx, maxy);
 
             OnRectChanged?.Invoke();
+        }
+
+        private int GetOrderedElements()
+        {
+            // natural arrangement (down) is reversed
+            var flipOrder = !reverseArrangement;
+            
+            buffer = buffer.EnsureArray(elementsMap.Count);
+            var bufferLength = 0;
+            foreach (var b in elementsMap)
+            {
+                var isVisible = b.Value;
+                if (isVisible)
+                {
+                    buffer[bufferLength++] = b.Key;
+                }
+            }
+            
+            if (flipOrder)
+            {
+                buffer.ReverseInPlace(bufferLength);
+            }
+
+            return bufferLength;
         }
 
         private void OnValidate()
