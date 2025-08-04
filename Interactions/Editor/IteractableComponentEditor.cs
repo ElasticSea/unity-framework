@@ -1,7 +1,7 @@
 using UnityEditor;
 using UnityEngine;
 
-namespace ElasticSea.Framework.Ui.Interactions.Editor
+namespace ElasticSea.Framework.Interactions.Editor
 {
     [CustomEditor(typeof(IteractableComponent))]
     public class IteractableComponentEditor : UnityEditor.Editor

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace ElasticSea.Framework.Ui.Interactions
+namespace ElasticSea.Framework.Interactions
 {
     public class IteractableComponent : MonoBehaviour, IInteractable
     {

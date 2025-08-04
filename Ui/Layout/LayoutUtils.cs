@@ -1,4 +1,5 @@
-﻿using ElasticSea.Framework.Ui.Layout.Alignment;
+﻿using ElasticSea.Framework.Layout;
+using ElasticSea.Framework.Ui.Layout.Alignment;
 using UnityEngine;
 
 namespace ElasticSea.Framework.Ui.Layout
@@ -7,19 +8,19 @@ namespace ElasticSea.Framework.Ui.Layout
     {
         public static void AlignAboveTopCenter(Transform obj, Rect bounds, Rect toAlign, float offset = 0)
         {
-            Align(obj, bounds, toAlign, Alignment.Align.Center, Alignment.Align.AfterEnd);
+            Align(obj, bounds, toAlign, Framework.Layout.Align.Center, Framework.Layout.Align.AfterEnd);
             obj.localPosition += Vector3.up * offset;
         }
         
         public static void AlignAfterRightCenter(Transform obj, Rect bounds, Rect toAlign, float offset = 0)
         {
-            Align(obj, bounds, toAlign, Alignment.Align.AfterEnd, Alignment.Align.Center);
+            Align(obj, bounds, toAlign, Framework.Layout.Align.AfterEnd, Framework.Layout.Align.Center);
             obj.localPosition += Vector3.right * offset;
         }
         
         public static void AlignBelowBottomCenter(Transform obj, Rect bounds, Rect toAlign, float offset = 0)
         {
-            Align(obj, bounds, toAlign, Alignment.Align.Center, Alignment.Align.BeforeStart);
+            Align(obj, bounds, toAlign, Framework.Layout.Align.Center, Framework.Layout.Align.BeforeStart);
             obj.localPosition += Vector3.down * offset;
         }
         

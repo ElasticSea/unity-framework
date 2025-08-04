@@ -1,8 +1,6 @@
-﻿using Interactions;
-using UnityEngine;
-using EventType = Interactions.EventType;
+﻿using UnityEngine;
 
-namespace ElasticSea.Framework.Ui.Interactions
+namespace ElasticSea.Framework.Interactions
 {
     public class InteractionEvent
     {

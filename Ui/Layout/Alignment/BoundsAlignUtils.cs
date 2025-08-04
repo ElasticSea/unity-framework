@@ -1,7 +1,8 @@
 ﻿using System;
 using ElasticSea.Framework.Extensions;
+using ElasticSea.Framework.Layout;
 using UnityEngine;
-using static ElasticSea.Framework.Ui.Layout.Alignment.Align;
+using static ElasticSea.Framework.Layout.Align;
 
 namespace ElasticSea.Framework.Ui.Layout.Alignment
 {

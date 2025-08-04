@@ -1,7 +1,7 @@
 ﻿using ElasticSea.Framework.Util.PropertyDrawers;
 using UnityEngine;
 
-namespace ElasticSea.Framework.Ui.Layout
+namespace ElasticSea.Framework.Layout
 {
     public class ShowLayoutBounds : MonoBehaviour
     {

@@ -1,9 +1,7 @@
-﻿using System;
-using ElasticSea.Framework.Extensions;
-using ElasticSea.Framework.Util;
+﻿using ElasticSea.Framework.Extensions;
 using UnityEngine;
 
-namespace ElasticSea.Framework.Scripts.Util
+namespace ElasticSea.Framework.Util
 {
     public class MeshUtility
     {

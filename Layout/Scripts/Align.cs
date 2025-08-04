@@ -1,4 +1,4 @@
-namespace ElasticSea.Framework.Ui.Layout.Alignment
+namespace ElasticSea.Framework.Layout
 {
     public enum Align
     {

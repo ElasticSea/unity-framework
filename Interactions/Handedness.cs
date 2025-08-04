@@ -1,4 +1,4 @@
-﻿namespace ElasticSea.Framework.Ui.Interactions
+﻿namespace ElasticSea.Framework.Interactions
 {
     public enum Handedness
     {

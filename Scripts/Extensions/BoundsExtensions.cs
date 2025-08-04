@@ -244,6 +244,17 @@ namespace ElasticSea.Framework.Extensions
 	        return transformedVertices.ToBounds();
         }
         
+        public static Rect TransformRect(this Transform from, Transform to, Rect rect)
+        {
+	        Vector3 min = rect.min;
+	        Vector3 max = rect.max;
+	        
+	        min = from.transform.TransformPoint(min, to.transform);
+	        max = from.transform.TransformPoint(max, to.transform);
+	        
+	        return new Rect(min, max - min);
+        }
+        
         // Transforms local from one transform to another
         public static Bounds TransformBounds(this Matrix4x4 from, Matrix4x4 to, Bounds bounds)
         {
@@ -901,6 +912,34 @@ namespace ElasticSea.Framework.Extensions
 	    {
 		    bounds.SetMinMax(bounds.min + value, bounds.max + value);
 		    return bounds;
+	    }
+        
+	    public static Bounds GetCompositeMeshBounds(this GameObject go, bool includeInactive = false)
+	    {
+		    var bounds = go.GetComponentsInChildren<MeshFilter>(includeInactive)
+			    .Select(mf =>
+			    {
+				    var mesh = mf.sharedMesh;
+				    var localBound = mf.transform.TransformBounds(go.transform, mesh.bounds);
+				    return localBound;
+			    })
+			    .Where(b => b.size != Vector3.zero)
+			    .ToArray();
+
+		    if (bounds.Length == 0)
+			    return new Bounds();
+
+		    if (bounds.Length == 1)
+			    return bounds[0].Scale(go.transform.localScale);
+
+		    var compositeBounds = bounds[0];
+
+		    for (var i = 1; i < bounds.Length; i++)
+		    {
+			    compositeBounds.Encapsulate(bounds[i]);
+		    }
+
+		    return compositeBounds.Scale(go.transform.localScale);
 	    }
     }
 }

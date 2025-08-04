@@ -1,6 +1,6 @@
 using System;
 
-namespace ElasticSea.Framework.Ui.Interactions
+namespace ElasticSea.Framework.Interactions
 {
     public class SimpleInteractable : IInteractable
     {
