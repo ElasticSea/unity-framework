@@ -26,6 +26,9 @@ namespace ElasticSea.Framework.Layout
 
         private Dictionary<ILayoutComponent, bool> elementsMap = new ();
         private Rect rect;
+        public Rect Rect => rect;
+        public IEnumerable<ILayoutComponent> Elements => elementsMap.Keys.ToArray();
+        public event Action OnRectChanged;
 
         public void AddElement(ILayoutComponent element)
         {
@@ -161,6 +164,11 @@ namespace ElasticSea.Framework.Layout
             return bufferLength;
         }
 
+        public void Clear()
+        {
+            elementsMap.Clear();
+        }
+
         private void OnValidate()
         {
             Refresh();
@@ -172,8 +180,5 @@ namespace ElasticSea.Framework.Layout
             Gizmos.color = Color.blue;
             Gizmos.DrawWireCube(rect.center, rect.size);
         }
-
-        public Rect Rect => rect;
-        public event Action OnRectChanged;
     }
 }
