@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using ElasticSea.Framework.Extensions;
 using ElasticSea.Framework.Util.PropertyDrawers;
 using UnityEngine;
 
@@ -14,7 +13,6 @@ namespace ElasticSea.Framework.Layout
         {
             var elements = _elements
                 .Select(c => c as ILayoutComponent)
-                .Where(l => l != null)
                 .ToArray();
 
             layoutGroup.AddElements(elements);
