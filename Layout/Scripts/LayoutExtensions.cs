@@ -5,31 +5,30 @@ namespace ElasticSea.Framework.Layout
 {
     public static class LayoutExtensions
     {
-        public static Vector2 AlignInsideRect(this Rect rect, Rect toAlign, Align horizontal, Align vertical)
+        public static Vector2 AlignInsideRect(this Rect rect, Rect toAlign, Align horizontal, Align vertical, float padding = 0)
+        {
+            return AlignInsideRect(rect, toAlign, horizontal, vertical, new Vector2(padding, padding));
+        }
+        
+        public static Vector2 AlignInsideRect(this Rect rect, Rect toAlign, Align horizontal, Align vertical, Vector2 padding)
         {
             var offset = new Vector2();
-           
-            offset.x = horizontal switch
-            {
-                Align.BeforeStart => rect.x - toAlign.x - toAlign.width,
-                Align.Start => rect.x - toAlign.x,
-                Align.Center => rect.x - toAlign.x + (rect.width - toAlign.width) / 2,
-                Align.End => rect.xMax - toAlign.xMax,
-                Align.AfterEnd => rect.xMax - toAlign.xMax + toAlign.width,
-                _ => throw new ArgumentOutOfRangeException(nameof(horizontal), horizontal, null)
-            };
-
-            offset.y = vertical switch
-            {
-                Align.BeforeStart => rect.y - toAlign.y - toAlign.height,
-                Align.Start => rect.y - toAlign.y,
-                Align.Center => rect.y - toAlign.y + (rect.height - toAlign.height) / 2,
-                Align.End => rect.yMax - toAlign.yMax,
-                Align.AfterEnd => rect.yMax - toAlign.yMax + toAlign.height,
-                _ => throw new ArgumentOutOfRangeException(nameof(vertical), vertical, null)
-            };
-
+            offset.x = GetPosition(horizontal, rect.xMin, rect.xMax, toAlign.xMin, toAlign.xMax, padding.x);
+            offset.y = GetPosition(vertical, rect.yMin, rect.yMax, toAlign.yMin, toAlign.yMax, padding.y);
             return offset;
+        }
+
+        private static float GetPosition(Align align, float rectMin, float rectMax, float toAlignMin, float toAlignMax, float padding)
+        {
+            return align switch
+            {
+                Align.BeforeStart => rectMin - toAlignMax - padding,
+                Align.Start       => rectMin - toAlignMin + padding,
+                Align.Center      => (rectMin + rectMax - toAlignMin - toAlignMax) / 2,
+                Align.End         => rectMax - toAlignMax - padding,
+                Align.AfterEnd    => rectMax - toAlignMin + padding,
+                _ => throw new ArgumentOutOfRangeException(nameof(align), align, null)
+            };
         }
 
         public static float GetAlignDelta(this Align align)

@@ -38,7 +38,7 @@ namespace ElasticSea.Framework.Layout
                 throw new System.Exception("Anchor and follower must be in the same parent");
             }
             
-            var offset = anchorRect.AlignInsideRect(followerRect, horizontal, vertical);
+            var offset = anchorRect.AlignInsideRect(followerRect, horizontal, vertical, borderOffset);
             follower.localPosition = offset + anchor.localPosition.FromXY();
         }
     }
