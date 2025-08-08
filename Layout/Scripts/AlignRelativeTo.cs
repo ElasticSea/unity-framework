@@ -1,13 +1,14 @@
-﻿using System;
-using ElasticSea.Framework.Extensions;
+﻿using ElasticSea.Framework.Extensions;
 using ElasticSea.Framework.Util.PropertyDrawers;
 using UnityEngine;
 
 namespace ElasticSea.Framework.Layout
 {
+    /// Align element follower to anchor when source rect changes
     public class AlignRelativeTo : MonoBehaviour
     {
         [SerializeField, CustomObjectPicker(typeof(ILayoutComponent))] private Component _anchor;
+        [SerializeField, CustomObjectPicker(typeof(ILayoutComponent))] private Component _source;
         [SerializeField, CustomObjectPicker(typeof(ILayoutComponent))] private Component _follower;
         [SerializeField] private Align horizontal = Align.Center;
         [SerializeField] private Align vertical = Align.Center;
@@ -15,46 +16,30 @@ namespace ElasticSea.Framework.Layout
 
         private void OnEnable()
         {
-            ((ILayoutComponent)_anchor).OnRectChanged += Refresh;
+            ((ILayoutComponent)_source).OnRectChanged += Refresh;
             ((ILayoutComponent)_follower).OnRectChanged += Refresh;
         }
         
         private void OnDisable()
         {
-            ((ILayoutComponent)_anchor).OnRectChanged -= Refresh;
+            ((ILayoutComponent)_source).OnRectChanged -= Refresh;
             ((ILayoutComponent)_follower).OnRectChanged -= Refresh;
         }
 
         private void Refresh()
         {
-            var anchor = (ILayoutComponent)_anchor;
-            var follower = (ILayoutComponent)_follower;
-            var anchorTransform = _anchor.transform;
-            var followerTransform = _follower.transform;
-
-            var offset = anchor.Rect.AlignInsideRect(follower.Rect, horizontal, vertical);
-
-            offset.x += GetBorderOffset(horizontal);
-            offset.y += GetBorderOffset(vertical);
+            var anchorRect = ((ILayoutComponent)_anchor).Rect;
+            var followerRect = ((ILayoutComponent)_follower).Rect;
+            var anchor = _anchor.transform;
+            var follower = _follower.transform;
             
-            followerTransform.localPosition = offset;
-        }
-
-        private float GetBorderOffset(Align align)
-        {
-            switch (align)
+            if (anchor.parent != follower.parent)
             {
-                case Align.Start:
-                    return borderOffset;
-                case Align.End:
-                    return -borderOffset;
-                case Align.BeforeStart:
-                    return -borderOffset;
-                case Align.AfterEnd:
-                    return borderOffset;
-                default:
-                    return 0;
+                throw new System.Exception("Anchor and follower must be in the same parent");
             }
+            
+            var offset = anchorRect.AlignInsideRect(followerRect, horizontal, vertical);
+            follower.localPosition = offset + anchor.localPosition.FromXY();
         }
     }
 }
