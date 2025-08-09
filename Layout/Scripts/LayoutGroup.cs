@@ -149,8 +149,12 @@ namespace ElasticSea.Framework.Layout
 
         private int GetOrderedElements()
         {
-            // natural arrangement (down) is reversed
-            var flipOrder = !reverseArrangement;
+            var flipOrder = reverseArrangement;
+            if (orientation == LayoutGroupOrientation.Vertical)
+            {
+                // natural arrangement (down) is reversed in vertical
+                flipOrder = !reverseArrangement;
+            }
             
             buffer = buffer.EnsureArray(elementsMap.Count);
             var bufferLength = 0;
