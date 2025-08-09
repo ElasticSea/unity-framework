@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -1610,6 +1611,7 @@ namespace ElasticSea.Framework.Util
             return (p1.x - p0.x) * (p2.y - p0.y) - (p1.y - p0.y) * (p2.x - p0.x);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Vector3 InverseLerp(Vector3 from, Vector3 to, Vector3 point)
         {
             var x = Mathf.InverseLerp(from.x, to.x, point.x);
