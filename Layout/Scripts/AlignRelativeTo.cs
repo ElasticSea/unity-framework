@@ -1,4 +1,5 @@
-﻿using ElasticSea.Framework.Extensions;
+﻿using System;
+using ElasticSea.Framework.Extensions;
 using ElasticSea.Framework.Util.PropertyDrawers;
 using UnityEngine;
 
@@ -28,18 +29,25 @@ namespace ElasticSea.Framework.Layout
 
         private void Refresh()
         {
-            var anchorRect = ((ILayoutComponent)_anchor).Rect;
-            var followerRect = ((ILayoutComponent)_follower).Rect;
-            var anchor = _anchor.transform;
-            var follower = _follower.transform;
-            
-            if (anchor.parent != follower.parent)
+            try
             {
-                throw new System.Exception("Anchor and follower must be in the same parent");
-            }
+                var anchorRect = ((ILayoutComponent)_anchor).Rect;
+                var followerRect = ((ILayoutComponent)_follower).Rect;
+                var anchor = _anchor.transform;
+                var follower = _follower.transform;
             
-            var offset = anchorRect.AlignInsideRect(followerRect, horizontal, vertical, borderOffset);
-            follower.localPosition = offset + anchor.localPosition.FromXY();
+                if (anchor.parent != follower.parent)
+                {
+                    throw new Exception("Anchor and follower must be in the same parent");
+                }
+            
+                var offset = anchorRect.AlignInsideRect(followerRect, horizontal, vertical, borderOffset);
+                follower.localPosition = offset + anchor.localPosition.FromXY();
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
         }
     }
 }
