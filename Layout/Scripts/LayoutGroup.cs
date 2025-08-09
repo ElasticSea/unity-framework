@@ -87,55 +87,62 @@ namespace ElasticSea.Framework.Layout
         
         private void Refresh()
         {
-            var minx = float.PositiveInfinity;
-            var miny = float.PositiveInfinity;
-            var maxx = float.NegativeInfinity;
-            var maxy = float.NegativeInfinity;
-
-            var t = 0f;
-
             var elementsLength = GetOrderedElements();
 
-            for (var i = 0; i < elementsLength; i++)
+            if (elementsLength > 0)
             {
-                var element = buffer[i];
-                var elementTransform = ((Component)element).transform;
-                var childRect = element.Rect;
-                var childSize = childRect.size;
+                var minx = float.PositiveInfinity;
+                var miny = float.PositiveInfinity;
+                var maxx = float.NegativeInfinity;
+                var maxy = float.NegativeInfinity;
 
-                var childAlignDelta = childAlign.GetAlignDelta();
-
-                var isLast = i == elementsLength - 1;
-                var currentOffset = isLast ? 0 : spacing;
-
-                switch (orientation)
+                var t = 0f;
+                
+                for (var i = 0; i < elementsLength; i++)
                 {
-                    case LayoutGroupOrientation.Horizontal:
-                        var hx = t - childRect.min.x;
-                        var hy = -childRect.min.y - childAlignDelta * childSize.y;
-                        elementTransform.localPosition = new Vector3(hx, hy, 0);
-                        t += childSize.x + currentOffset;
-                        break;
+                    var element = buffer[i];
+                    var elementTransform = ((Component)element).transform;
+                    var childRect = element.Rect;
+                    var childSize = childRect.size;
 
-                    case LayoutGroupOrientation.Vertical:
-                        var vx = -childRect.min.x - childAlignDelta * childSize.x;
-                        var vy = t - childRect.min.y;
-                        elementTransform.localPosition = new Vector3(vx, vy, 0);
-                        t += childSize.y + currentOffset;
-                        break;
+                    var childAlignDelta = childAlign.GetAlignDelta();
 
-                    default:
-                        throw new ArgumentOutOfRangeException();
+                    var isLast = i == elementsLength - 1;
+                    var currentOffset = isLast ? 0 : spacing;
+
+                    switch (orientation)
+                    {
+                        case LayoutGroupOrientation.Horizontal:
+                            var hx = t - childRect.min.x;
+                            var hy = -childRect.min.y - childAlignDelta * childSize.y;
+                            elementTransform.localPosition = new Vector3(hx, hy, 0);
+                            t += childSize.x + currentOffset;
+                            break;
+
+                        case LayoutGroupOrientation.Vertical:
+                            var vx = -childRect.min.x - childAlignDelta * childSize.x;
+                            var vy = t - childRect.min.y;
+                            elementTransform.localPosition = new Vector3(vx, vy, 0);
+                            t += childSize.y + currentOffset;
+                            break;
+
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+
+                    var localPos = elementTransform.localPosition;
+                    minx = Mathf.Min(minx, localPos.x + childRect.xMin - paddingLeft);
+                    miny = Mathf.Min(miny, localPos.y + childRect.yMin - paddingBottom);
+                    maxx = Mathf.Max(maxx, localPos.x + childRect.xMax + paddingRight);
+                    maxy = Mathf.Max(maxy, localPos.y + childRect.yMax + paddingTop);
                 }
 
-                var localPos = elementTransform.localPosition;
-                minx = Mathf.Min(minx, localPos.x + childRect.xMin - paddingLeft);
-                miny = Mathf.Min(miny, localPos.y + childRect.yMin - paddingBottom);
-                maxx = Mathf.Max(maxx, localPos.x + childRect.xMax + paddingRight);
-                maxy = Mathf.Max(maxy, localPos.y + childRect.yMax + paddingTop);
+                rect = Rect.MinMaxRect(minx, miny, maxx, maxy);
             }
-
-            rect = Rect.MinMaxRect(minx,miny, maxx, maxy);
+            else
+            {
+                rect = Rect.zero;
+            }
 
             OnRectChanged?.Invoke();
         }
