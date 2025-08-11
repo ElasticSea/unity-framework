@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using TMPro;
+using UnityEngine;
 
 namespace ElasticSea.Framework.Scripts.Util.Icons
 {
@@ -7,8 +8,10 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
     {
         [SerializeField] private Font font;
         [SerializeField] private TextAsset codepoints;
+        [SerializeField] private TMP_FontAsset tmpFontAsset;
         
         public Font Font => font;
         public string CodePoints => codepoints.text;
+        public TMP_FontAsset TmpFontAsset => tmpFontAsset;
     }
 }

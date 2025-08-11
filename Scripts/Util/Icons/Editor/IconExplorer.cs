@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using ElasticSea.Framework.Extensions;
+using TMPro;
 using UnityEditor;
 using UnityEngine;
 using EditorUtils = ElasticSea.Framework.Scripts.Util.Editor.EditorUtils;
@@ -17,6 +18,7 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
         private bool dirty = true;
         private IEnumerable<(string name, int code)> configIcons;
         private Vector2 scrollPos;
+        private List<IconFont> fonts;
 
         [MenuItem("Window/Icon Explorer")]
         public static IconExplorer Show()
@@ -30,11 +32,21 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
             pack = (IconFont) EditorGUILayout.ObjectField(pack, typeof(IconFont), true);
             
             GUILayout.BeginHorizontal();
-            foreach (var font in EditorUtils.FindAssetsByType<IconFont>())
+            fonts = fonts.IsNullOrEmpty() ? EditorUtils.FindAssetsByType<IconFont>() : fonts;
+            foreach (var font in fonts)
             {
                 if (GUILayout.Button(font.name))
                 {
                     pack = font;
+                }
+
+                if (font.TmpFontAsset != null)
+                {
+                    if (GUILayout.Button("⬇️"))
+                    {
+                        filterName = GetCodepointsFromAsset(font.TmpFontAsset).Select(x => x.ToString("X4")).Join(",");
+                        dirty = true;
+                    }
                 }
             }
             GUILayout.EndHorizontal();
@@ -91,6 +103,11 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
             EditorGUILayout.EndHorizontal();
 
             dirty = false;
+        }
+
+        private int[] GetCodepointsFromAsset(TMP_FontAsset iconPackTmpFontAsset)
+        {
+            return iconPackTmpFontAsset.characterTable.Select(c => (int)c.unicode).ToArray();
         }
 
         private HashSet<int> GetCodepoints()
