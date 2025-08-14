@@ -7,7 +7,12 @@ namespace ElasticSea.Framework.Layout
     {
         [SerializeField] private Rect rect = new(0, 0, 1, 1);
 
-        public Rect Rect => rect;
+        public Rect Rect
+        {
+            get => rect;
+            set => rect = value;
+        }
+
         public event Action OnRectChanged;
         
         private void OnDrawGizmos()
