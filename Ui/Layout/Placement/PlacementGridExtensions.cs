@@ -25,7 +25,7 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
             return cells;
         }
 
-        public static (Matrix4x4 localToWorld, Bounds bounds) GetCell(this IPlacementGrid grid, Transform gridTransform, int row, int column)
+        public static (Matrix4x4 localToWorld, Bounds bounds) GetWorldCell(this IPlacementGrid grid, Transform gridTransform, int row, int column)
         {
             var (cellToLocal, bounds) = grid.GetCell(row, column);
             var localToWorld = gridTransform.localToWorldMatrix * cellToLocal;
