@@ -1661,6 +1661,41 @@ namespace ElasticSea.Framework.Util
                 return -angle; // Negative for clockwise
             }).ToArray();
         }
+
+        public static T[] Combine<T>(params T[][] arrays)
+        {
+            var totalLength = 0;
+            for (var i = 0; i < arrays.Length; i++)
+            {
+                totalLength += arrays[i].Length;
+            }
+
+            var result = new T[totalLength];
+            var offset = 0;
+            for (var i = 0; i < arrays.Length; i++)
+            {
+                var array = arrays[i];
+                Array.Copy(array, 0, result, offset, array.Length);
+                offset += array.Length;
+            }
+
+            return result;
+        }
+
+        public static TResult[] ParallelConvert<TSource, TResult>(
+            IEnumerable<TSource> data,
+            Func<TSource, TResult> action,
+            int? dop = null)
+        {
+            var arr = data as TSource[] ?? data.ToArray();
+            var result = new TResult[arr.Length];
+
+            Parallel.For(0, arr.Length,
+                new ParallelOptions { MaxDegreeOfParallelism = dop ?? System.Environment.ProcessorCount * 2 },
+                i => result[i] = action(arr[i]));
+
+            return result;
+        }
     }
     
     public struct PageElement<T>
