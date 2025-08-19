@@ -1283,5 +1283,20 @@ namespace ElasticSea.Framework.Extensions
 			    (array[frontIndex], array[backIndex]) = (array[backIndex], array[frontIndex]);
 		    }
 	    }
+	    
+	    public static (T1, T2)[] SimpleZip<T1, T2>(this T1[] first, T2[] second)
+	    {
+		    int maxLength = Math.Max(first.Length, second.Length);
+		    var result = new (T1, T2)[maxLength];
+
+		    for (int i = 0; i < maxLength; i++)
+		    {
+			    var item1 = i < first.Length ? first[i] : default;
+			    var item2 = i < second.Length ? second[i] : default;
+			    result[i] = (item1, item2);
+		    }
+
+		    return result;
+	    }
 	}
 }
