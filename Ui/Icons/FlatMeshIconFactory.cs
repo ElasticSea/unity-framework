@@ -47,8 +47,10 @@ namespace ElasticSea.Framework.Ui.Icons
 
                 var translucentIcon = anchor.AddComponent<FlatMeshIcon>();
                 translucentIcon.Index = i;
+                translucentIcon.Name = icon.Name;
                 translucentIcon.BackplateRect = CenterRect(Vector2.zero, PlacementGrid.Size); 
                 translucentIcon.Backplate = GenerateBackplate(translucentIcon, circleMeshClone, circleMaterial, icon.Locked, icon.AccentColor);
+                translucentIcon.Collider = translucentIcon.GetComponent<Collider>();
                 translucentIcon.FrontplateCircle = (Vector2.zero, radius - icon.Padding);
                 var frontplate = GenerateFrontplate(translucentIcon.Backplate, radius - icon.Padding, icon.Locked, circleMeshClone, icon.MeshData);
                 translucentIcon.Frontplate = frontplate.frontplate;
