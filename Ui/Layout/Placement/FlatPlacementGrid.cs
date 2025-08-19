@@ -1,10 +1,11 @@
-﻿using ElasticSea.Framework.Layout;
-using ElasticSea.Framework.Ui.Layout.Alignment;
+﻿using System;
+using ElasticSea.Framework.Extensions;
+using ElasticSea.Framework.Layout;
 using UnityEngine;
 
 namespace ElasticSea.Framework.Ui.Layout.Placement
 {
-    public class FlatPlacementGrid : MonoBehaviour, IPlacementGrid
+    public class FlatPlacementGrid : MonoBehaviour, IPlacementGrid, ILayoutComponent
     {
         [SerializeField] private int rows;
         [SerializeField] private int columns;
@@ -78,5 +79,8 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
             
             PlacementGridUtils.DrawCells(this, Count, transform);
         }
+
+        public Rect Rect => Bounds.FrontSide();
+        public event Action OnRectChanged;
     }
 }
