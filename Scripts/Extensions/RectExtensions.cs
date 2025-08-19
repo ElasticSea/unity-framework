@@ -88,6 +88,28 @@ namespace ElasticSea.Framework.Scripts.Extensions
             return (left, right);
         }
 
+        public static Rect[] SplitHorizontal(this Rect rect, int parts, float spacing)
+        {
+            if (parts <= 0)
+                return new Rect[0];
+
+            Rect[] result = new Rect[parts];
+
+            // total width available for content (after subtracting spacings between parts)
+            float totalSpacing = spacing * (parts - 1);
+            float partWidth = (rect.width - totalSpacing) / parts;
+
+            float x = rect.x;
+
+            for (int i = 0; i < parts; i++)
+            {
+                result[i] = new Rect(x, rect.y, partWidth, rect.height);
+                x += partWidth + spacing;
+            }
+
+            return result;
+        }
+
         public static (Rect bottom, Rect top) SplitVertical(this Rect rect)
         {
             var centerPoint = Mathf.Lerp(rect.yMin, rect.yMax, 0.5f);
