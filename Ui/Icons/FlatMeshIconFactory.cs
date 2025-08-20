@@ -148,40 +148,44 @@ namespace ElasticSea.Framework.Ui.Icons
 
         private void SquashMesh(Mesh mesh, Quaternion rotate, float thickness)
         {
-            var normal = Vector3.back;
-            var plane = new Plane(normal, 0);
-
-            var min = float.PositiveInfinity;
-            var max = float.NegativeInfinity;
-
+            // plane: z = 0 with normal (0,0,-1)
             var vertices = mesh.vertices;
-            var normals = mesh.normals;
-            var count = vertices.Length;
+            var normals  = mesh.normals;
+            int count    = vertices.Length;
 
+            float min = float.PositiveInfinity;
+            float max = float.NegativeInfinity;
+
+            // 1) Rotate verts & normals, find min/max distance in one pass.
             for (int i = 0; i < count; i++)
             {
-                vertices[i] = rotate * vertices[i];
-                normals[i] = rotate * normals[i];
+                var v = rotate * vertices[i];
+                vertices[i] = v;
+                normals[i]  = rotate * normals[i];
+
+                // distance to plane with normal (0,0,-1) is just -z
+                float d = -v.z;
+                if (d < min) min = d;
+                if (d > max) max = d;
             }
 
-            for (int i = 0; i < count; i++)
-            {
-                var vertex = vertices[i];
-                var distance = plane.GetDistanceToPoint(vertex);
-                min = Mathf.Min(min, distance);
-                max = Mathf.Max(max, distance);
-            }
-            
-            for (int i = 0; i < count; i++)
-            {
-                var vertex = vertices[i];
-                var distance = plane.GetDistanceToPoint(vertex);
+            float range    = max - min;
+            float invRange = range > 1e-8f ? 1f / range : 0f; // avoid div by zero
 
-                var distanceDelta = Mathf.InverseLerp(min, max, distance);
-                var pointOnPlane = plane.ClosestPointOnPlane(vertex);
-                vertices[i] = pointOnPlane + plane.normal * thickness * distanceDelta;
+            // 2) Project + thicken in second pass (no Plane calls).
+            for (int i = 0; i < count; i++)
+            {
+                var v = vertices[i];
+
+                // inverse lerp of distance
+                float d = -v.z;
+                float t = (d - min) * invRange; // Mathf.InverseLerp(min, max, d)
+
+                // project onto plane z=0, then push along -Z by thickness * t
+                v.z = -thickness * t;
+                vertices[i] = v;
             }
-            
+
             mesh.SetVertices(vertices);
             mesh.SetNormals(normals);
             mesh.RecalculateBounds();
