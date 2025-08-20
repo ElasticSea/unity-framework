@@ -35,6 +35,7 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
         public Vector3 Size
         {
             get => size;
+            set => size = value;
         }
 
         public Bounds Bounds

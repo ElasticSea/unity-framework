@@ -14,6 +14,7 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
         public Vector3 Size
         {
             get => new(Radius * 2, Radius * 2, 0);
+            set => throw new NotImplementedException();
         }
 
         public float Radius;

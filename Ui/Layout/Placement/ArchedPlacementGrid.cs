@@ -9,7 +9,8 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
     public class ArchedPlacementGrid : MonoBehaviour, IPlacementGrid
     {
         [SerializeField] private float radius;
-        [SerializeField] private float size;
+        [SerializeField] private float width;
+        [SerializeField] private float height;
         [SerializeField] private float depth;
         [SerializeField] private int rows;
         [SerializeField] private int columns;
@@ -28,18 +29,6 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
             set => columns = value;
         }
 
-        public float Radius
-        {
-            get => radius;
-            set => radius = value;
-        }
-
-        public Align VerticalAlign
-        {
-            get => verticalAlign;
-            set => verticalAlign = value;
-        }
-
         private void OnDrawGizmos()
         {
             for (int i = 0; i < Count; i++)
@@ -56,13 +45,13 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
             switch (verticalAlign)
             {
                 case Align.Start:
-                    posy = (row) * size;
+                    posy = (row) * height;
                     break;
                 case Align.Center:
-                    posy = (row - rows / 2f) * size;
+                    posy = (row - rows / 2f) * height;
                     break;
                 case Align.End:
-                    posy = (row - rows) * size;
+                    posy = (row - rows) * height;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -77,7 +66,7 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
             var x = index % columns;
             var startAngle = 90 * Mathf.Deg2Rad;
             
-            var sizeAngle = 2 * Mathf.Asin(size / (2 * radius));
+            var sizeAngle = 2 * Mathf.Asin(width / (2 * radius));
 
             switch (horizontalAlign)
             {
@@ -126,7 +115,16 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
             set => throw new NotImplementedException();
         }
 
-        public Vector3 Size => new(size, size, depth);
+        public Vector3 Size
+        {
+            get => new(width, height, depth);
+            set
+            {
+                width = value.x;
+                height = value.y;
+                depth = value.z;
+            }
+        }
 
         public Bounds Bounds => default;
 
@@ -140,9 +138,9 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
             var posB = GetPosition(a1, y);
 
             var rotation = Quaternion.Euler(0, -Mathf.Lerp(a0, a1, 0.5f) * Mathf.Rad2Deg + 90, 0);
-            var boxSize = new Vector3(size, size, depth);
+            var boxSize = new Vector3(width, height, depth);
             var centerLine = posA.Lerp(posB, 0.5f);
-            var center = centerLine + Vector3.up * size / 2 + centerLine.SetY(0).normalized * depth/2;
+            var center = centerLine + Vector3.up * height / 2 + centerLine.SetY(0).normalized * depth/2;
             
             var trs = Matrix4x4.TRS(center, rotation, Vector3.one);
             var bounds = new Bounds(Vector3.zero, boxSize);
