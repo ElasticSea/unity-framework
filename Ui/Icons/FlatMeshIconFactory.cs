@@ -1,20 +1,18 @@
 ﻿using System;
 using ElasticSea.Framework.Extensions;
 using ElasticSea.Framework.Layout;
-using ElasticSea.Framework.Scripts.Extensions;
-using ElasticSea.Framework.Ui.Layout;
-using ElasticSea.Framework.Ui.Layout.Placement;
+using ElasticSea.Framework.Ui.Layout.Spatial;
 using ElasticSea.Framework.Util.PropertyDrawers;
 using UnityEngine;
+using UnityEngine.Serialization;
 using static ElasticSea.Framework.Util.Utils;
 
 namespace ElasticSea.Framework.Ui.Icons
 {
     public class FlatMeshIconFactory : MonoBehaviour, ILayoutComponent
     {
-        [CustomObjectPicker(typeof(IPlacement))]
-        [SerializeField] private Component _placementGrid;
-        public IPlacement PlacementGrid => _placementGrid as IPlacement;
+        [SerializeField, CustomObjectPicker(typeof(ISpatialLayout)), FormerlySerializedAs("_placementGrid")] private Component _spatialLayout;
+        public IUniformSpatialLayout SpatialLayout => _spatialLayout as IUniformSpatialLayout;
 
         [SerializeField] private Mesh circleMesh;
         [SerializeField] private Material circleMaterial;
@@ -25,30 +23,33 @@ namespace ElasticSea.Framework.Ui.Icons
             container = container ? container : transform;
             container.DestroyChildren();
 
-            if (icons.Length != PlacementGrid.Count)
+            if (icons.Length != SpatialLayout.Count)
             {
-                PlacementGrid.Count = icons.Length;
+                if (SpatialLayout is IUniformGrowSpatialLayout uniformGrowSpatialLayout)
+                {
+                    uniformGrowSpatialLayout.SetCount(icons.Length);
+                }
             }
 
-            var radius = PlacementGrid.Size.FromXY().Min() / 2;
+            var radius = SpatialLayout.Size.FromXY().Min() / 2;
             var circleMeshClone = circleMesh.Clone();
-            GenerateBackplateMesh(circleMeshClone, PlacementGrid.Size);
+            GenerateBackplateMesh(circleMeshClone, SpatialLayout.Size);
             
             var translucentIcons = new FlatMeshIcon[icons.Length];
             for (var i = 0; i < icons.Length; i++)
             {
                 var icon = icons[i];
-                var (cellToLocal, cellBounds) = PlacementGrid.GetCell(i);
+                var cell= SpatialLayout.GetCell(i);
 
                 var anchor = new GameObject(icon.Name);
                 anchor.transform.SetParent(container, false);
-                anchor.transform.localPosition = cellToLocal.GetPosition() + cellBounds.center;
-                anchor.transform.localRotation = cellToLocal.rotation;
+                anchor.transform.localPosition = cell.cellToLocal.GetPosition() + cell.localBounds.center;
+                anchor.transform.localRotation = cell.cellToLocal.rotation;
 
                 var translucentIcon = anchor.AddComponent<FlatMeshIcon>();
                 translucentIcon.Index = i;
                 translucentIcon.Name = icon.Name;
-                translucentIcon.BackplateRect = CenterRect(Vector2.zero, PlacementGrid.Size); 
+                translucentIcon.BackplateRect = CenterRect(Vector2.zero, SpatialLayout.Size); 
                 translucentIcon.Backplate = GenerateBackplate(translucentIcon, circleMeshClone, circleMaterial, icon.Locked, icon.AccentColor);
                 translucentIcon.Collider = translucentIcon.GetComponent<Collider>();
                 translucentIcon.FrontplateCircle = (Vector2.zero, radius - icon.Padding);
@@ -191,7 +192,7 @@ namespace ElasticSea.Framework.Ui.Icons
             mesh.RecalculateBounds();
         }
 
-        public Rect Rect => PlacementGrid.Bounds.FrontSide();
+        public Rect Rect => SpatialLayout.Bounds.FrontSide();
         public event Action OnRectChanged;
     }
 }

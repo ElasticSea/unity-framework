@@ -1,19 +1,23 @@
 ﻿using UnityEngine;
 
-namespace ElasticSea.Framework.Ui.Layout.Placement
+namespace ElasticSea.Framework.Ui.Layout.Spatial
 {
-    public class PlacementGridUtils
+    public static class SpatialLayoutUtils
     {
-        public static void DrawCells(IPlacement placementGrid, int count, Transform transform)
+        public static void DrawLayout(ISpatialLayout spatialLayout, int count, Transform transform)
         {
+            var bounds = spatialLayout.Bounds;
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(bounds.center, bounds.size);
+            
             for (int i = 0; i < count; i++)
             {
-                var cell = placementGrid.GetCell(i);
-                var cellBounds = cell.bounds;
+                var cell = spatialLayout.GetCell(i);
+                var cellBounds = cell.localBounds;
 
                 Gizmos.color = Color.Lerp(Color.red, Color.blue, i / (count - 1f));
                 Gizmos.matrix = transform.localToWorldMatrix * cell.cellToLocal;
-                Gizmos.DrawWireCube(cell.bounds.center, cell.bounds.size);
+                Gizmos.DrawWireCube(cell.localBounds.center, cell.localBounds.size);
 
                 Gizmos.color = Color.red;
                 Gizmos.DrawLine(cellBounds.center, cellBounds.center + new Vector3(cellBounds.size.x / 4, 0, 0));

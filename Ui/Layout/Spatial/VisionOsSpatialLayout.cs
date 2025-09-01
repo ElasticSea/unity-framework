@@ -1,13 +1,12 @@
 ﻿using System;
 using ElasticSea.Framework.Extensions;
 using ElasticSea.Framework.Layout;
-using ElasticSea.Framework.Ui.Layout.Alignment;
 using ElasticSea.Framework.Util;
 using UnityEngine;
 
-namespace ElasticSea.Framework.Ui.Layout.Placement
+namespace ElasticSea.Framework.Ui.Layout.Spatial
 {
-    public class VisionOsPlacement : MonoBehaviour, IPlacement
+    public class VisionOsSpatialLayout : MonoBehaviour, IUniformGrowSpatialLayout
     {
         [field: SerializeField] public int Count { get; set; }
 
@@ -16,6 +15,8 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
             get => new(Radius * 2, Radius * 2, 0);
             set => throw new NotImplementedException();
         }
+
+        public void SetCount(int count) => Count = count;
 
         public float Radius;
         public float Offset;
@@ -212,7 +213,7 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
             return max;
         }
 
-        public (Matrix4x4 cellToLocal, Bounds bounds) GetCell(int index)
+        public SpatialCell GetCell(int index)
         {
             var rows = CalculateRows(Count);
             var rowIndex = rows.GetIndex(index);
@@ -262,7 +263,7 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
 
             var cellMatrix = Matrix4x4.TRS(bounds.min + new Vector3(xpos, ypos, 0), Quaternion.identity, Vector3.one);
 
-            return (cellMatrix, cellBounds);
+            return new (cellMatrix, cellBounds);
         }
 
         [Header("Gizmos")]
@@ -293,11 +294,11 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
             
             for (int i = 0; i < Count; i++)
             {
-                var (cellToLocal, bounds) = GetCell(i);
-                Gizmos.matrix = transform.localToWorldMatrix * cellToLocal;
+                var cell = GetCell(i);
+                Gizmos.matrix = transform.localToWorldMatrix * cell.cellToLocal;
                 Gizmos.color = Color.red;
-                var radius = bounds.size.FromXY().Min() / 2;
-                GizmoUtils.DrawCircle(bounds.center, Vector3.back, radius);
+                var radius = cell.localBounds.size.FromXY().Min() / 2;
+                GizmoUtils.DrawCircle(cell.localBounds.center, Vector3.back, radius);
             }
         }
     }

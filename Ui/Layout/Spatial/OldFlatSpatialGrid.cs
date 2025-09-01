@@ -1,11 +1,12 @@
 ﻿using System;
 using ElasticSea.Framework.Extensions;
 using ElasticSea.Framework.Layout;
+using ElasticSea.Framework.Ui.Layout.Placement;
 using UnityEngine;
 
-namespace ElasticSea.Framework.Ui.Layout.Placement
+namespace ElasticSea.Framework.Ui.Layout.Spatial
 {
-    public class FlatPlacementGrid : MonoBehaviour, IPlacementGrid, ILayoutComponent
+    public class OldFlatSpatialGrid : MonoBehaviour, ISpatialGrid, ILayoutComponent
     {
         [SerializeField] private int rows;
         [SerializeField] private int columns;
@@ -57,7 +58,7 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
             set => throw new System.NotImplementedException();
         }
 
-        public (Matrix4x4 cellToLocal, Bounds bounds) GetCell(int index)
+        public SpatialCell GetCell(int index)
         {
             var x = index % Columns;
             var y = index / Columns;
@@ -69,7 +70,7 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
 
             var cellMatrix = Matrix4x4.TRS(Bounds.min + new Vector3(xpos, ypos, 0), Quaternion.identity, Vector3.one);
 
-            return (cellMatrix, cellBounds);
+            return new(cellMatrix, cellBounds);
         }
 
         private void OnDrawGizmosSelected()
@@ -78,7 +79,7 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
             Gizmos.color = Color.green;
             Gizmos.DrawWireCube(Bounds.center, Bounds.size * 1.01f);
             
-            PlacementGridUtils.DrawCells(this, Count, transform);
+            SpatialLayoutUtils.DrawLayout(this, Count, transform);
         }
 
         public Rect Rect => Bounds.FrontSide();

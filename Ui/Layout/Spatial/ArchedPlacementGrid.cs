@@ -2,11 +2,12 @@
 using ElasticSea.Framework.Extensions;
 using ElasticSea.Framework.Layout;
 using ElasticSea.Framework.Ui.Layout.Alignment;
+using ElasticSea.Framework.Ui.Layout.Spatial;
 using UnityEngine;
 
 namespace ElasticSea.Framework.Ui.Layout.Placement
 {
-    public class ArchedPlacementGrid : MonoBehaviour, IPlacementGrid
+    public class ArchedPlacementGrid : MonoBehaviour, ISpatialGrid
     {
         [SerializeField] private float radius;
         [SerializeField] private float width;
@@ -31,12 +32,15 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
 
         private void OnDrawGizmos()
         {
-            for (int i = 0; i < Count; i++)
+            if (enabled)
             {
-                DrawArc(i);
+                for (int i = 0; i < Count; i++)
+                {
+                    DrawArc(i);
+                }
+
+                SpatialLayoutUtils.DrawLayout(this, Count, transform);
             }
-            
-            PlacementGridUtils.DrawCells(this, Count, transform);
         }
 
         Vector3 GetPosition(float angle, int row)
@@ -128,7 +132,7 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
 
         public Bounds Bounds => default;
 
-        public (Matrix4x4 cellToLocal, Bounds bounds) GetCell(int index)
+        public SpatialCell GetCell(int index)
         {
             var y = index / columns;
             
@@ -145,7 +149,7 @@ namespace ElasticSea.Framework.Ui.Layout.Placement
             var trs = Matrix4x4.TRS(center, rotation, Vector3.one);
             var bounds = new Bounds(Vector3.zero, boxSize);
 
-            return (trs, bounds);
+            return new (trs, bounds);
         }
     }
 }
