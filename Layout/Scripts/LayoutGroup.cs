@@ -17,6 +17,8 @@ namespace ElasticSea.Framework.Layout
 
         [SerializeField] private LayoutGroupOrientation orientation;
         [SerializeField] private Align childAlign = Align.Center;
+        [SerializeField] private Align selfHorizontalAlign = Align.Center;
+        [SerializeField] private Align selfVerticalAlign = Align.Center;
         [SerializeField] private bool reverseArrangement;
         [SerializeField] private float spacing;
         [SerializeField] private float paddingLeft;
@@ -98,10 +100,11 @@ namespace ElasticSea.Framework.Layout
 
                 var t = 0f;
                 
+                // Calculate Rect
+                var childOffsets = new Vector2[elementsLength];
                 for (var i = 0; i < elementsLength; i++)
                 {
                     var element = buffer[i];
-                    var elementTransform = ((Component)element).transform;
                     var childRect = element.Rect;
                     var childSize = childRect.size;
 
@@ -115,14 +118,14 @@ namespace ElasticSea.Framework.Layout
                         case LayoutGroupOrientation.Horizontal:
                             var hx = t - childRect.min.x;
                             var hy = -childRect.min.y - childAlignDelta * childSize.y;
-                            elementTransform.localPosition = new Vector3(hx, hy, 0);
+                            childOffsets[i]= new Vector2(hx, hy);
                             t += childSize.x + currentOffset;
                             break;
 
                         case LayoutGroupOrientation.Vertical:
                             var vx = -childRect.min.x - childAlignDelta * childSize.x;
                             var vy = t - childRect.min.y;
-                            elementTransform.localPosition = new Vector3(vx, vy, 0);
+                            childOffsets[i] = new Vector2(vx, vy);
                             t += childSize.y + currentOffset;
                             break;
 
@@ -130,14 +133,27 @@ namespace ElasticSea.Framework.Layout
                             throw new ArgumentOutOfRangeException();
                     }
 
-                    var localPos = elementTransform.localPosition;
+                    var localPos = childOffsets[i];
                     minx = Mathf.Min(minx, localPos.x + childRect.xMin - paddingLeft);
                     miny = Mathf.Min(miny, localPos.y + childRect.yMin - paddingBottom);
                     maxx = Mathf.Max(maxx, localPos.x + childRect.xMax + paddingRight);
                     maxy = Mathf.Max(maxy, localPos.y + childRect.yMax + paddingTop);
                 }
-
+                
                 rect = Rect.MinMaxRect(minx, miny, maxx, maxy);
+
+                // Apply to children
+                var innerXOffset = selfHorizontalAlign.GetAlignDelta() * rect.width - rect.max.x;
+                var innerYOffset = selfVerticalAlign.GetAlignDelta() * rect.height - rect.max.y;
+                var interRectOffset = new Vector2(innerXOffset, innerYOffset);
+                rect.position += interRectOffset;
+                for (var i = 0; i < elementsLength; i++)
+                {
+                    var element = buffer[i];
+                    var offset = childOffsets[i];
+                    var elementTransform = ((Component)element).transform;
+                    elementTransform.localPosition = offset  + interRectOffset;
+                }
             }
             else
             {
