@@ -1620,6 +1620,21 @@ namespace ElasticSea.Framework.Util
             return new Vector3(x, y, z);
         }
         
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Vector3 InverseLerpUnclamped(Vector3 from, Vector3 to, Vector3 point)
+        {
+            var x = InverseLerpUnclamped(from.x, to.x, point.x);
+            var y = InverseLerpUnclamped(from.y, to.y, point.y);
+            var z = InverseLerpUnclamped(from.z, to.z, point.z);
+            return new Vector3(x, y, z);
+        }
+        
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float InverseLerpUnclamped(float a, float b, float value)
+        {
+            return (value - a) / (b - a);
+        }
+        
         public static void TriggerEvent(object targetObject, string eventName, params object[] args)
         {
             var type = targetObject.GetType();
