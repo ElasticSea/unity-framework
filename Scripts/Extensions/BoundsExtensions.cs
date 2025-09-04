@@ -941,5 +941,40 @@ namespace ElasticSea.Framework.Extensions
 
 		    return compositeBounds.Scale(go.transform.localScale);
 	    }
+	    
+	    public static Mesh ToColliderMesh(this Bounds b)
+	    {
+		    var min = b.min;
+		    var max = b.max;
+
+		    var v = new Vector3[]
+		    {
+			    new(min.x, min.y, min.z),
+			    new(max.x, min.y, min.z),
+			    new(min.x, max.y, min.z),
+			    new(max.x, max.y, min.z),
+			    new(min.x, min.y, max.z),
+			    new(max.x, min.y, max.z),
+			    new(min.x, max.y, max.z),
+			    new(max.x, max.y, max.z),
+		    };
+
+		    var tris = new[]
+		    {
+			    0, 2, 1, 1, 2, 3, // Back
+			    1, 3, 5, 3, 7, 5, // Right
+			    3, 2, 7, 2, 6, 7, // Front
+			    2, 0, 6, 0, 4, 6, // Left
+			    0, 1, 4, 1, 5, 4, // Bottom
+			    2, 7, 6, 7, 4, 6  // Top
+		    };
+
+		    return new Mesh
+		    {
+			    vertices = v,
+			    triangles = tris,
+			    bounds = b
+		    };
+	    }
     }
 }
