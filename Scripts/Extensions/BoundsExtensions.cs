@@ -942,7 +942,7 @@ namespace ElasticSea.Framework.Extensions
 		    return compositeBounds.Scale(go.transform.localScale);
 	    }
 	    
-	    public static Mesh ToColliderMesh(this Bounds b)
+	    public static Mesh ToVertexMesh(this Bounds b)
 	    {
 		    var min = b.min;
 		    var max = b.max;
@@ -975,6 +975,114 @@ namespace ElasticSea.Framework.Extensions
 			    triangles = tris,
 			    bounds = b
 		    };
+	    }
+
+	    public static Mesh ToVertexNormalUvMesh(this Bounds b)
+	    {
+		    var min = b.min;
+		    var max = b.max;
+
+		    // 24 vertices (4 per face)
+		    var v = new Vector3[]
+		    {
+			    // Back (−Z)
+			    new(min.x, min.y, min.z),
+			    new(max.x, min.y, min.z),
+			    new(min.x, max.y, min.z),
+			    new(max.x, max.y, min.z),
+
+			    // Right (+X)
+			    new(max.x, min.y, min.z),
+			    new(max.x, min.y, max.z),
+			    new(max.x, max.y, min.z),
+			    new(max.x, max.y, max.z),
+
+			    // Front (+Z)
+			    new(max.x, min.y, max.z),
+			    new(min.x, min.y, max.z),
+			    new(max.x, max.y, max.z),
+			    new(min.x, max.y, max.z),
+
+			    // Left (−X)
+			    new(min.x, min.y, max.z),
+			    new(min.x, min.y, min.z),
+			    new(min.x, max.y, max.z),
+			    new(min.x, max.y, min.z),
+
+			    // Bottom (−Y)
+			    new(min.x, min.y, min.z),
+			    new(max.x, min.y, min.z),
+			    new(min.x, min.y, max.z),
+			    new(max.x, min.y, max.z),
+
+			    // Top (+Y)
+			    new(min.x, max.y, min.z),
+			    new(max.x, max.y, min.z),
+			    new(min.x, max.y, max.z),
+			    new(max.x, max.y, max.z),
+		    };
+
+		    // 12 triangles × 3 indices = 36
+		    var tris = new int[]
+		    {
+			    // Back
+			    0, 2, 1, 1, 2, 3,
+			    // Right
+			    4, 6, 5, 5, 6, 7,
+			    // Front
+			    8, 10, 9, 9, 10, 11,
+			    // Left
+			    12, 14, 13, 13, 14, 15,
+			    // Bottom
+			    16, 17, 18, 17, 19, 18,
+			    // Top
+			    20, 22, 21, 21, 22, 23
+		    };
+
+		    // Normals (match face directions, one per vertex)
+		    var n = new Vector3[]
+		    {
+			    // Back
+			    Vector3.back, Vector3.back, Vector3.back, Vector3.back,
+			    // Right
+			    Vector3.right, Vector3.right, Vector3.right, Vector3.right,
+			    // Front
+			    Vector3.forward, Vector3.forward, Vector3.forward, Vector3.forward,
+			    // Left
+			    Vector3.left, Vector3.left, Vector3.left, Vector3.left,
+			    // Bottom
+			    Vector3.down, Vector3.down, Vector3.down, Vector3.down,
+			    // Top
+			    Vector3.up, Vector3.up, Vector3.up, Vector3.up,
+		    };
+		    
+		    // UVs (one 0–1 quad per face)
+		    var uv = new Vector2[]
+		    {
+			    // Back (−Z)
+			    new(0,0), new(1,0), new(0,1), new(1,1),
+			    // Right (+X)
+			    new(0,0), new(1,0), new(0,1), new(1,1),
+			    // Front (+Z)
+			    new(0,0), new(1,0), new(0,1), new(1,1),
+			    // Left (−X)
+			    new(0,0), new(1,0), new(0,1), new(1,1),
+			    // Bottom (−Y)
+			    new(0,0), new(1,0), new(0,1), new(1,1),
+			    // Top (+Y)
+			    new(0,0), new(1,0), new(0,1), new(1,1),
+		    };
+
+		    var mesh = new Mesh
+		    {
+			    vertices = v,
+			    triangles = tris,
+			    normals = n,
+			    uv = uv,
+			    bounds = b
+		    };
+
+		    return mesh;
 	    }
     }
 }
