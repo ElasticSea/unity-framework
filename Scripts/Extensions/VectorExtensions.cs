@@ -291,6 +291,11 @@ namespace ElasticSea.Framework.Extensions
 			return new Vector2(vectorA.x / vectorB.x, vectorA.y / vectorB.y);
 		}
 
+		public static Vector3 Divide(this Vector3 vector, float value)
+		{
+			return new Vector3(vector.x / value, vector.y / value, vector.z / value);
+		}
+
 		public static Vector2 Divide(this Vector2 vectorA, float value)
 		{
 			return new Vector2(vectorA.x / value, vectorA.y / value);
@@ -718,6 +723,14 @@ namespace ElasticSea.Framework.Extensions
 			var x = Mathf.CeilToInt(vec.x);
 			var y = Mathf.CeilToInt(vec.y);
 			var z = Mathf.CeilToInt(vec.z);
+			return new Vector3Int(x, y, z);
+		}
+
+		public static Vector3Int FloorToInt(this Vector3 vec)
+		{
+			var x = Mathf.FloorToInt(vec.x);
+			var y = Mathf.FloorToInt(vec.y);
+			var z = Mathf.FloorToInt(vec.z);
 			return new Vector3Int(x, y, z);
 		}
 
