@@ -20,6 +20,7 @@ namespace ElasticSea.Framework.Layout
         {
             ((ILayoutComponent)_source).OnRectChanged += Refresh;
             ((ILayoutComponent)_follower).OnRectChanged += Refresh;
+            Refresh();
         }
         
         private void OnDisable()
