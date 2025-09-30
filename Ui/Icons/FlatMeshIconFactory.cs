@@ -114,11 +114,10 @@ namespace ElasticSea.Framework.Ui.Icons
             var mesh = meshData.Mesh;
             var lowPolymesh = meshData.LowPoly;
             
-            var thickness = 0.0025f;
-            SquashMesh(mesh, meshData.Rotation, thickness);
+            SquashMesh(mesh, meshData.Rotation, meshData.Thickness);
             if (lowPolymesh != mesh)
             {
-                SquashMesh(lowPolymesh, meshData.Rotation, thickness);
+                SquashMesh(lowPolymesh, meshData.Rotation, meshData.Thickness);
             }
 
             var bounds = lowPolymesh.vertices.ToSphereBounds();

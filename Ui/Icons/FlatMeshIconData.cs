@@ -19,5 +19,6 @@ namespace ElasticSea.Framework.Ui.Icons
         public Material[] LockedMaterials;
         public Quaternion Rotation;
         public Vector2 Offset;
+        public float Thickness = 0.0025f;
     }
 }
