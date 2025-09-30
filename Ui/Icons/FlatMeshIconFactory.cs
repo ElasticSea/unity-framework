@@ -20,8 +20,7 @@ namespace ElasticSea.Framework.Ui.Icons
 
         public FlatMeshIcon[] Build(FlatMeshIconData[] icons)
         {
-            container = container ? container : transform;
-            container.DestroyChildren();
+            Clear();
 
             if (icons.Length != SpatialLayout.Count)
             {
@@ -190,6 +189,12 @@ namespace ElasticSea.Framework.Ui.Icons
             mesh.SetVertices(vertices);
             mesh.SetNormals(normals);
             mesh.RecalculateBounds();
+        }
+
+        public void Clear()
+        {
+            container = container ? container : transform;
+            container.DestroyChildren();
         }
 
         public Rect Rect => SpatialLayout.Bounds.FrontSide();
