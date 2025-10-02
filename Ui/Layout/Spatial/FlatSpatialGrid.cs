@@ -1,8 +1,4 @@
-﻿using System;
-using ElasticSea.Framework.Extensions;
-using ElasticSea.Framework.Layout;
-using ElasticSea.Framework.Ui.Layout.Placement;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace ElasticSea.Framework.Ui.Layout.Spatial
 {

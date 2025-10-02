@@ -7,6 +7,7 @@ namespace ElasticSea.Framework.Ui.Layout.Spatial
         public static void DrawLayout(ISpatialLayout spatialLayout, int count, Transform transform)
         {
             var bounds = spatialLayout.Bounds;
+            Gizmos.matrix = transform.localToWorldMatrix;
             Gizmos.color = Color.red;
             Gizmos.DrawWireCube(bounds.center, bounds.size);
             
