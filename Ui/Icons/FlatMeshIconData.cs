@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace ElasticSea.Framework.Ui.Icons
 {
@@ -7,14 +8,16 @@ namespace ElasticSea.Framework.Ui.Icons
         public string Name;
         public bool Locked;
         public float Padding;
-        public Color AccentColor;
-        public FlatMeshIconMeshData MeshData;
+        public string MeshDataUniqueId;
+        public Func<FlatMeshIconMeshData> MeshDataFactory;
     }
 
     public class FlatMeshIconMeshData
     {
+        public Color AccentColor;
         public Mesh Mesh; // will be modified
-        public Mesh LowPoly; // Used for bounds calculation
+        public Mesh LowPoly; // will be modified
+        public (Vector3 center, float radius) SphereBounds;
         public Material[] Materials;
         public Material[] LockedMaterials;
         public Quaternion Rotation;

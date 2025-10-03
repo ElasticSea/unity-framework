@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using ElasticSea.Framework.Extensions;
 using ElasticSea.Framework.Layout;
 using ElasticSea.Framework.Ui.Layout.Spatial;
+using ElasticSea.Framework.Util;
 using ElasticSea.Framework.Util.PropertyDrawers;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -18,7 +20,10 @@ namespace ElasticSea.Framework.Ui.Icons
         [SerializeField] private Material circleMaterial;
         [SerializeField] private Transform container;
 
-        public FlatMeshIcon[] Build(FlatMeshIconData[] icons)
+        private Mesh circleMeshInstance;
+        private float circleMeshRadius = -1;
+
+        public FlatMeshIcon[] Build(FlatMeshIconData[] icons, Dictionary<string, FlatMeshIconMeshData> meshIconCache)
         {
             Clear();
 
@@ -31,8 +36,13 @@ namespace ElasticSea.Framework.Ui.Icons
             }
 
             var radius = SpatialLayout.Size.FromXY().Min() / 2;
-            var circleMeshClone = circleMesh.Clone();
-            GenerateBackplateMesh(circleMeshClone, SpatialLayout.Size);
+
+            if (circleMeshRadius != radius)
+            {
+                circleMeshInstance = circleMesh.Clone();
+                GenerateBackplateMesh(circleMeshInstance, SpatialLayout.Size);
+                circleMeshRadius = radius;
+            }
             
             var translucentIcons = new FlatMeshIcon[icons.Length];
             for (var i = 0; i < icons.Length; i++)
@@ -45,14 +55,16 @@ namespace ElasticSea.Framework.Ui.Icons
                 anchor.transform.localPosition = cell.cellToLocal.GetPosition() + cell.localBounds.center;
                 anchor.transform.localRotation = cell.cellToLocal.rotation;
 
+                var dat = GenerateMeshes(icon, meshIconCache);
+                
                 var translucentIcon = anchor.AddComponent<FlatMeshIcon>();
                 translucentIcon.Index = i;
                 translucentIcon.Name = icon.Name;
                 translucentIcon.BackplateRect = CenterRect(Vector2.zero, SpatialLayout.Size); 
-                translucentIcon.Backplate = GenerateBackplate(translucentIcon, circleMeshClone, circleMaterial, icon.Locked, icon.AccentColor);
+                translucentIcon.Backplate = GenerateBackplate(translucentIcon, circleMeshInstance, circleMaterial, icon.Locked, dat.AccentColor);
                 translucentIcon.Collider = translucentIcon.GetComponent<Collider>();
                 translucentIcon.FrontplateCircle = (Vector2.zero, radius - icon.Padding);
-                var frontplate = GenerateFrontplate(translucentIcon.Backplate, radius - icon.Padding, icon.Locked, circleMeshClone, icon.MeshData);
+                var frontplate = GenerateFrontplate(translucentIcon.Backplate, radius - icon.Padding, icon.Locked, circleMeshInstance, dat);
                 translucentIcon.Frontplate = frontplate.frontplate;
                 translucentIcon.FrontplateRect = frontplate.rect;
                 
@@ -109,40 +121,62 @@ namespace ElasticSea.Framework.Ui.Icons
             mesh.RecalculateBounds();
         }
 
-        private (GameObject frontplate, Rect rect) GenerateFrontplate(GameObject backplate, float radius, bool locked, Mesh circleMesh, FlatMeshIconMeshData meshData)
+        private (GameObject frontplate, Rect rect) GenerateFrontplate(GameObject backplate, float radius, bool locked, Mesh circleMesh, FlatMeshIconMeshData dat)
         {
-            var mesh = meshData.Mesh;
-            var lowPolymesh = meshData.LowPoly;
-            
-            SquashMesh(mesh, meshData.Rotation, meshData.Thickness);
-            if (lowPolymesh != mesh)
-            {
-                SquashMesh(lowPolymesh, meshData.Rotation, meshData.Thickness);
-            }
-
-            var bounds = lowPolymesh.vertices.ToSphereBounds();
+            var bounds = dat.SphereBounds;
 
             var frontPlate = new GameObject("Frontplate");
             frontPlate.transform.SetParent(backplate.transform, false);
             
             var scaleAnchor = new GameObject("Scaled");
             scaleAnchor.transform.SetParent(frontPlate.transform, false);
-            scaleAnchor.transform.localPosition = meshData.Offset.ToXy().SetZ( -circleMesh.bounds.max.z);
+            scaleAnchor.transform.localPosition = dat.Offset.ToXy().SetZ( -circleMesh.bounds.max.z);
 
             var setGo = new GameObject("Mesh");
             setGo.transform.SetParent(scaleAnchor.transform, false);
-            setGo.AddComponent<MeshFilter>().sharedMesh = mesh;
+            setGo.AddComponent<MeshFilter>().sharedMesh = dat.Mesh;
 
             var addComponent = setGo.AddComponent<MeshRenderer>();
-            addComponent.sharedMaterials = locked ? meshData.LockedMaterials : meshData.Materials;
+            addComponent.sharedMaterials = locked ? dat.LockedMaterials : dat.Materials;
 
             setGo.transform.localPosition = -bounds.center.SetZ(0);
 
             var scale = radius / bounds.radius;
             scaleAnchor.transform.localScale = Vector3.one * scale;
-
-            var rect = lowPolymesh.bounds.Move(setGo.transform.localPosition).Scale(scale).FrontSide();
+            
+            var c = (bounds.center + setGo.transform.localPosition) * scale;
+            var r = bounds.radius * Mathf.Abs(scale);
+            var rect = new Rect(c.x - r, c.y - r, r * 2f, r * 2f);
+            
             return (frontPlate, rect);
+        }
+
+        private FlatMeshIconMeshData GenerateMeshes(FlatMeshIconData meshData, Dictionary<string, FlatMeshIconMeshData> meshIconCache)
+        {
+            if (meshData.MeshDataUniqueId != null && meshIconCache != null)
+            {
+                if (meshIconCache.TryGetValue(meshData.MeshDataUniqueId, out var meshDatav))
+                {
+                    return meshDatav;
+                }
+            }
+
+            var dataa = meshData.MeshDataFactory();
+
+            SquashMesh(dataa.Mesh, dataa.Rotation, dataa.Thickness);
+            if (dataa.Mesh != dataa.LowPoly)
+            {
+                SquashMesh(dataa.LowPoly, dataa.Rotation, dataa.Thickness);
+            }
+            
+            dataa.SphereBounds = dataa.LowPoly.vertices.ToSphereBounds();
+
+            if (meshData.MeshDataUniqueId != null && meshIconCache != null)
+            {
+                meshIconCache[meshData.MeshDataUniqueId] = dataa;
+            }
+
+            return dataa;
         }
 
         private void SquashMesh(Mesh mesh, Quaternion rotate, float thickness)
