@@ -6,8 +6,10 @@ using ElasticSea.Framework.Extensions;
 using ElasticSea.Framework.Interactions;
 using ElasticSea.Framework.Layout;
 using ElasticSea.Framework.Ui.Layout.Spatial;
+using ElasticSea.Framework.Util;
 using ElasticSea.Framework.Util.PropertyDrawers;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace ElasticSea.Framework.Ui.Icon.Lockable
 {
@@ -21,6 +23,13 @@ namespace ElasticSea.Framework.Ui.Icon.Lockable
         [SerializeField] private float pressCircleGrow = 0.02f;
         [SerializeField] private bool globalCache = true;
         [SerializeField, CustomObjectPicker(typeof(ILockableIconBuildCallback))] private Component[] _callbacks;
+        
+        [Header("Sfx")]
+        [SerializeField] private AudioMixerGroup audioMixerGroup;
+        [SerializeField] private AudioClip pressSound;
+        [SerializeField] private float pressSoundVolume = 0.2f;
+        [SerializeField] private AudioClip unlockSound;
+        [SerializeField] private float unlockSoundVolume = 0.2f;
         
         private IIconLockProvider lockProvider;
         private LockedIconController[] controllers;
@@ -93,6 +102,7 @@ namespace ElasticSea.Framework.Ui.Icon.Lockable
                 {
                     PressCallback = @event =>
                     {
+                        PlaySfx(pressSound, pressSoundVolume);
                         anim.Show();
                     },
                     CancelCallback = @event =>
@@ -171,6 +181,16 @@ namespace ElasticSea.Framework.Ui.Icon.Lockable
                     controllers[anim[i]].SetUnlockedDelta(t);
                 }
             }, 0, 1, 1).SetEase(Ease.InOutCubic);
+            
+            PlaySfx(unlockSound, unlockSoundVolume);
+        }
+
+        private void PlaySfx(AudioClip clip, float volume)
+        {
+            if (clip != null && audioMixerGroup != null)
+            {
+                Utils.PlayClipAtPoint3D(clip, transform.position, volume, audioMixerGroup);
+            }
         }
 
         private int[] GetLockedAnim(bool[] prev, bool[] current)
