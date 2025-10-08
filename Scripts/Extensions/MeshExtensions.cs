@@ -653,6 +653,33 @@ namespace ElasticSea.Framework.Extensions
             return new MeshTransform(mesh);
         }
 
+        public static void Transform(this Mesh mesh, Matrix4x4 matrix)
+        {
+            var vertices = mesh.vertices;
+            var normals = mesh.normals;
+
+            var count = vertices.Length;
+
+            if (normals == null || normals.Length != count)
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    vertices[i] = matrix.MultiplyPoint3x4(vertices[i]);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    vertices[i] = matrix.MultiplyPoint3x4(vertices[i]);
+                    normals[i] = matrix.MultiplyVector(normals[i]).normalized;
+                }
+            }
+            
+            mesh.vertices = vertices;
+            mesh.normals = normals;
+        }
+
         public static Mesh FlipTriangles(this Mesh mesh)
         {
             var t = mesh.triangles;
