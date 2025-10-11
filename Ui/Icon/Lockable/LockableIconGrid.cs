@@ -10,6 +10,9 @@ using ElasticSea.Framework.Util;
 using ElasticSea.Framework.Util.PropertyDrawers;
 using UnityEngine;
 using UnityEngine.Audio;
+#if !UNITY_VISIONOS
+using Gizmoes.Interactables;
+#endif
 
 namespace ElasticSea.Framework.Ui.Icon.Lockable
 {
@@ -122,7 +125,7 @@ namespace ElasticSea.Framework.Ui.Icon.Lockable
                 controllers[i] = controller;
              
 #if !UNITY_VISIONOS
-                InteractableUtils.SetupInteractable(null, translucentIcon.GetComponent<Collider>(), translucentIcon.Interactable);
+                InteractableUtils.SetupInteractable(null, icon.Collider, interactable);
 #endif
 
                 var interactableComponent = icon.gameObject.GetOrAddComponent<IteractableComponent>();
