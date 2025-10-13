@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
+using Object = UnityEngine.Object;
 
 namespace ElasticSea.Framework.Scripts.Util.Editor
 {
@@ -84,6 +86,74 @@ namespace ElasticSea.Framework.Scripts.Util.Editor
             while (iterator.NextVisible(false));
 
             return container;
+        }
+        
+        /// <summary>
+        /// Creates or updates a prefab at <paramref name="prefabPath"/> from <paramref name="source"/>.
+        /// Uses EditPrefabContentsScope to preserve local fileIDs and references.
+        /// </summary>
+        public static GameObject CreateOrUpdatePrefab(GameObject source, string prefabPath)
+        {
+            if (source == null) throw new System.ArgumentNullException(nameof(source));
+
+            // Create directories if missing
+            Directory.CreateDirectory(Path.GetDirectoryName(prefabPath)!);
+
+            // Case 1: Prefab does not exist → create it once
+            if (!File.Exists(prefabPath))
+            {
+                var created = PrefabUtility.SaveAsPrefabAsset(source, prefabPath);
+                return created;
+            }
+
+            // Case 2: Prefab exists → open for editing (fileIDs preserved)
+            using (var editScope = new PrefabUtility.EditPrefabContentsScope(prefabPath))
+            {
+                var prefabRoot = editScope.prefabContentsRoot;
+
+                // Copy main GameObject data
+                prefabRoot.name = source.name;
+                prefabRoot.transform.localPosition = source.transform.localPosition;
+                prefabRoot.transform.localRotation = source.transform.localRotation;
+                prefabRoot.transform.localScale    = source.transform.localScale;
+
+                // Copy serialized component data
+                EditorUtility.CopySerialized(source, prefabRoot);
+
+                // Synchronize hierarchy (by name, non-destructive)
+                SyncChildren(source.transform, prefabRoot.transform);
+            }
+
+            // The scope auto-saves and unloads here
+            return AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+        }
+
+        private static void SyncChildren(Transform src, Transform dst)
+        {
+            // Ensure all source children exist in destination and copy them
+            for (int i = 0; i < src.childCount; i++)
+            {
+                var srcChild = src.GetChild(i);
+                var dstChild = dst.Find(srcChild.name);
+
+                if (!dstChild)
+                {
+                    var newChild = new GameObject(srcChild.name);
+                    newChild.transform.SetParent(dst, false);
+                    dstChild = newChild.transform;
+                }
+
+                EditorUtility.CopySerialized(srcChild.gameObject, dstChild.gameObject);
+                SyncChildren(srcChild, dstChild);
+            }
+
+            // Remove any extra children not in source
+            for (int i = dst.childCount - 1; i >= 0; i--)
+            {
+                var dstChild = dst.GetChild(i);
+                if (!src.Find(dstChild.name))
+                    Object.DestroyImmediate(dstChild.gameObject);
+            }
         }
     }
 }
