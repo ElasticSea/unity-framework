@@ -18,5 +18,35 @@ namespace ElasticSea.Framework.Scripts.Util
         {
             return point.Distance(center) <= radius;
         }
+
+        public Vector3 Center => center;
+
+        public float Radius => radius;
+        
+        public static bool operator ==(SphereBounds a, SphereBounds b)
+        {
+            return a.center == b.center && Mathf.Approximately(a.radius, b.radius);
+        }
+
+        public static bool operator !=(SphereBounds a, SphereBounds b)
+        {
+            return !(a == b);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is SphereBounds other && this == other;
+        }
+
+        public override int GetHashCode()
+        {
+            return center.GetHashCode() ^ radius.GetHashCode();
+        }
+
+        public void Deconstruct(out Vector3 center, out float radius)
+        {
+            center = this.center;
+            radius = this.radius;
+        }
     }
 }
