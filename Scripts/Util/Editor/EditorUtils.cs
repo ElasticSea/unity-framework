@@ -120,12 +120,22 @@ namespace ElasticSea.Framework.Scripts.Util.Editor
                 // Copy serialized component data
                 EditorUtility.CopySerialized(source, prefabRoot);
 
+                StripMissingScriptsRecursive(prefabRoot);
+                
                 // Synchronize hierarchy (by name, non-destructive)
                 SyncChildren(source.transform, prefabRoot.transform);
             }
 
             // The scope auto-saves and unloads here
             return AssetDatabase.LoadAssetAtPath<GameObject>(prefabPath);
+        }
+        
+        private static void StripMissingScriptsRecursive(GameObject go)
+        {
+            GameObjectUtility.RemoveMonoBehavioursWithMissingScript(go);
+            var t = go.transform;
+            for (int i = 0; i < t.childCount; i++)
+                StripMissingScriptsRecursive(t.GetChild(i).gameObject);
         }
 
         private static void SyncChildren(Transform src, Transform dst)
