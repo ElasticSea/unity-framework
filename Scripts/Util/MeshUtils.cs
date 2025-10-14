@@ -217,6 +217,11 @@ namespace ElasticSea.Framework.Scripts.Util
 	        return Cube(Vector3.zero, Vector3.one);
         }
 
+        public static Mesh Cube(Bounds bounds)
+        {
+	        return Cube(bounds.center, bounds.size);
+        }
+
         public static Mesh Cube(Vector3 center, Vector3 size)
         {
 	        // Define the co-ordinates of each Corner of the cube 
