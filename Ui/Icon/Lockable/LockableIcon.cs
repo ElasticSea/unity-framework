@@ -7,12 +7,7 @@ namespace ElasticSea.Framework.Ui.Icon.Lockable
     {
         public string Id;
         public Collider Collider;
-
-        public LockableIcon(string id, Collider collider)
-        {
-            Id = id;
-            Collider = collider;
-        }
+        public float Radius;
 
         public event Action OnSelected;
 

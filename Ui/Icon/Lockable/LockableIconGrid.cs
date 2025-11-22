@@ -37,8 +37,10 @@ namespace ElasticSea.Framework.Ui.Icon.Lockable
         private IIconLockProvider lockProvider;
         private LockedIconController[] controllers;
         private bool[] lockedState;
+        private LockableIcon[] lockableIcons;
 
         private static Dictionary<string, LockableIconData> globalCacheInstance = new();
+        public LockableIcon[] Icons => lockableIcons;
         
         public LockableIcon[] Build(LockableIconDataFactory[] lockedIconData)
         {
@@ -98,6 +100,7 @@ namespace ElasticSea.Framework.Ui.Icon.Lockable
                 controller.SetUnlockedDelta(isLocked ? 0 : 1);
                 var lockableIcon = icon.gameObject.AddComponent<LockableIcon>();
                 lockableIcon.Id = id;
+                lockableIcon.Radius = inputData.Radius;
                 lockableIcon.Collider = icon.Collider;
                 lockableIcons[i] = lockableIcon;
                 
@@ -139,6 +142,8 @@ namespace ElasticSea.Framework.Ui.Icon.Lockable
             }
             
             OnRectChanged?.Invoke();
+
+            this.lockableIcons = lockableIcons;
 
             return lockableIcons;
         }
