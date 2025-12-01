@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace ElasticSea.Framework.Ui.Layout.Spatial
 {
-    public class VisionOsSpatialLayout : MonoBehaviour, IUniformGrowSpatialLayout
+    public class VisionOsSpatialLayout : MonoBehaviour, IUniformGrowSpatialLayout, ILayoutComponent
     {
         [field: SerializeField] public int Count { get; set; }
 
@@ -301,5 +301,8 @@ namespace ElasticSea.Framework.Ui.Layout.Spatial
                 GizmoUtils.DrawCircle(cell.localBounds.center, Vector3.back, radius);
             }
         }
+
+        public Rect Rect => Bounds.FrontSide();
+        public event Action OnRectChanged;
     }
 }
