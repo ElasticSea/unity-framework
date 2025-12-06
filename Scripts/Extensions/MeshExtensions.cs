@@ -200,12 +200,12 @@ namespace ElasticSea.Framework.Extensions
         /// <summary>
         /// Moves vertices from the center to each direction
         /// </summary>
-        public static void ExtendMeshToBounds(this Mesh mesh, Bounds boundsToMatch)
+        public static void ExtendMeshToBounds(this Mesh mesh, Bounds boundsToMatch, Vector3? pivotOverride = null)
         {
             var bounds = mesh.bounds;
             var vertices = mesh.vertices;
 
-            ExtendMeshToBounds(vertices, vertices, bounds, boundsToMatch);
+            ExtendMeshToBounds(vertices, vertices, bounds, boundsToMatch, pivotOverride);
 
             mesh.vertices = vertices;
             mesh.bounds = boundsToMatch;
@@ -216,20 +216,22 @@ namespace ElasticSea.Framework.Extensions
         /// <summary>
         /// Moves vertices from the center to each direction
         /// </summary>
-        public static void ExtendMeshToBounds(this Vector3[] sourceVertices, Vector3[] targetVertices, Bounds bounds, Bounds boundsToMatch)
+        public static void ExtendMeshToBounds(this Vector3[] sourceVertices, Vector3[] targetVertices, Bounds bounds, Bounds boundsToMatch, Vector3? pivotOverride = null)
         {
-            var boundsCenter = bounds.center;
+            var pivot = pivotOverride ?? bounds.center;
 
-            var minExtends = boundsToMatch.min - bounds.min + boundsCenter - bounds.center;
-            var maxExtends = boundsToMatch.max - bounds.max + boundsCenter - bounds.center;
+            var minExtends = boundsToMatch.min - bounds.min;
+            var maxExtends = boundsToMatch.max - bounds.max;
 
             for (var i = 0; i < sourceVertices.Length; i++)
             {
                 var vert = sourceVertices[i];
-                var x = vert.x + (vert.x > boundsCenter.x ? maxExtends.x : minExtends.x);
-                var y = vert.y + (vert.y > boundsCenter.y ? maxExtends.y : minExtends.y);
-                var z = vert.z + (vert.z > boundsCenter.z ? maxExtends.z : minExtends.z);
-                targetVertices[i] = new Vector3(x, y, z) ;
+
+                var x = vert.x + (vert.x > pivot.x ? maxExtends.x : minExtends.x);
+                var y = vert.y + (vert.y > pivot.y ? maxExtends.y : minExtends.y);
+                var z = vert.z + (vert.z > pivot.z ? maxExtends.z : minExtends.z);
+
+                targetVertices[i] = new Vector3(x, y, z);
             }
         }
         
