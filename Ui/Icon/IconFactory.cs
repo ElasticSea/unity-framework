@@ -23,7 +23,7 @@ namespace ElasticSea.Framework.Ui.Icon
             
             icon.Id = iconData.Name;
             icon.Backplate = GenerateBackplate(icon, backplateMesh);
-            icon.Frontplate = GenerateFrontplate(icon, frontplateMesh, iconData.Radius - iconData.Padding);
+            icon.Frontplate = GenerateFrontplate(icon, frontplateMesh, iconData.Radius - iconData.Padding, iconData.OnlyScaleDown);
             icon.Frontplate.transform.SetParent(icon.transform, false);
             icon.Data = frontplateMesh;
 
@@ -115,7 +115,7 @@ namespace ElasticSea.Framework.Ui.Icon
             return backplate;
         }
 
-        private GameObject GenerateFrontplate(Icon icon, IconMeshData meshIconData, float radius)
+        private GameObject GenerateFrontplate(Icon icon, IconMeshData meshIconData, float radius, bool onlyScaleDown = false)
         {
             var bounds = meshIconData.SphereBounds;
 
@@ -135,6 +135,10 @@ namespace ElasticSea.Framework.Ui.Icon
             setGo.transform.localPosition = -bounds.center.SetZ(0);
 
             var scale = radius / bounds.radius;
+            if (onlyScaleDown)
+            {
+                scale = Mathf.Min(scale, 1);
+            }
             scaleAnchor.transform.localScale = Vector3.one * scale;
 
             // var c = (bounds.center + setGo.transform.localPosition) * scale;

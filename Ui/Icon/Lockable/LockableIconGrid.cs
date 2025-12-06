@@ -25,6 +25,8 @@ namespace ElasticSea.Framework.Ui.Icon.Lockable
         [SerializeField] private Transform container;
         [SerializeField] private float pressCircleGrow = 0.02f;
         [SerializeField] private bool globalCache = true;
+        [SerializeField] private string globalCachePrefix;
+        [SerializeField] private bool onlyScaleDown = false;
         [SerializeField, CustomObjectPicker(typeof(ILockableIconBuildCallback))] private Component[] _callbacks;
         
         [Header("Sfx")]
@@ -73,7 +75,8 @@ namespace ElasticSea.Framework.Ui.Icon.Lockable
                     Radius = SpatialLayout.Size.FromXY().Min() / 2,
                     Padding = locked.Padding,
                     RawMesh = locked.RawMesh,
-                    ProcessedMesh = locked.ProcessedMesh
+                    ProcessedMesh = locked.ProcessedMesh,
+                    OnlyScaleDown = onlyScaleDown
                 };
                 var icon = factory.BuildIcon(inputData);
                 locked.ProcessedMesh = icon.Data;
@@ -152,7 +155,8 @@ namespace ElasticSea.Framework.Ui.Icon.Lockable
         {
             if (factory.Id != null && meshIconCache != null)
             {
-                if (meshIconCache.TryGetValue(factory.Id, out var meshDatav))
+                var key = globalCachePrefix + factory.Id;
+                if (meshIconCache.TryGetValue(key, out var meshDatav))
                 {
                     return meshDatav;
                 }
