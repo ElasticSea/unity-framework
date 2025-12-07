@@ -40,15 +40,13 @@ namespace ElasticSea.Framework.Ui.Icon.Lockable
         private LockedIconController[] controllers;
         private bool[] lockedState;
         private LockableIcon[] lockableIcons;
-
-        private static Dictionary<string, LockableIconData> globalCacheInstance = new();
         public LockableIcon[] Icons => lockableIcons;
         
         public LockableIcon[] Build(LockableIconDataFactory[] lockedIconData)
         {
             Clear();
-            
-            var cache = globalCache ? globalCacheInstance : null;
+
+            var cache = new LockableIconMeshCache(prefix: globalCachePrefix);
             var factory = new IconFactory(backplateMesh);
 
             if (lockedIconData.Length != SpatialLayout.Count)
@@ -67,7 +65,7 @@ namespace ElasticSea.Framework.Ui.Icon.Lockable
             {
                 var lockedIconD = lockedIconData[i];
                 var id = lockedIconD.Id;
-                var locked = GetCachedMeshData(lockedIconD, cache);
+                var locked = cache.GetCachedMeshData(lockedIconD);
                 
                 var inputData = new IconData()
                 {
@@ -80,7 +78,7 @@ namespace ElasticSea.Framework.Ui.Icon.Lockable
                 };
                 var icon = factory.BuildIcon(inputData);
                 locked.ProcessedMesh = icon.Data;
-                SetCachedMeshData(id, locked, cache);
+                cache.SetCachedMeshData(id, locked);
                 var cell = SpatialLayout.GetCell(i);
 
                 // place in the icon grid
@@ -149,28 +147,6 @@ namespace ElasticSea.Framework.Ui.Icon.Lockable
             this.lockableIcons = lockableIcons;
 
             return lockableIcons;
-        }
-        
-        private LockableIconData GetCachedMeshData(LockableIconDataFactory factory,  Dictionary<string, LockableIconData> meshIconCache)
-        {
-            if (factory.Id != null && meshIconCache != null)
-            {
-                var key = globalCachePrefix + factory.Id;
-                if (meshIconCache.TryGetValue(key, out var meshDatav))
-                {
-                    return meshDatav;
-                }
-            }
-
-            return factory.Factory();
-        }
-        
-        private void SetCachedMeshData(string id, LockableIconData data, Dictionary<string, LockableIconData> meshIconCache)
-        {
-            if (id != null && meshIconCache != null)
-            {
-                meshIconCache[id] = data;
-            }
         }
 
         public void SetLocking(IIconLockProvider lockProvider)
