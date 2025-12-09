@@ -96,10 +96,10 @@ namespace ElasticSea.Framework.Ui.Icon.Lockable
                 var anim = new HideShowAnimation(DOTween.To(t => backplateMaterial.SetFloat("_Pressed", t), 0, 1, 0.15f));
                 icon.BackplateRenderer.sharedMaterial = backplateMaterial;
 
-                var controller = new LockedIconController(icon, backplateMaterial, defaultMaterials, lockedMaterials);
+                var lockableIcon = icon.gameObject.AddComponent<LockableIcon>();
+                var controller = new LockedIconController(icon, lockableIcon, backplateMaterial, defaultMaterials, lockedMaterials);
                 var isLocked = lockProvider?.IsLocked(id) ?? false;
                 controller.SetUnlockedDelta(isLocked ? 0 : 1);
-                var lockableIcon = icon.gameObject.AddComponent<LockableIcon>();
                 lockableIcon.Id = id;
                 lockableIcon.Radius = inputData.Radius;
                 lockableIcon.Collider = icon.Collider;
