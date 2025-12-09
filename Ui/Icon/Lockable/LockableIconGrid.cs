@@ -103,6 +103,7 @@ namespace ElasticSea.Framework.Ui.Icon.Lockable
                 lockableIcon.Id = id;
                 lockableIcon.Radius = inputData.Radius;
                 lockableIcon.Collider = icon.Collider;
+                lockableIcon.Background = icon.BackplateRenderer;
                 lockableIcons[i] = lockableIcon;
                 
                 var interactable = new SimpleInteractable()

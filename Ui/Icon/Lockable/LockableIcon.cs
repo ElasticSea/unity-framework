@@ -8,6 +8,7 @@ namespace ElasticSea.Framework.Ui.Icon.Lockable
         public string Id;
         public Collider Collider;
         public float Radius;
+        public MeshRenderer Background;
 
         public event Action OnSelected;
 
