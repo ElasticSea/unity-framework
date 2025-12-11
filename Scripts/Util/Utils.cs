@@ -1711,6 +1711,14 @@ namespace ElasticSea.Framework.Util
 
             return result;
         }
+    
+        public static bool IsBuildingPlayer()
+        {
+#if UNITY_EDITOR
+            return UnityEditor.BuildPipeline.isBuildingPlayer;
+#endif
+            return false;
+        }
     }
     
     public struct PageElement<T>

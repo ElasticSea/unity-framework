@@ -1,4 +1,5 @@
 ﻿using System;
+using ElasticSea.Framework.Util;
 using ElasticSea.Framework.Util.PropertyDrawers;
 using UnityEngine;
 
@@ -53,7 +54,10 @@ namespace ElasticSea.Framework.Layout
         {
             if (targetLayout != null)
             {
-                LayoutChanged();
+                if (!Utils.IsBuildingPlayer())
+                {
+                    LayoutChanged();
+                }
             }
         }
 
