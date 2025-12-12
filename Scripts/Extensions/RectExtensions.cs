@@ -61,6 +61,16 @@ namespace ElasticSea.Framework.Scripts.Extensions
         {
             return Rect.MinMaxRect(rect.xMin - growBy.x, rect.yMin - growBy.y, rect.xMax + growBy.x, rect.yMax + growBy.y);
         }
+        
+        public static Rect Grow(this Rect rect, float left, float right, float up, float down)
+        {
+            return Rect.MinMaxRect(
+                rect.xMin - left,
+                rect.yMin - down,
+                rect.xMax + right,
+                rect.yMax + up
+            );
+        }
 
         [Obsolete]
         public static Rect Shrink(this Rect rect, float shrinkBy)
@@ -71,6 +81,11 @@ namespace ElasticSea.Framework.Scripts.Extensions
         public static Rect Shrink(this Rect rect, Vector2 shrinkBy)
         {
             return rect.Grow(-shrinkBy);
+        }
+        
+        public static Rect Shrink(this Rect rect, float left, float right, float up, float down)
+        {
+            return Grow(rect, -left, -right, -up, -down);
         }
 
         public static Rect Move(this Rect rect, Vector2 moveBy)
