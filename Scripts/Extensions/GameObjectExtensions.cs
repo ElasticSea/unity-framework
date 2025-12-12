@@ -672,5 +672,18 @@ namespace ElasticSea.Framework.Extensions
 
 			return allComponents.ToArray();
 		}
+		
+		public static TAdd[] AddComponent<TAdd>(this Component[] components)
+			where TAdd : Component
+		{
+			var result = new TAdd[components.Length];
+
+			for (int i = 0; i < components.Length; i++)
+			{
+				result[i] = components[i].gameObject.AddComponent<TAdd>();
+			}
+
+			return result;
+		}
     }
 }
