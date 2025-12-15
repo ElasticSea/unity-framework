@@ -233,6 +233,17 @@ namespace ElasticSea.Framework.Extensions
                 });
         }
         
+        public static Bounds BoundsLocalToWorld(this Transform from, Bounds bounds)
+        {
+	        var transformedVertices = bounds.GetVertices();
+	        var length = transformedVertices.Length;
+	        for (var i = 0; i < length; i++)
+	        {
+		        transformedVertices[i] = from.transform.TransformPoint(transformedVertices[i]);
+	        }
+	        return transformedVertices.ToBounds();
+        }
+        
         public static Bounds TransformBounds(this Transform from, Transform to, Bounds bounds)
         {
 	        var transformedVertices = bounds.GetVertices();
