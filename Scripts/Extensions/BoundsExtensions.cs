@@ -1095,5 +1095,30 @@ namespace ElasticSea.Framework.Extensions
 
 		    return mesh;
 	    }
+
+	    public static Bounds TransformBounds(this Bounds bounds, Transform transform)
+	    {
+		    return bounds.TransformBounds(transform.worldToLocalMatrix);
+	    }
+
+	    public static Bounds TransformBounds(this Bounds bounds, Matrix4x4 trs)
+	    {
+		    var c = bounds.center;
+		    var e = bounds.extents;
+
+		    var p = trs.MultiplyPoint(new Vector3(c.x - e.x, c.y - e.y, c.z - e.z));
+		    var wb = new Bounds(p, Vector3.zero);
+
+		    wb.Encapsulate(trs.MultiplyPoint(new Vector3(c.x + e.x, c.y - e.y, c.z - e.z)));
+		    wb.Encapsulate(trs.MultiplyPoint(new Vector3(c.x - e.x, c.y - e.y, c.z + e.z)));
+		    wb.Encapsulate(trs.MultiplyPoint(new Vector3(c.x + e.x, c.y - e.y, c.z + e.z)));
+
+		    wb.Encapsulate(trs.MultiplyPoint(new Vector3(c.x - e.x, c.y + e.y, c.z - e.z)));
+		    wb.Encapsulate(trs.MultiplyPoint(new Vector3(c.x + e.x, c.y + e.y, c.z - e.z)));
+		    wb.Encapsulate(trs.MultiplyPoint(new Vector3(c.x - e.x, c.y + e.y, c.z + e.z)));
+		    wb.Encapsulate(trs.MultiplyPoint(new Vector3(c.x + e.x, c.y + e.y, c.z + e.z)));
+
+		    return wb;
+	    }
     }
 }
