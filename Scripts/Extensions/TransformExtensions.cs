@@ -368,6 +368,11 @@ namespace ElasticSea.Framework.Extensions
             return parent.worldToLocalMatrix * child.localToWorldMatrix;
         }
 
+        public static Matrix4x4 GetLocalTRS(this Transform transform)
+        {
+            return Matrix4x4.TRS(transform.localPosition, transform.localRotation, transform.localScale);
+        }
+
         public static Matrix4x4 GetTRSRelative(this Transform a, Transform b)
         {
             var aToWorld = a.localToWorldMatrix;
