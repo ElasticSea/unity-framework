@@ -46,16 +46,16 @@ namespace ElasticSea.Framework.Scripts.Misc
             }
         }
 
-        private void DrawCircle(Vector3[] points,  Func<Vector2[], (Vector2 center, float radius)> factory)
+        private void DrawCircle(Vector3[] points,  Func<Vector2[], CircleBounds> factory)
         {
             var points2d2 = points.Select(p => new Vector2(p.x, p.z)).ToArray();
 
             var sw = Stopwatch.StartNew();
             var circle2 = factory(points2d2);
             Elapsed = sw.Elapsed;
-            Gizmos.DrawWireSphere(circle2.center.ToXZ(), 0.01f);
+            Gizmos.DrawWireSphere(circle2.Center.ToXZ(), 0.01f);
 
-            GizmoUtils.DrawCircle(circle2.center.ToXZ(), Vector3.up, circle2.radius);
+            GizmoUtils.DrawCircle(circle2.Center.ToXZ(), Vector3.up, circle2.Radius);
         }
 
         public void SpawnPoints()

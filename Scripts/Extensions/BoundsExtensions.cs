@@ -119,12 +119,7 @@ namespace ElasticSea.Framework.Extensions
 	        return new BoundsInt((max - min) / 2 + min, max - min);
         }
         
-        public static (Vector3 center, float radius) ToSphereBounds(this IEnumerable<Vector3> points)
-        {
-	        return points.ToArray().ToSphereBounds();
-        }
-        
-        public static (Vector3 center, float radius) ToSphereBounds(this Vector3[] points)
+        public static (Vector3 center, float radius) ToFastSphereBounds(this Vector3[] points)
         {
 	        var center = points.ToBounds().center;
 	        var length = points.Length;
@@ -138,13 +133,11 @@ namespace ElasticSea.Framework.Extensions
 	        return (center, radius);
         }
         
-        public static (Vector2 center, float radius) ToFastCircleBounds(this Vector2[] points)
+        public static CircleBounds ToFastCircleBounds(this Vector2[] points)
         {
+	        var center = points.ToRect().center;
 	        var length = points.Length;
 
-	        var rectBounds = points.ToRect();
-
-	        var center = rectBounds.center;
 	        var radius = 0f;
 	        for (int i = 0; i < length; i++)
 	        {
@@ -152,13 +145,13 @@ namespace ElasticSea.Framework.Extensions
 		        var currentRadius = (center - point).magnitude;
 		        radius = Mathf.Max(currentRadius, radius);
 	        }
-	        return (center, radius);
+	        return new(center, radius);
         }
         
-        public static (Vector2 center, float radius) ToCircleBounds(this Vector2[] points)
+        public static CircleBounds ToCircleBounds(this Vector2[] points)
         {
 	        var circle = SmallestEnclosingCircle.MakeCircle(points);
-	        return (circle.c, (float) circle.r);
+	        return new(circle.c, (float) circle.r);
         }
         
         public static CylinderBounds ToCylinderBounds(this Vector3[] points)
