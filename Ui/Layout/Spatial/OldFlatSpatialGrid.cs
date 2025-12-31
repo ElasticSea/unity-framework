@@ -7,6 +7,10 @@ namespace ElasticSea.Framework.Ui.Layout.Spatial
 {
     public class OldFlatSpatialGrid : MonoBehaviour, ISpatialGrid, ILayoutComponent
     {
+        public enum MajorAxis { RowMajor, ColumnMajor }
+        public enum HorizontalDir { LeftToRight, RightToLeft }
+        public enum VerticalDir { BottomToTop, TopToBottom }
+        
         [SerializeField] private int rows;
         [SerializeField] private int columns;
         [SerializeField] private Vector3 size;
@@ -14,29 +18,15 @@ namespace ElasticSea.Framework.Ui.Layout.Spatial
         [SerializeField] private Align horizontalAlign = Align.Center;
         [SerializeField] private Align verticalAlign = Align.Center;
 
-        public int Rows
-        {
-            get => rows;
-            set => rows = value;
-        }
+        [Header("Cell Order")]
+        [SerializeField] private MajorAxis majorAxis = MajorAxis.RowMajor;
+        [SerializeField] private HorizontalDir horizontalDir = HorizontalDir.LeftToRight;
+        [SerializeField] private VerticalDir verticalDir = VerticalDir.TopToBottom;
 
-        public int Columns
-        {
-            get => columns;
-            set => columns = value;
-        }
-
-        public Vector2 Spacing
-        {
-            get => spacing;
-            set => spacing = value;
-        }
-
-        public Vector3 Size
-        {
-            get => size;
-            set => size = value;
-        }
+        public int Rows { get => rows; set => rows = value; }
+        public int Columns { get => columns; set => columns = value; }
+        public Vector2 Spacing { get => spacing; set => spacing = value; }
+        public Vector3 Size { get => size; set => size = value; }
 
         public Bounds Bounds
         {
@@ -54,13 +44,11 @@ namespace ElasticSea.Framework.Ui.Layout.Spatial
         public int Count
         {
             get => this.Count();
-            set => throw new System.NotImplementedException();
         }
 
         public SpatialCell GetCell(int index)
         {
-            var x = index % Columns;
-            var y = index / Columns;
+            var (x, y) = IndexToXY(index);
             
             var xpos = x * (size.x + spacing.x);
             var ypos = y * (size.y + spacing.y);
@@ -70,6 +58,29 @@ namespace ElasticSea.Framework.Ui.Layout.Spatial
             var cellMatrix = Matrix4x4.TRS(Bounds.min + new Vector3(xpos, ypos, 0), Quaternion.identity, Vector3.one);
 
             return new(cellMatrix, cellBounds);
+        }
+        
+        private (int x, int y) IndexToXY(int index)
+        {
+            int x, y;
+            if (majorAxis == MajorAxis.RowMajor)
+            {
+                x = index % Columns;
+                y = index / Columns;
+            }
+            else
+            {
+                x = index / Rows;
+                y = index % Rows;
+            }
+
+            if (horizontalDir == HorizontalDir.RightToLeft)
+                x = Columns - 1 - x;
+
+            if (verticalDir == VerticalDir.TopToBottom)
+                y = Rows - 1 - y;
+
+            return (x, y);
         }
 
         private void OnDrawGizmosSelected()
