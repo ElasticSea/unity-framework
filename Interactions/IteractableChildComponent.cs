@@ -4,6 +4,6 @@ namespace ElasticSea.Framework.Interactions
 {
     public class IteractableChildComponent : MonoBehaviour
     {
-        public IteractableComponent Parent;
+        public VisionOsIteractableComponent Parent;
     }
 }

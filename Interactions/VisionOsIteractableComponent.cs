@@ -2,12 +2,11 @@
 
 namespace ElasticSea.Framework.Interactions
 {
-    public class IteractableComponent : MonoBehaviour, IInteractable
+    // Must be placed on collider that has the vision os layer
+    public class VisionOsIteractableComponent : MonoBehaviour, IInteractable
     {
         public IInteractable Interactable;
         public bool IsActive = true;
-        
-        // Used for pinch interactions mainly on vision os
         public bool CancelByMove = false;
 
         public void Hover(InteractionEvent interactionEvent) => Interactable.Hover(interactionEvent);
