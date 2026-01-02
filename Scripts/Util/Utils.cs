@@ -159,7 +159,7 @@ namespace ElasticSea.Framework.Util
         }
 
         [Obsolete("This method has been deprecated.")]
-        public static string AlternativeFileName(string file, string newFileName)
+        public static string UniqueFileName(string file, string newFileName)
         {
             var fileInfo = new FileInfo(file);
             
@@ -171,18 +171,37 @@ namespace ElasticSea.Framework.Util
             return Path.Combine(fileInfo.DirectoryName, AlternativeNameBraces(existingNames, newFileName));
         }
 
-        public static string AlternativeFileName(string filePath)
+        public static string GetUniqueFilePath(string filePath)
         {
-            var directory = new FileInfo(filePath).DirectoryName;
-            var extension = Path.GetExtension(filePath);
-            var fileWithoutExtension = Path.GetFileNameWithoutExtension(filePath);
+            var directory = Path.GetDirectoryName(filePath);
             
-            var existingNamesWithoutExtension = new DirectoryInfo(directory)
-                .EnumerateFiles()
-                .Select(d =>  Path.GetFileNameWithoutExtension(d.Name).ToLower())
-                .ToSet();
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+                return filePath; // No files exist, so the path is unique.
+            }
 
-            return Path.Combine(directory, AlternativeNameBraces(existingNamesWithoutExtension, fileWithoutExtension) + extension);
+            if (!File.Exists(filePath))
+            {
+                return filePath; // If the file doesn't exist, return original.
+            }
+
+            var folder = Path.GetDirectoryName(filePath);
+            var fileNameWithoutExt = Path.GetFileNameWithoutExtension(filePath);
+            var extension = Path.GetExtension(filePath);
+    
+            int count = 1;
+            string newFullPath = filePath;
+
+            // Incrementally check until a free spot is found
+            while (File.Exists(newFullPath))
+            {
+                string newFileName = $"{fileNameWithoutExt} ({count}){extension}";
+                newFullPath = Path.Combine(folder, newFileName);
+                count++;
+            }
+
+            return newFullPath;
         }
 
         public static string AlternativeDirectoryName(string directoryPath)
