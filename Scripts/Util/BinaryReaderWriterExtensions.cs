@@ -17,7 +17,15 @@ namespace ElasticSea.Framework.Util
             var major = reader.ReadInt32();
             var minor = reader.ReadInt32();
             var build = reader.ReadInt32();
-            return new Version(major, minor, build);
+            
+            if (build == -1)
+            {
+                return new Version(major, minor);
+            }
+            else
+            {
+                return new Version(major, minor, build);
+            }
         }
     }
 }
