@@ -5,11 +5,11 @@ namespace ElasticSea.Framework.Scripts.Util.Callbacks
 {
     public class OnDisableCallback : MonoBehaviour
     {
-        public event Action OnDisableEvent = () => { };
+        public event Action OnDisabled = () => { };
 
         private void OnDisable()
         {
-            OnDisableEvent();
+            OnDisabled();
         }
     }
 }
