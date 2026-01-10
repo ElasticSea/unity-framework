@@ -37,7 +37,7 @@ namespace ElasticSea.Framework.Util
 
         public static bool RollDice(float sides, Random rng) => rng.NextDouble() * sides < 1;
 
-        public static IEnumerable<T> GetEnumValues<T>() => Enum.GetValues(typeof(T)).Cast<T>();
+        public static T[] GetEnumValues<T>() => Enum.GetValues(typeof(T)).Cast<T>().ToArray();
 
         public static void MoveDirectory(string source, string target)
         {
