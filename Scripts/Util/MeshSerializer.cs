@@ -452,7 +452,7 @@ namespace ElasticSea.Framework.Util
 
         public static void Write(this BinaryWriter writer, Vector2[] value)
         {
-            var length = value.Length;
+            var length = value?.Length ?? 0;
             writer.Write(length);
             for (var i = 0; i < length; i++)
             {
