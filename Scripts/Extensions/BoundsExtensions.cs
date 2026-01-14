@@ -604,6 +604,11 @@ namespace ElasticSea.Framework.Extensions
 
 	    public static Rect ToRect(this Vector2[] vertices)
 	    {
+		    if (vertices == null || vertices.Length == 0)
+		    {
+			    return default;
+		    }
+		    
 		    var min = vertices[0];
 		    var max = vertices[0];
 
