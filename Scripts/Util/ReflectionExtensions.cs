@@ -20,11 +20,6 @@ namespace ElasticSea.Framework.Util
             instance.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Instance).SetValue(instance, value);
         }
         
-        public static void SetPrivateField<T>(this object instance, string name, object value)
-        {
-            typeof(T).GetField(name, BindingFlags.NonPublic | BindingFlags.Instance).SetValue(instance, value);
-        }
-        
         public static T GetPrivateField<T>(this object instance, string name)
         {
             return (T) instance.GetType().GetField(name, BindingFlags.NonPublic | BindingFlags.Instance).GetValue(instance);
