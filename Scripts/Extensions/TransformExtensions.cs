@@ -363,11 +363,6 @@ namespace ElasticSea.Framework.Extensions
             t.SetLocalPositionAndRotation(pose.position, pose.rotation);
         }
 
-        public static Matrix4x4 GetTRSRelativeToParent(this Transform child, Transform parent)
-        {
-            return parent.worldToLocalMatrix * child.localToWorldMatrix;
-        }
-
         public static Matrix4x4 GetLocalTRS(this Transform transform)
         {
             return Matrix4x4.TRS(transform.localPosition, transform.localRotation, transform.localScale);
