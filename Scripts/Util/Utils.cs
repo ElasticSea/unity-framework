@@ -1073,6 +1073,13 @@ namespace ElasticSea.Framework.Util
             var max = new Vector3(xmax, ymax, zmax);
             return MinMaxBounds(min, max);
         }
+
+        public static BoundsInt MinMaxBounds(int xmin, int ymin, int zmin, int xmax, int ymax, int zmax)
+        {
+            var minPosition = new Vector3Int(xmin, ymin, zmin);
+            var size = new Vector3Int(xmax - xmin, ymax - ymin, zmax - zmin);
+            return new BoundsInt(minPosition, size);
+        }
         
         public static Bounds MinMaxBounds(Vector3 min, Vector3 max)
         {
