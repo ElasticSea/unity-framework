@@ -42,7 +42,7 @@ namespace ElasticSea.Framework.Layout
                 }
             
                 var offset = anchorRect.AlignInsideRect(followerRect, horizontal, vertical, borderOffset);
-                follower.localPosition = offset + anchor.localPosition.FromXY();
+                follower.localPosition = (offset + anchor.localPosition.FromXY()).ToXy().SetZ(follower.localPosition.z);
             }
             catch (Exception e)
             {
