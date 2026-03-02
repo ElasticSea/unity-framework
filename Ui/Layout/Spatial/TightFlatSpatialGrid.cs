@@ -45,6 +45,43 @@ namespace ElasticSea.Framework.Ui.Layout.Spatial
             }
         }
 
+        /// <summary>
+        /// Determines the maximum number of columns that can fit within the width constraint,
+        /// taking into account the maximum width of items in each column and the spacing.
+        /// </summary>
+        public static (int columns, int rows) CalculateGridDimensions(Vector2[] sizes, int originalColumns, Vector2 spacing, float maxWidth)
+        {
+            int columns = originalColumns;
+
+            while (columns > 1)
+            {
+                float totalWidth = 0f;
+
+                // Calculate the width for the current column count
+                for (int col = 0; col < columns; col++)
+                {
+                    float maxColWidth = 0f;
+                    for (int i = col; i < sizes.Length; i += columns)
+                    {
+                        if (sizes[i].x > maxColWidth) maxColWidth = sizes[i].x;
+                    }
+                    totalWidth += maxColWidth;
+                }
+
+                // Add spacing
+                totalWidth += spacing.x * (columns - 1);
+
+                // If it fits, stop looking
+                if (totalWidth <= maxWidth) break;
+
+                // Too big? Remove one and try again
+                columns--;
+            }
+
+            int rows = Mathf.CeilToInt((float)sizes.Length / columns);
+            return (columns, rows);
+        }
+        
         public Bounds Bounds
         {
             get
