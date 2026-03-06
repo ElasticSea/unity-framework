@@ -36,11 +36,6 @@ namespace ElasticSea.Framework.Layout
                 var anchor = _anchor.transform;
                 var follower = _follower.transform;
             
-                if (anchor.parent != follower.parent)
-                {
-                    throw new Exception("Anchor and follower must be in the same parent");
-                }
-            
                 var offset = anchorRect.AlignInsideRect(followerRect, horizontal, vertical, borderOffset);
                 follower.localPosition = (offset + anchor.localPosition.FromXY()).ToXy().SetZ(follower.localPosition.z);
             }
