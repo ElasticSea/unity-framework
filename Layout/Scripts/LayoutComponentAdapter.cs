@@ -45,9 +45,11 @@ namespace ElasticSea.Framework.Layout
             r.size = new Vector2(w, h);
             r.center = c;
 
-            rect = r;
-            
-            OnRectChanged?.Invoke();
+            if (r != rect)
+            {
+                rect = r;
+                OnRectChanged?.Invoke();
+            }
         }
 
         private void OnValidate()
