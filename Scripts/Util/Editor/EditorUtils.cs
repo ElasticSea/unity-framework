@@ -87,5 +87,25 @@ namespace ElasticSea.Framework.Scripts.Util.Editor
 
             return container;
         }
+        
+        [MenuItem("Assets/Copy Shader Internal Name", false, 20)]
+        private static void CopyShaderName()
+        {
+            Shader selectedShader = Selection.activeObject as Shader;
+    
+            if (selectedShader != null)
+            {
+                GUIUtility.systemCopyBuffer = selectedShader.name;
+                Debug.Log($"Copied to clipboard: {selectedShader.name}");
+            }
+        }
+
+        // 2. This validation method ensures the button ONLY shows up if you actually clicked a Shader
+        [MenuItem("Assets/Copy Shader Internal Name", true)]
+        private static bool CopyShaderNameValidation()
+        {
+            // Will return true (and enable the button) if the clicked asset is a Shader or Shader Graph
+            return Selection.activeObject is Shader;
+        }
     }
 }
