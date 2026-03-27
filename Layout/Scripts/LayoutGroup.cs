@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ElasticSea.Framework.Extensions;
 using ElasticSea.Framework.Util;
+using ElasticSea.Framework.Util.PropertyDrawers;
 using UnityEngine;
 
 namespace ElasticSea.Framework.Layout
@@ -19,6 +20,7 @@ namespace ElasticSea.Framework.Layout
         [SerializeField] private Align childAlign = Align.Center;
         [SerializeField] private Align selfHorizontalAlign = Align.Center;
         [SerializeField] private Align selfVerticalAlign = Align.Center;
+        [SerializeField, CustomObjectPicker(typeof(ILayoutComponent))] private Component _selfVerticalAlignTarget;
         [SerializeField] private bool reverseArrangement;
         [SerializeField] private float spacing;
         [SerializeField] private float paddingLeft;
@@ -142,17 +144,35 @@ namespace ElasticSea.Framework.Layout
                 
                 rect = Rect.MinMaxRect(minx, miny, maxx, maxy);
 
-                // Apply to children
                 var innerXOffset = selfHorizontalAlign.GetAlignDelta() * rect.width - rect.max.x;
                 var innerYOffset = selfVerticalAlign.GetAlignDelta() * rect.height - rect.max.y;
+
+                // Override alignment logic if AlignTargetElement is assigned and currently visible
+                if (_selfVerticalAlignTarget != null)
+                {
+                    var target = (ILayoutComponent)_selfVerticalAlignTarget;
+                    var targetIndex = Array.IndexOf(buffer, target, 0, elementsLength);
+                    if (targetIndex >= 0) // Ensure the target is actually active in the layout
+                    {
+                        var targetOffset = childOffsets[targetIndex];
+                        var targetRect = target.Rect;
+                        
+                        var targetMaxY = targetOffset.y + targetRect.yMax;
+                        
+                        // Shift the group so the target element's bounds match the Y=0 pivot
+                        innerYOffset = selfVerticalAlign.GetAlignDelta() * targetRect.height - targetMaxY;
+                    }
+                }
+
                 var interRectOffset = new Vector2(innerXOffset, innerYOffset);
                 rect.position += interRectOffset;
+                
                 for (var i = 0; i < elementsLength; i++)
                 {
                     var element = buffer[i];
                     var offset = childOffsets[i];
                     var elementTransform = ((Component)element).transform;
-                    elementTransform.localPosition = offset  + interRectOffset;
+                    elementTransform.localPosition = offset + interRectOffset;
                 }
             }
             else
