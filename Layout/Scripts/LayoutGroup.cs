@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ElasticSea.Framework.Extensions;
@@ -27,6 +27,12 @@ namespace ElasticSea.Framework.Layout
         [SerializeField] private float paddingRight;
         [SerializeField] private float paddingTop;
         [SerializeField] private float paddingBottom;
+
+        [Header("Gizmos")]
+        [SerializeField] private bool drawGizmo = true;
+        [SerializeField] private bool drawOnlySelected = true;
+        [SerializeField] private bool drawGroup = true;
+        [SerializeField] private bool drawChildren = true;
 
         private Dictionary<ILayoutComponent, bool> elementsMap = new ();
         private Rect rect;
@@ -223,9 +229,42 @@ namespace ElasticSea.Framework.Layout
 
         private void OnDrawGizmos()
         {
-            Gizmos.matrix = transform.localToWorldMatrix;
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireCube(rect.center, rect.size);
+            if (!drawGizmo || drawOnlySelected) return;
+            DrawGizmosInner();
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            if (!drawGizmo || !drawOnlySelected) return;
+            DrawGizmosInner();
+        }
+
+        private void DrawGizmosInner()
+        {
+            if (drawGroup)
+            {
+                Gizmos.matrix = transform.localToWorldMatrix;
+                Gizmos.color = Color.blue;
+                Gizmos.DrawWireCube(rect.center, rect.size);
+            }
+
+            if (drawChildren)
+            {
+                Gizmos.color = Color.cyan;
+                foreach (var element in elementsMap)
+                {
+                    if (element.Value)
+                    {
+                        var childComponent = (Component)element.Key;
+                        if (childComponent != null)
+                        {
+                            var childRect = element.Key.Rect;
+                            Gizmos.matrix = childComponent.transform.localToWorldMatrix;
+                            Gizmos.DrawWireCube(childRect.center, childRect.size);
+                        }
+                    }
+                }
+            }
         }
     }
 }
