@@ -1159,21 +1159,8 @@ namespace ElasticSea.Framework.Util
 
         public static byte[] ReadAllBytes(string filePath)
         {
-            try
-            {
-                return File.ReadAllBytes(filePath);
-            }
-            catch (IOException e)
-            {
-                Debug.LogException(e);
-                
-                // In case another program already has write access to this file
-
-                using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                {
-                    return fs.ReadAllBytes();
-                }
-            }
+            using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+            return fs.ReadAllBytes();
         }
 
         public static PageElement<T>[][] CalculatePages<T>((T value, float size)[] elements, float maxSize, float leftNavigationSize, float rightNavigationSize)
