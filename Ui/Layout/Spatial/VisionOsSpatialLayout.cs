@@ -9,6 +9,7 @@ namespace ElasticSea.Framework.Ui.Layout.Spatial
     public class VisionOsSpatialLayout : MonoBehaviour, IUniformGrowSpatialLayout, ILayoutComponent
     {
         [field: SerializeField] public int Count { get; set; }
+        [field: SerializeField] public int MinCount { get; set; }
 
         public Vector3 Size
         {
@@ -115,7 +116,7 @@ namespace ElasticSea.Framework.Ui.Layout.Spatial
         {
             get
             {
-                var count = Count;
+                var count = Mathf.Max(Count, MinCount);
                 
                 if (padRight && count > 3)
                 {
@@ -215,7 +216,7 @@ namespace ElasticSea.Framework.Ui.Layout.Spatial
 
         public SpatialCell GetCell(int index)
         {
-            var rows = CalculateRows(Count);
+            var rows = CalculateRows(Mathf.Max(Count, MinCount));
             var rowIndex = rows.GetIndex(index);
 
             var bounds = Bounds;
