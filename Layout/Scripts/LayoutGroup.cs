@@ -34,15 +34,40 @@ namespace ElasticSea.Framework.Layout
         [SerializeField] private bool drawGroup = true;
         [SerializeField] private bool drawChildren = true;
 
-        private Dictionary<ILayoutComponent, bool> elementsMap = new ();
+        private List<ILayoutComponent> elementsList = new();
+        private Dictionary<ILayoutComponent, bool> elementsMap = new();
         private Rect rect;
         public Rect Rect => rect;
-        public IEnumerable<ILayoutComponent> Elements => elementsMap.Keys.ToArray();
+        public IEnumerable<ILayoutComponent> Elements => elementsList.ToArray();
         public event Action OnRectChanged;
 
         public void AddElement(ILayoutComponent element)
         {
-            if (AddElementInner(element))
+            if (AddElementInner(element, elementsList.Count))
+            {
+                Refresh();
+            }
+        }
+
+        public void AddElement(ILayoutComponent element, int index)
+        {
+            if (AddElementInner(element, index))
+            {
+                Refresh();
+            }
+        }
+
+        public void AddFirst(ILayoutComponent element)
+        {
+            if (AddElementInner(element, 0))
+            {
+                Refresh();
+            }
+        }
+
+        public void AddLast(ILayoutComponent element)
+        {
+            if (AddElementInner(element, elementsList.Count))
             {
                 Refresh();
             }
@@ -54,7 +79,7 @@ namespace ElasticSea.Framework.Layout
             for (int i = 0; i < elements.Length; i++)
             {
                 var element = elements[i];
-                if (AddElementInner(element))
+                if (AddElementInner(element, elementsList.Count))
                 {
                     any = true;
                 }
@@ -65,11 +90,12 @@ namespace ElasticSea.Framework.Layout
                 Refresh();
             }
         }
-        
-        private bool AddElementInner(ILayoutComponent element)
+
+        private bool AddElementInner(ILayoutComponent element, int index)
         {
             if (elementsMap.TryAdd(element, true))
             {
+                elementsList.Insert(Mathf.Clamp(index, 0, elementsList.Count), element);
                 element.OnRectChanged += Refresh;
                 return true;
             }
@@ -81,6 +107,7 @@ namespace ElasticSea.Framework.Layout
         {
             if (elementsMap.Remove(element))
             {
+                elementsList.Remove(element);
                 element.OnRectChanged -= Refresh;
                 Refresh();
             }
@@ -88,9 +115,12 @@ namespace ElasticSea.Framework.Layout
 
         public void SetElementVisibility(ILayoutComponent element, bool visible)
         {
-            elementsMap[element] = visible;
-            ((Component)element).gameObject.SetActive(visible);
-            Refresh();
+            if (elementsMap.ContainsKey(element))
+            {
+                elementsMap[element] = visible;
+                ((Component)element).gameObject.SetActive(visible);
+                Refresh();
+            }
         }
 
         private ILayoutComponent[] buffer = new ILayoutComponent[0];
@@ -198,14 +228,13 @@ namespace ElasticSea.Framework.Layout
                 flipOrder = !reverseArrangement;
             }
             
-            buffer = buffer.EnsureArray(elementsMap.Count);
+            buffer = buffer.EnsureArray(elementsList.Count);
             var bufferLength = 0;
-            foreach (var b in elementsMap)
+            foreach (var element in elementsList)
             {
-                var isVisible = b.Value;
-                if (isVisible)
+                if (elementsMap[element])
                 {
-                    buffer[bufferLength++] = b.Key;
+                    buffer[bufferLength++] = element;
                 }
             }
             
@@ -219,7 +248,12 @@ namespace ElasticSea.Framework.Layout
 
         public void Clear()
         {
+            foreach (var element in elementsList)
+                element.OnRectChanged -= Refresh;
+
+            elementsList.Clear();
             elementsMap.Clear();
+            Refresh();
         }
 
         private void OnValidate()
@@ -251,14 +285,14 @@ namespace ElasticSea.Framework.Layout
             if (drawChildren)
             {
                 Gizmos.color = Color.cyan;
-                foreach (var element in elementsMap)
+                foreach (var element in elementsList)
                 {
-                    if (element.Value)
+                    if (elementsMap[element])
                     {
-                        var childComponent = (Component)element.Key;
+                        var childComponent = (Component)element;
                         if (childComponent != null)
                         {
-                            var childRect = element.Key.Rect;
+                            var childRect = element.Rect;
                             Gizmos.matrix = childComponent.transform.localToWorldMatrix;
                             Gizmos.DrawWireCube(childRect.center, childRect.size);
                         }
