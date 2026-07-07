@@ -84,6 +84,11 @@ namespace ElasticSea.Framework.Util
 
         public static AudioSource PlayClipAtPoint3D(AudioClip clip, Vector3 pos, float volume = 1f, AudioMixerGroup audioMixerGroup = null, float pitch = 1, bool loop = false, float min = 1, float max = 500, float delay = 0)
         {
+            if (clip == false)
+            {
+                return null;
+            }
+            
             var go = new GameObject("Play One Shot");
             go.transform.position = pos;
             var source = go.AddComponent<AudioSource>();
