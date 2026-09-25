@@ -20,6 +20,22 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
         private Vector2 scrollPos;
         private List<IconFont> fonts;
 
+        public void SelectIcon(IconFont font, string iconName)
+        {
+            pack = font;
+            filterName = iconName ?? "";
+            fonts = null;
+            dirty = true;
+            Repaint();
+        }
+
+        private void OnProjectChange()
+        {
+            fonts = null;
+            dirty = true;
+            Repaint();
+        }
+
         [MenuItem("Window/Icon Explorer")]
         public static IconExplorer Show()
         {
@@ -28,6 +44,12 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
 
         private void OnGUI()
         {
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("Add SVG")) IconSvgImportWindow.Open(this);
+            using (new EditorGUI.DisabledScope(!IconSvgImporter.CanRebuild))
+                if (GUILayout.Button("Rebuild SVG Font"))
+                    IconSvgImporter.RebuildFromMenu(this);
+            EditorGUILayout.EndHorizontal();
             var prevPack = pack;
             pack = (IconFont) EditorGUILayout.ObjectField(pack, typeof(IconFont), true);
             
@@ -67,7 +89,7 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
             EditorGUILayout.BeginVertical();
             EditorGUILayout.LabelField("Limit");
             var prevLimit = limit;
-            limit = int.Parse(EditorGUILayout.TextField(limit.ToString()));
+            limit = Mathf.Clamp(EditorGUILayout.IntField(limit), 1, 10000);
             if (limit != prevLimit) dirty = true;
             EditorGUILayout.EndVertical();
             EditorGUILayout.EndHorizontal();
@@ -88,9 +110,9 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
             foreach (var (name, code) in configIcons.Select(x => (x.name, x.code)))
             {
                 EditorGUILayout.BeginHorizontal();
-                if (GUILayout.Button(((char) code).ToString(), fontStyle, GUILayout.MinWidth(50), GUILayout.MinHeight(50),GUILayout.MaxWidth(50), GUILayout.MaxHeight(50)))
+                if (GUILayout.Button(char.ConvertFromUtf32(code), fontStyle, GUILayout.MinWidth(50), GUILayout.MinHeight(50),GUILayout.MaxWidth(50), GUILayout.MaxHeight(50)))
                 {
-                    EditorGUIUtility.systemCopyBuffer = char.ToString((char)code);   
+                    CopyIcon(code);
                 }
                 EditorGUILayout.BeginVertical();
                 EditorGUILayout.TextField(name, GUILayout.ExpandWidth(false),GUILayout.MinHeight(25));
@@ -105,6 +127,11 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
             dirty = false;
         }
 
+        public static void CopyIcon(int code)
+        {
+            EditorGUIUtility.systemCopyBuffer = char.ConvertFromUtf32(code);
+        }
+
         private int[] GetCodepointsFromAsset(TMP_FontAsset iconPackTmpFontAsset)
         {
             return iconPackTmpFontAsset.characterTable.Select(c => (int)c.unicode).ToArray();
@@ -114,7 +141,7 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
         {
             var codepoints = new HashSet<int>();
 
-            var parts = filterName.Split(",");
+            var parts = (filterName ?? "").Split(',');
 
             foreach (var part in parts)
             {
