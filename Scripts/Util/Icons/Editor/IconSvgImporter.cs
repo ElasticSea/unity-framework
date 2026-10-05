@@ -1,3 +1,7 @@
+#if UNITY_EDITOR
+using File = ElasticSea.Framework.Util.AssetFile;
+using Directory = ElasticSea.Framework.Util.AssetDirectory;
+#endif
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -59,11 +63,11 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
 
     public static class IconSvgImporter
     {
-        public const string Root = "Assets/Custom Icons";
-        public const string PackPath = Root + "/Custom Icons.asset";
-        public const string FontPath = Root + "/CustomIcons.ttf";
-        public const string TmpPath = Root + "/Custom Icons SDF.asset";
-        private const string CodepointsPath = Root + "/CustomIcons.codepoints.txt";
+        public static string Root { get; set; } = "Assets/Custom Icons";
+        public static string PackPath => Root + "/Custom Icons.asset";
+        public static string FontPath => Root + "/CustomIcons.ttf";
+        public static string TmpPath => Root + "/Custom Icons SDF.asset";
+        private static string CodepointsPath => Root + "/CustomIcons.codepoints.txt";
         public static bool CanRebuild => File.Exists(Root + "/icons.json");
 
         public static void RebuildFromMenu(IconExplorer explorer)
@@ -112,8 +116,8 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
                 string reservedPath = work + "/reserved.json";
                 File.WriteAllText(reservedPath, "[" + string.Join(",", reserved.OrderBy(c => c)) + "]");
                 string output = work + "/output";
-                var args = new List<string> { tools + "/build_icons.py", "--source", Path.GetFullPath(Root), "--output", output, "--reserved", reservedPath };
-                if (svgPath != null) args.AddRange(new[] { "--svg", Path.GetFullPath(svgPath), "--name", iconName });
+                var args = new List<string> { tools + "/build_icons.py", "--source", Path.GetFullPath(ElasticSea.Framework.Util.AssetPathUtility.ToPhysicalPath(Root)), "--output", output, "--reserved", reservedPath };
+                if (svgPath != null) args.AddRange(new[] { "--svg", Path.GetFullPath(ElasticSea.Framework.Util.AssetPathUtility.ToPhysicalPath(svgPath)), "--name", iconName });
                 EditorUtility.DisplayProgressBar("SVG icon font", "Validating SVGs and generating outlines", 0.3f);
                 Run(python, args.ToArray());
 
@@ -300,7 +304,7 @@ namespace ElasticSea.Framework.Scripts.Util.Icons
         {
             string script = AssetDatabase.FindAssets("IconSvgImporter t:MonoScript").Select(AssetDatabase.GUIDToAssetPath)
                 .First(p => Path.GetFileName(p) == "IconSvgImporter.cs");
-            return Path.GetFullPath(Path.GetDirectoryName(script) + "/Tools");
+            return Path.GetFullPath(ElasticSea.Framework.Util.AssetPathUtility.ToPhysicalPath(Path.GetDirectoryName(script) + "/Tools"));
         }
 
         private static string EnsurePython(string tools)

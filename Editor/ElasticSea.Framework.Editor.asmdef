@@ -1,0 +1,12 @@
+{
+  "name": "ElasticSea.Framework.Editor",
+  "references": [
+    "ElasticSea.Framework",
+    "Unity.TextMeshPro",
+    "Unity.TextMeshPro.Editor",
+    "UnityEngine.UI"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ]
+}

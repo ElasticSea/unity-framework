@@ -1,0 +1,12 @@
+{
+  "name": "ElasticSea.Framework.Tests",
+  "references": [
+    "ElasticSea.Framework"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

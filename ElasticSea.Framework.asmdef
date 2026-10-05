@@ -1,0 +1,9 @@
+{
+  "name": "ElasticSea.Framework",
+  "references": [
+    "Unity.TextMeshPro",
+    "UnityEngine.UI",
+    "Unity.Mathematics"
+  ],
+  "allowUnsafeCode": true
+}

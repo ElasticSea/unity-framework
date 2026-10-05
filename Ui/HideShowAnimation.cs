@@ -3,7 +3,7 @@ using ElasticSea.Framework.Util;
 
 namespace ElasticSea.Framework.Ui
 {
-    internal class HideShowAnimation : IHideShowAnim
+    public class HideShowAnimation : IHideShowAnim
     {
         private readonly Tween tween;
 

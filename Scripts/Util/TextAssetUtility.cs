@@ -1,4 +1,8 @@
 ﻿#if UNITY_EDITOR
+using File = ElasticSea.Framework.Util.AssetFile;
+using Directory = ElasticSea.Framework.Util.AssetDirectory;
+#endif
+#if UNITY_EDITOR
 using System;
 using System.IO;
 using UnityEditor;

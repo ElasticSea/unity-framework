@@ -15,6 +15,9 @@ namespace ElasticSea.Framework.Util
         {
             // 1. Sanitize the path to prevent errors
             if (string.IsNullOrEmpty(path)) return;
+#if UNITY_EDITOR
+            path = AssetPathUtility.ToPhysicalPath(path);
+#endif
         
             // Normalize path to system defaults to avoid confusion
             path = Path.GetFullPath(path);

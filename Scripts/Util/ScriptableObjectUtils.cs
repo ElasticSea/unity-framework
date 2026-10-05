@@ -18,7 +18,7 @@ namespace ElasticSea.Framework.Util
         /// <returns>The created or updated asset instance in the Project</returns>
         public static T CreateOrOverwriteAsset<T>(string assetPath, Action<T> init = null) where T : ScriptableObject
         {
-            if (string.IsNullOrWhiteSpace(assetPath) || !assetPath.Replace('\\','/').StartsWith("Assets/"))
+            if (string.IsNullOrWhiteSpace(assetPath) || !(assetPath.Replace('\\','/').StartsWith("Assets/") || assetPath.Replace('\\','/').StartsWith("Packages/")))
                 throw new ArgumentException("assetPath must start with \"Assets/\" and be non-empty.", nameof(assetPath));
 
             assetPath = NormalizeAssetPath(assetPath);
@@ -111,8 +111,8 @@ namespace ElasticSea.Framework.Util
         private static string NormalizeAssetPath(string assetPath)
         {
             assetPath = assetPath.Replace('\\','/');
-            if (!assetPath.StartsWith("Assets/"))
-                throw new ArgumentException("Path must start with Assets/");
+            if (!assetPath.StartsWith("Assets/") && !assetPath.StartsWith("Packages/"))
+                throw new ArgumentException("Path must start with Assets/ or Packages/");
 
             // Ensure .asset extension
             if (string.IsNullOrEmpty(Path.GetExtension(assetPath)))
@@ -132,11 +132,12 @@ namespace ElasticSea.Framework.Util
             if (AssetDatabase.IsValidFolder(directoryAssetPath)) return;
 
             var parts = directoryAssetPath.Split('/');
-            if (parts.Length == 0 || parts[0] != "Assets")
-                throw new ArgumentException("Directory must be under Assets/");
+            if (parts.Length == 0 || (parts[0] != "Assets" && parts[0] != "Packages"))
+                throw new ArgumentException("Directory must be under Assets/ or Packages/");
 
-            string current = "Assets";
-            for (int i = 1; i < parts.Length; i++)
+            int start = parts[0] == "Packages" ? 2 : 1;
+            string current = string.Join("/", parts, 0, start);
+            for (int i = start; i < parts.Length; i++)
             {
                 string next = $"{current}/{parts[i]}";
                 if (!AssetDatabase.IsValidFolder(next))

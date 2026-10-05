@@ -1,3 +1,6 @@
+#if UNITY_EDITOR
+using File = ElasticSea.Framework.Util.AssetFile;
+#endif
 using System.IO;
 using UnityEditor;
 using UnityEngine;
