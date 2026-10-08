@@ -3,14 +3,14 @@ using UnityEngine;
 
 namespace ElasticSea.Framework.Interactions.Editor
 {
-    [CustomEditor(typeof(VisionOsIteractableComponent))]
+    [CustomEditor(typeof(PointerInteractable))]
     public class IteractableComponentEditor : UnityEditor.Editor
     {
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
 
-            var inspector = target as VisionOsIteractableComponent;
+            var inspector = target as PointerInteractable;
             var interactable = inspector.Interactable;
             if (GUILayout.Button("Highlight")) interactable.Hover(null);
             if (GUILayout.Button("Unhighlight")) interactable.UnHover(null);

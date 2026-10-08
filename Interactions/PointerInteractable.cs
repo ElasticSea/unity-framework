@@ -2,8 +2,8 @@
 
 namespace ElasticSea.Framework.Interactions
 {
-    // Must be placed on collider that has the vision os layer
-    public class VisionOsIteractableComponent : MonoBehaviour, IInteractable
+    // Bridges a pointer-target collider to the game interaction receiver.
+    public class PointerInteractable : MonoBehaviour, IInteractable
     {
         public IInteractable Interactable;
         public bool IsActive = true;
