@@ -38,6 +38,7 @@ namespace ElasticSea.Framework.Layout
         private Dictionary<ILayoutComponent, bool> elementsMap = new();
         private Rect rect;
         public Rect Rect => rect;
+        public LayoutGroupOrientation Orientation => orientation;
         public IEnumerable<ILayoutComponent> Elements => elementsList.ToArray();
         public event Action OnRectChanged;
 
