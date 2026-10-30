@@ -40,7 +40,32 @@ namespace ElasticSea.Framework.Layout
         public Rect Rect => rect;
         public LayoutGroupOrientation Orientation => orientation;
         public IEnumerable<ILayoutComponent> Elements => elementsList.ToArray();
+        public float PaddingLeft => paddingLeft;
+        public float PaddingRight => paddingRight;
+        public float PaddingTop => paddingTop;
+        public float PaddingBottom => paddingBottom;
         public event Action OnRectChanged;
+
+        public float Spacing
+        {
+            get => spacing;
+            set
+            {
+                if (spacing == value) return;
+                spacing = value;
+                Refresh();
+            }
+        }
+
+        public void SetPadding(float left, float right, float top, float bottom)
+        {
+            if (paddingLeft == left && paddingRight == right && paddingTop == top && paddingBottom == bottom) return;
+            paddingLeft = left;
+            paddingRight = right;
+            paddingTop = top;
+            paddingBottom = bottom;
+            Refresh();
+        }
 
         public void AddElement(ILayoutComponent element)
         {
